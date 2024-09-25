@@ -7,18 +7,19 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
     private UserRepository userRepository;
-
+    // Create User
     public User createRequest(UserCreationRequest request) {
         User user = new User();
 
-        if(userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+        if(userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
         }
 
         user.setUsername(request.getUsername());
@@ -27,7 +28,7 @@ public class UserService {
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
         user.setRole(request.getRole());
-        user.setCreatedAt(request.getCreatedAt());
+        user.setCreatedAt(LocalDateTime.now());
 
         return userRepository.save(user);
     }
@@ -40,6 +41,7 @@ public class UserService {
         return userRepository.findById(userID)
         .orElseThrow(()-> new RuntimeException("User cannot be found"));
     }
+
 
     public User updateUser(int userID, UserUpdateRequest request) {
         User user = getUser(userID);
