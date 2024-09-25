@@ -58,4 +58,10 @@ public class UserService {
     public void deleteUser(int userID) {
         userRepository.deleteById(userID);
     }
+
+    public User getUserByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password);
+    }
+
+
 }

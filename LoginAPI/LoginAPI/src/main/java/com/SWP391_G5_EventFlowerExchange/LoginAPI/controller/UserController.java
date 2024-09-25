@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserLoginRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.UserService;
@@ -16,30 +17,37 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    //create User
+    // Create User
     @PostMapping("/create")
     User createUser(@RequestBody @Valid UserCreationRequest request) {
         return userService.createRequest(request);
     }
-    //list User
+    // List Users
     @GetMapping
     List<User> getAllUsers() {
         return userService.getUsers();
     }
-    //find User by Id
+    // Find User by Id
     @GetMapping("/{userID}")
     User getUser(@PathVariable("userID") int userID) {
         return userService.getUser(userID);
     }
-
+    // Update Users
     @PutMapping("/{userID}")
     User updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
         return userService.updateUser(userID, request);
     }
-    
+    // Delete User
     @DeleteMapping("/{userID}")
     String deleteUser(@PathVariable int userID) {
         userService.deleteUser(userID);
         return "User has been deleted";
     }
+    // Login API
+    // Adjusted Login API
+    @PostMapping("/login")
+    User loginUser(@RequestBody @Valid UserLoginRequest request) {
+        return userService.getUserByEmailAndPassword(request.getEmail(), request.getPassword());
+    }
+
 }
