@@ -3,6 +3,8 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,12 +16,14 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
     // Create User
     public User createRequest(UserCreationRequest request) {
         User user = new User();
 
+        // Advance Exception Handling
         if(userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         user.setUsername(request.getUsername());

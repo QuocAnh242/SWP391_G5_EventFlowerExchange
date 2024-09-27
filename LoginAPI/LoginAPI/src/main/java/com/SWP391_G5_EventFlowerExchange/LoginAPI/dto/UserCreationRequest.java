@@ -6,10 +6,11 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import java.time.LocalDate;
 
 public class UserCreationRequest {
-    @Size(min = 10, max = 20, message = "Username must be at least 10 characters")
+    @Size(min = 3, max = 20, message = "USERNAME_INVALID")
     private String username;
     private String email;
-    @Size(min= 10, message = "Password must be at least 10 characters")
+
+    @Size(min= 10, message = "PASSWORD_INVALID")
     private String password;
     private String address;
     private String phoneNumber;
