@@ -2,6 +2,8 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "Delivery")
@@ -20,9 +22,11 @@ public class Delivery {
     @Column(nullable = false, length = 255)
     private String availableStatus = "available";
 
-    @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false)
-    private Order order;
+
+    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders =new ArrayList<>();
+
+
 
     // Getters and Setters
 
@@ -58,11 +62,11 @@ public class Delivery {
         this.availableStatus = availableStatus;
     }
 
-    public Order getOrder() {
-        return order;
+    public void setOrder(List<Order> order) {
+        this.orders = order;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public List<Order> getOrder() {
+        return orders;
     }
 }

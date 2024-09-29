@@ -19,10 +19,20 @@ public class Payment {
 
     private LocalDateTime date = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "orderID")
     private Order order;
 
+    public Payment() {
+    }
+
+    public Payment(int paymentID, String method, String status, LocalDateTime date, Order order) {
+        this.paymentID = paymentID;
+        this.method = method;
+        this.status = status;
+        this.date = date;
+        this.order = order;
+    }
     // Getters and Setters
 
     public int getPaymentID() {

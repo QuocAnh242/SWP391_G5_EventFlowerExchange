@@ -3,6 +3,8 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "EventFlowerPosting")
@@ -27,9 +29,29 @@ public class EventFlowerPosting {
     @Column(nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @OneToMany(mappedBy = "eventFlowerPosting", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FlowerBatch> flowerBatches = new ArrayList<>();
+
+
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
     private User user;
+
+    public EventFlowerPosting() {
+    }
+
+    public EventFlowerPosting(int postID, String title, String description, BigDecimal price, String imageUrl, String status, LocalDateTime createdAt, LocalDateTime updatedAt, List<FlowerBatch> flowerBatches, User user) {
+        this.postID = postID;
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.flowerBatches = new ArrayList<>();
+        this.user = user;
+    }
 
     // Getters and Setters
     public int getPostID() {
@@ -103,4 +125,13 @@ public class EventFlowerPosting {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public List<FlowerBatch> getFlowerBatches() {
+        return flowerBatches;
+    }
+
+    public void setFlowerBatches(List<FlowerBatch> flowerBatches) {
+        this.flowerBatches = flowerBatches;
+    }
+
 }

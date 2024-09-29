@@ -9,32 +9,32 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class NotificationsService implements INotificationsService  {
+public class NotificationsService implements INoticationService {
     @Autowired
-    private INotificationsRepository iNotificationsRepository;
+    private INotificationsRepository inotificationsRepository;
 
     @Override
     public List<Notifications> getAllNotifications() {
-        return iNotificationsRepository.findAll();
+        return inotificationsRepository.findAll();
     }
 
     @Override
     public Notifications insertNotifications(Notifications notifications) {
-        return iNotificationsRepository.save(notifications);
+        return inotificationsRepository.save(notifications);
     }
 
     @Override
     public void deleteNotifications(int notificationID) {
-        iNotificationsRepository.deleteById(notificationID);
+            inotificationsRepository.deleteById(notificationID);
     }
 
     @Override
     public Optional<Notifications> getNotificationsById(int notificationID) {
-        return iNotificationsRepository.findById(notificationID);
+        return inotificationsRepository.findById(notificationID);
     }
     @Override
     public Notifications updateNoti(int notiId, Notifications notifications) {
-        Notifications noti=iNotificationsRepository.getById(notiId);
+        Notifications noti=inotificationsRepository.getById(notiId);
         if(noti != null){
             noti.setContent(notifications.getContent());
             noti.setNotificationType(notifications.getNotificationType());

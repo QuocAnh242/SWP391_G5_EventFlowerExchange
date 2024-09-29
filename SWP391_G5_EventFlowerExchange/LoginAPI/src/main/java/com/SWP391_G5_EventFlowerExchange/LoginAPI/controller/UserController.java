@@ -54,12 +54,13 @@ public class UserController {
     }
 
     // Login API
+    // Adjusted Login API
     @PostMapping("/login")
     public ApiResponse<User> loginUser(@RequestBody @Valid UserLoginRequest request) {
         ApiResponse<User> apiResponse = new ApiResponse<>();
 
         // Fetch user based on email and password
-        User user = userService.getUserByEmailAndPassword(request);
+        User user = userService.getUserByEmailAndPassword(request.getEmail(), request.getPassword());
 
         // Check if user exists (valid login)
         if (user == null) {
@@ -69,7 +70,7 @@ public class UserController {
             apiResponse.setResult(null);
         } else {
             // Set success response
-            apiResponse.setCode(1000); // OK
+            apiResponse.setCode(200); // OK
             apiResponse.setMessage("Login successful.");
             apiResponse.setResult(user);
         }

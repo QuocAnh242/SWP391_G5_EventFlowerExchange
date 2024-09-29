@@ -14,6 +14,11 @@ public class FeedbackKey implements Serializable {
     public FeedbackKey() {
     }
 
+    public FeedbackKey(int userID, int sellerID) {
+        this.userID = userID;
+        this.sellerID = sellerID;
+    }
+
     // Getters and Setters
     public int getUserID() {
         return userID;

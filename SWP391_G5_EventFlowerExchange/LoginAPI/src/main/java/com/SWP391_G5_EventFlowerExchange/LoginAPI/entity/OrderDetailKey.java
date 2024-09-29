@@ -1,18 +1,25 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 public class OrderDetailKey implements Serializable {
-
+    @Column(name = "orderID")
     private int orderID;
+    @Column(name = "flowerID")
     private int flowerID;
 
     // Default constructor
     public OrderDetailKey() {
     }
+    public OrderDetailKey(int orderID, int flowerID) {
+        this.orderID = orderID;
+        this.flowerID = flowerID;
+    }
+
 
     // Getters and Setters
     public int getOrderID() {

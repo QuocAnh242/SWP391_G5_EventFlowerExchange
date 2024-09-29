@@ -7,14 +7,14 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IEventFlowerPostingService {
-    //    public List<FlowerBatch> getAllFlowerBatch();
+//    public List<FlowerBatch> getAllFlowerBatch();
 //    public FlowerBatch insertFlowerBatch(FlowerBatch flowerBatch);
 //    public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
 //    public void deleteFlowerBatch(int flowerID);
 //    public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
-    public List<EventFlowerPosting> getAllEventPostings();
-    public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting);
-    public EventFlowerPosting updateEventFlowerPosting(int postId,EventFlowerPosting eventFlowerPosting);
-    public void deleteEventFlowerPosting(int postId);
-    public Optional<EventFlowerPosting> getEventFlowerPosting(int postId);
+public List<EventFlowerPosting> getAllEventPostings();
+public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting);
+public EventFlowerPosting updateEventFlowerPosting(int postId,EventFlowerPosting eventFlowerPosting);
+public void deleteEventFlowerPosting(int postId);
+public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId);
 }

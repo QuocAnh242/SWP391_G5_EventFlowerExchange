@@ -1,7 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.EventFlowerPosting;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepositry;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFlowerBatchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
 @Service
 public class EventFlowerPostingService implements IEventFlowerPostingService {
     @Autowired
-    private IEventFlowerPostingRepository iEventFlowerPostingRepositry;
+    private IEventFlowerPostingRepositry iEventFlowerPostingRepositry;
 
     @Override
     public List<EventFlowerPosting> getAllEventPostings() {
@@ -45,7 +46,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     }
 
     @Override
-    public Optional<EventFlowerPosting> getEventFlowerPosting(int postId) {
+    public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId) {
         return iEventFlowerPostingRepositry.findById(postId);
     }
 

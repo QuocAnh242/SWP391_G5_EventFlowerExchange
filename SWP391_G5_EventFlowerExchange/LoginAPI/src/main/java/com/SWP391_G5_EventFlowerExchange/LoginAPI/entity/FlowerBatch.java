@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "FlowerBatchService")
+@Table(name = "FlowerBatch")
 public class FlowerBatch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,22 @@ public class FlowerBatch {
     @ManyToOne
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
+
+    //contructer
+    public FlowerBatch() {
+    }
+
+    public FlowerBatch(int flowerID, String flowerName, int quantity, String status, String description, BigDecimal price, String imageUrl, EventFlowerPosting eventFlowerPosting, Category category) {
+        this.flowerID = flowerID;
+        this.flowerName = flowerName;
+        this.quantity = quantity;
+        this.status = status;
+        this.description = description;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.eventFlowerPosting = eventFlowerPosting;
+        this.category = category;
+    }
 
     // Getters and Setters
     public int getFlowerID() {

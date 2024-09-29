@@ -8,7 +8,6 @@ public enum ErrorCode {
     EMAIL_EXISTED(1001, "Email is already existed!"),
     USERNAME_INVALID(1002, "User is invalid!"),
     PASSWORD_INVALID(1003, "Password must be at least 10 characters!"),
-    EMAIL_INVALID(1004, "Email is not valid!");
     ;
     private int code;
     private String message;

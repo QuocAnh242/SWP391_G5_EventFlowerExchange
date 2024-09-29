@@ -1,14 +1,13 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.time.LocalDate;
 
 public class UserCreationRequest {
     @Size(min = 3, max = 20, message = "USERNAME_INVALID")
     private String username;
-    @Email(message = "EMAIL_INVALID") // <-- Email validation annotation
     private String email;
 
     @Size(min= 10, message = "PASSWORD_INVALID")

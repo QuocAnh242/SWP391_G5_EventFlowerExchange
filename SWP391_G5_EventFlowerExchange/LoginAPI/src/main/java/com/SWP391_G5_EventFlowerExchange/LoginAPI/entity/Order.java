@@ -33,6 +33,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "deliveryID", nullable = false)
+    private Delivery delivery; // Mối quan hệ với Delivery
 
     // Getters and Setters
     public int getOrderID() {
@@ -97,5 +100,13 @@ public class Order {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
     }
 }
