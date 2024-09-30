@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface INoticationService {
-//    public List<FlowerBatch> getAllFlowerBatch();
-//    public FlowerBatch insertFlowerBatch(FlowerBatch flowerBatch);
-//    public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
-//    public void deleteFlowerBatch(int flowerID);
-//    public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
         public List<Notifications> getAllNotifications();
         public Notifications insertNotifications(Notifications notifications);
         public void deleteNotifications(int notificationID);

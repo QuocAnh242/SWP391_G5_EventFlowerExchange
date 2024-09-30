@@ -1,0 +1,81 @@
+/* src/styles/AdminUserManagement.css */
+.admin-user-management {
+    margin: 50px auto;
+    max-width: 1000px;
+    padding: 20px;
+    background-color: #f4f4f9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .admin-user-management h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .admin-user-management table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .admin-user-management table thead {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .admin-user-management table th, 
+  .admin-user-management table td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-user-management table th {
+    font-size: 1.1rem;
+  }
+  
+  .admin-user-management table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .admin-user-management table tbody tr:hover {
+    background-color: #e6f7ff;
+  }
+  
+  .admin-user-management table tbody td button {
+    padding: 8px 12px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .admin-user-management table tbody td button:hover {
+    background-color: #0056b3;
+    color: white;
+  }
+  
+  .admin-user-management table tbody td button:active {
+    transform: scale(0.98);
+  }
+  
+  .admin-user-management table tbody td .block-btn {
+    background-color: #ff4d4f;
+    color: #fff;
+  }
+  
+  .admin-user-management table tbody td .delete-btn {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  
+  .admin-user-management table tbody td .unblock-btn {
+    background-color: #28a745;
+    color: #fff;
+  }
+  

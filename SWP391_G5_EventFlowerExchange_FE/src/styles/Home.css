@@ -1,0 +1,179 @@
+ 
+.home {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+/* Điều chỉnh cho banner */
+.bannerImage {
+  width: 100%; /* This keeps the image occupying the entire width */
+  height: 60vh; /* Adjust this value to make the image taller */
+  object-fit: cover; /* Ensures that the image maintains its aspect ratio */
+}
+
+.text-overlay button:hover {
+  background-color: #e1a628;
+}
+
+/* Điều chỉnh container của header */
+.headerContainer {
+  width: 100%;
+  text-align: center; /* Căn giữa nội dung trong header */
+  padding: 0;
+}
+
+.headerContainer h1 {
+  font-size: 36px; /* Giảm kích thước font cho tiêu đề */
+  font-weight: bold;
+  color: black;
+  margin-bottom: 10px; /* Tạo khoảng cách dưới tiêu đề */
+}
+
+.headerContainer p {
+  font-size: 18px;
+  font-weight: lighter;
+  color: black;
+  margin-bottom: 20px; /* Tạo khoảng cách dưới đoạn văn */
+}
+
+.headerContainer button {
+  color: white;
+  /* background-color: #121619; */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 18px;
+}
+
+.headerContainer button:hover {
+  background-color: #666;
+  transition: 0.3s ease-in;
+}
+
+
+.services {
+  display: flex;
+  justify-content: space-around;
+  padding: 50px 0;
+  background-color: #f4f5f7;
+}
+
+.service {
+  text-align: center;
+  width: 30%;
+}
+
+.service h3 {
+  font-size: 1.2rem;
+  margin-top: 10px;
+}
+
+.newProducts {
+  text-align: center;
+  padding: 50px 0;
+}
+
+.newProducts h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.productContainer {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.productItem {
+  width: 200px;
+  text-align: center;
+}
+
+.productItem img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.productItem p {
+  margin-top: 10px;
+  font-size: 1.1rem;
+}
+
+/* Responsive for mobile screens */
+@media only screen and (max-width: 650px) {
+  .home {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .headerContainer {
+    margin-left: 0px;
+    border-radius: 10px;
+    padding: 10px;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    /* background-color: #121619; */
+    color: white;
+  }
+
+  .headerContainer h1 {
+    font-size: 40px;
+    height: 30px;
+    color: white;
+    margin-bottom: 50px;
+  }
+
+  .headerContainer p {
+    font-size: 30px;
+    color: white;
+    margin-top: 30px ;
+  }
+
+  .headerContainer button {
+    background-color: white;
+    color: #121619;
+    margin-bottom: 30px;
+  }
+
+  .headerContainer button:hover {
+    background-color: rgb(225, 225, 225);
+    color: white;
+  }
+
+}
+/*Trạng thái load dữ liệu*/
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #FFC0CB; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+

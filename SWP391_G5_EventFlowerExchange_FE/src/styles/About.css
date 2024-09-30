@@ -1,0 +1,141 @@
+.about {
+  width: 100%;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #f9f9f9; /* Light background for contrast */
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  padding: 50px 0;
+}
+
+.aboutTop {
+  width: 100%;
+  height: 45%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-image: url('../assets/about-background.jpg'); Replace with your image */
+  position: relative;
+}
+
+.aboutTop::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent overlay for better text visibility */
+}
+
+.aboutTop h1 {
+  font-size: 3.5rem;
+  color: white;
+  z-index: 1;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Text shadow for better contrast */
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.aboutBottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  background-color: white;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 10px;
+  max-width: 1200px;
+  margin: -80px auto 0; /* Negative margin to overlap the top part */
+  position: relative;
+}
+
+.aboutBottom p {
+  width: 90%;
+  max-width: 1000px;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #555;
+  margin: 20px 0;
+}
+
+.aboutBottom h1 {
+  font-weight: 600;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.aboutBottom button {
+  padding: 12px 30px;
+  background-color: #9F484C;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.aboutBottom button:hover {
+  background-color: #bf6063;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #FFC0CB; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+
+/* Media queries for smaller screens */
+@media (max-width: 768px) {
+  .aboutTop h1 {
+    font-size: 2.5rem;
+  }
+
+  .aboutBottom h1 {
+    font-size: 2rem;
+  }
+
+  .aboutBottom p {
+    width: 95%;
+    font-size: 1rem;
+  }
+
+  .aboutBottom button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}

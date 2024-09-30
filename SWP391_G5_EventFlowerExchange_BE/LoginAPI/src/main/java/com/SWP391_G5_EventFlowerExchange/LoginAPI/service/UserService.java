@@ -5,7 +5,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.UserRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,11 +13,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UserService {
+public class UserService  implements IUserService{
     @Autowired
-    private UserRepository userRepository;
+    private IUserRepository userRepository;
 
     // Create User
+    @Override
     public User createRequest(UserCreationRequest request) {
         User user = new User();
 
@@ -37,16 +38,18 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public User getUser(int userID) {
         return userRepository.findById(userID)
         .orElseThrow(()-> new RuntimeException("User cannot be found"));
     }
 
-
+    @Override
     public User updateUser(int userID, UserUpdateRequest request) {
         User user = getUser(userID);
 
@@ -59,10 +62,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Override
     public void deleteUser(int userID) {
         userRepository.deleteById(userID);
     }
 
+    @Override
     public User getUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password);
     }
