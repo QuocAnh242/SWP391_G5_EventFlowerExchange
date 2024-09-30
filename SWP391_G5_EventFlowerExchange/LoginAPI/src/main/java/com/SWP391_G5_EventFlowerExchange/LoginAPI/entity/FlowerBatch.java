@@ -1,5 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ public class FlowerBatch {
 
     @ManyToOne
     @JoinColumn(name = "postID", nullable = false)
+    @JsonBackReference
     private EventFlowerPosting eventFlowerPosting;
 
     @ManyToOne
@@ -39,7 +42,7 @@ public class FlowerBatch {
     public FlowerBatch() {
     }
 
-    public FlowerBatch(int flowerID, String flowerName, int quantity, String status, String description, BigDecimal price, String imageUrl, EventFlowerPosting eventFlowerPosting, Category category) {
+    public FlowerBatch(int flowerID, String flowerName, int quantity, String status, String description, BigDecimal price, String imageUrl) {
         this.flowerID = flowerID;
         this.flowerName = flowerName;
         this.quantity = quantity;
@@ -47,8 +50,7 @@ public class FlowerBatch {
         this.description = description;
         this.price = price;
         this.imageUrl = imageUrl;
-        this.eventFlowerPosting = eventFlowerPosting;
-        this.category = category;
+
     }
 
     // Getters and Setters

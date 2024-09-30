@@ -1,5 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,6 +32,7 @@ public class EventFlowerPosting {
     private LocalDateTime updatedAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "eventFlowerPosting", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference // Đánh dấu đây là mối quan hệ cha
     private List<FlowerBatch> flowerBatches = new ArrayList<>();
 
 
@@ -49,7 +52,7 @@ public class EventFlowerPosting {
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.flowerBatches = new ArrayList<>();
+        this.flowerBatches = flowerBatches;
         this.user = user;
     }
 
