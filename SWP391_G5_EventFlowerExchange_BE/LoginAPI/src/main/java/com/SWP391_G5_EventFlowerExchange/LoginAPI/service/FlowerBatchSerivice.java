@@ -25,14 +25,31 @@ public class FlowerBatchSerivice implements IFlowerBatchService{
     public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch) {
         FlowerBatch fb=flowerBatchRepository.getById(flowerID);
         if(fb != null){
-            fb.setFlowerName(flowerBatch.getFlowerName());
-            fb.setQuantity(flowerBatch.getQuantity());
-            fb.setStatus(flowerBatch.getStatus());
-            fb.setDescription(flowerBatch.getDescription());
-            fb.setPrice(flowerBatch.getPrice());
-            fb.setImageUrl(flowerBatch.getImageUrl());
-            fb.setCategory(flowerBatch.getCategory());
-            fb.setEventFlowerPosting(flowerBatch.getEventFlowerPosting());
+            if (flowerBatch.getFlowerName() != null) {
+                fb.setFlowerName(flowerBatch.getFlowerName());
+            }
+            if (flowerBatch.getQuantity() != 1) {
+                fb.setQuantity(flowerBatch.getQuantity());
+            }
+            if (flowerBatch.getStatus() != null) {
+                fb.setStatus(flowerBatch.getStatus());
+            }
+            if (flowerBatch.getDescription() != null) {
+                fb.setDescription(flowerBatch.getDescription());
+            }
+            if (flowerBatch.getPrice() != null) {
+                fb.setPrice(flowerBatch.getPrice());
+            }
+            if (flowerBatch.getImageUrl() != null) {
+                fb.setImageUrl(flowerBatch.getImageUrl());
+            }
+            if (flowerBatch.getCategory() != null) {
+                fb.setCategory(flowerBatch.getCategory());
+            }
+            if (flowerBatch.getEventFlowerPosting() != null) {
+                fb.setEventFlowerPosting(flowerBatch.getEventFlowerPosting());
+            }
+            flowerBatchRepository.save(fb);
         }
         return null;
     }

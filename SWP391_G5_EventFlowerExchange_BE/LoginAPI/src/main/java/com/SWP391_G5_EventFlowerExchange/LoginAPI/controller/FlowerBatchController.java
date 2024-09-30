@@ -28,8 +28,8 @@ public class FlowerBatchController {
         return flowerBatchSerivice.insertFlowerBatch(orchid);//201 CREATED
     }
     @PutMapping("/{id}")
-    public ResponseEntity<FlowerBatch> updateFlowerId(@PathVariable int flowerId, @RequestBody FlowerBatch fb) {
-        FlowerBatch updatedFlowerId = flowerBatchSerivice.updateFlowerBatch(flowerId, fb);
+    public ResponseEntity<FlowerBatch> updateFlowerId(@PathVariable int id, @RequestBody FlowerBatch fb) {
+        FlowerBatch updatedFlowerId = flowerBatchSerivice.updateFlowerBatch(id, fb);
         return ResponseEntity.ok(updatedFlowerId);
     }
     @DeleteMapping("/{id}")

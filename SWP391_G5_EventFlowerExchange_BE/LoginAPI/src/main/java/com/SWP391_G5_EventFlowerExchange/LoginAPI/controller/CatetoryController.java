@@ -27,8 +27,8 @@ public class CatetoryController {
         return catetoryService.insertCategory(cateId);//201 CREATED
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCateId(@PathVariable int cateId, @RequestBody Category cate) {
-        Category updateCateId = catetoryService.updateCategory(cateId, cate);
+    public ResponseEntity<Category> updateCateId(@PathVariable int id, @RequestBody Category cate) {
+        Category updateCateId = catetoryService.updateCategory(id, cate);
         return ResponseEntity.ok(updateCateId);
     }
     @DeleteMapping("/{id}")

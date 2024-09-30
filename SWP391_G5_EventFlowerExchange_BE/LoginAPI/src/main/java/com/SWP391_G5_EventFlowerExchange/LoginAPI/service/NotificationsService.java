@@ -36,10 +36,20 @@ public class NotificationsService implements INoticationService {
     public Notifications updateNoti(int notiId, Notifications notifications) {
         Notifications noti=inotificationsRepository.getById(notiId);
         if(noti != null){
-            noti.setContent(notifications.getContent());
-            noti.setNotificationType(notifications.getNotificationType());
-            noti.setCreatedAt(notifications.getCreatedAt());
-            noti.setUser(notifications.getUser());
+            if (notifications.getContent() != null) {
+                noti.setContent(notifications.getContent());
+            }
+            if (notifications.getNotificationType() != null) {
+                noti.setNotificationType(notifications.getNotificationType());
+            }
+            if (notifications.getCreatedAt() != null) {
+                noti.setCreatedAt(notifications.getCreatedAt());
+            }
+            if (notifications.getUser() != null) {
+                noti.setUser(notifications.getUser());
+            }
+            inotificationsRepository.save(noti);
+
         }
         return null;
     }

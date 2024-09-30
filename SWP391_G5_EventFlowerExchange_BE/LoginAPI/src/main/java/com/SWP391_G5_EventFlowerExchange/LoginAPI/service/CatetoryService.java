@@ -25,9 +25,18 @@ public class CatetoryService implements ICatetoryService{
     public Category updateCategory(int catetoryId, Category category) {
         Category cate = icatetoryRepository.getById(catetoryId);
         if(cate != null){
-            cate.setFlowerType(category.getFlowerType());
-            cate.setDescription(category.getDescription());
-            cate.setImageUrl(category.getImageUrl());
+
+            if (category.getFlowerType() != null) {
+                cate.setFlowerType(category.getFlowerType());
+            }
+            if (category.getDescription() != null) {
+                cate.setDescription(category.getDescription());
+            }
+            if (category.getImageUrl() != null) {
+                cate.setImageUrl(category.getImageUrl());
+            }
+            icatetoryRepository.save(cate);
+
         }
 
         return null;

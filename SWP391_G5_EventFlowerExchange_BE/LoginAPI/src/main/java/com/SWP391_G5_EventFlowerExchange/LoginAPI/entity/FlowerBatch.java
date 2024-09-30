@@ -17,7 +17,7 @@ public class FlowerBatch {
     private String flowerName;
 
     @Column(nullable = false)
-    private int quantity;
+    private int quantity=1;
 
     private String status;
 

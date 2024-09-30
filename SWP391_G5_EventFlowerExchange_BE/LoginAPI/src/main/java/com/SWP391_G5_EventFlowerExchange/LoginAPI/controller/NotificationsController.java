@@ -22,6 +22,11 @@ public class NotificationsController {
 
         return ResponseEntity.ok(notificationsService.getAllNotifications()) ;
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<Notifications> updateNotiId(@PathVariable int id, @RequestBody Notifications noti) {
+        Notifications updatedNoId = notificationsService.updateNoti(id, noti);
+        return ResponseEntity.ok(updatedNoId);
+    }
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
     public Notifications saveNoti(@RequestBody Notifications notiId) {

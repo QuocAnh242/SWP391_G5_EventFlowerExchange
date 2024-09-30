@@ -27,8 +27,8 @@ public class EventFlowerPostingController {
         return eventFlowerPostingService.insertEventFlowerPosting(postId);//201 CREATED
     }
     @PutMapping("/{id}")
-    public ResponseEntity<EventFlowerPosting> updatePostId(@PathVariable int postId, @RequestBody EventFlowerPosting post) {
-        EventFlowerPosting updatedPostId = eventFlowerPostingService.updateEventFlowerPosting(postId, post);
+    public ResponseEntity<EventFlowerPosting> updatePostId(@PathVariable int id, @RequestBody EventFlowerPosting post) {
+        EventFlowerPosting updatedPostId = eventFlowerPostingService.updateEventFlowerPosting(id, post);
         return ResponseEntity.ok(updatedPostId);
     }
     @DeleteMapping("/{id}")
@@ -36,6 +36,16 @@ public class EventFlowerPostingController {
         eventFlowerPostingService.deleteEventFlowerPosting(id);
         return ResponseEntity.ok("Deleted!");
     }
+    @DeleteMapping("/{postID}/flowerBatch/{flowerID}")
+    public ResponseEntity<String> deleteFlowerBatch(
+            @PathVariable int postID,
+            @PathVariable int flowerID) {
+        boolean isDeleted = eventFlowerPostingService.deleteFlowerBatch(postID, flowerID);
+        if (isDeleted) {
+            return ResponseEntity.ok("Flower batch deleted successfully.");
+        } else {
+            return ResponseEntity.notFound().build();
+        }}
     @GetMapping("/{id}")
     public ResponseEntity<Optional<EventFlowerPosting>> getPostById(@PathVariable int id) {
         Optional<EventFlowerPosting> post= eventFlowerPostingService.getEventFlowerPostingById(id);
