@@ -42,7 +42,7 @@ const handleLogin = async (e) => {
       
       // Lưu thông tin người dùng vào localStorage
       localStorage.setItem('user', JSON.stringify(response.data.result));
-
+      
       // Điều hướng người dùng sau khi đăng nhập thành công
       navigate('/');
       // Reload the page to ensure user data is loaded properly

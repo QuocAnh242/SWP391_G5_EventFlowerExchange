@@ -46,7 +46,7 @@ public class UserController {
         return userService.updateUser(userID, request);
     }
 
-    // Delete User
+    // Delete User (admin)
     @DeleteMapping("/{userID}")
     String deleteUser(@PathVariable int userID) {
         userService.deleteUser(userID);

@@ -18,7 +18,6 @@ public class FlowerBatchController {
     private FlowerBatchService flowerBatchService;
     @GetMapping("/")
     public ResponseEntity<List<FlowerBatch>> fetchAll() {
-
         return ResponseEntity.ok(flowerBatchService.getAllFlowerBatch()) ;
     }
     @PostMapping("/")
