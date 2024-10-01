@@ -137,38 +137,50 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="profile-container">
-      {/* Show loading spinner if data is loading */}
+    <div className="profile-page">
+      {/* Hiển thị loading spinner nếu đang tải dữ liệu */}
       {loading ? (
         <div className="loading-spinner">
           <div className="spinner"></div>
           <p>Đang tải dữ liệu...</p>
         </div>
       ) : (
-        <>
-          {/* Sidebar */}
-          <div className="sidebar">
-            <h2>Account Settings</h2>
-            <ul>
-              <li><a href="#profile" onClick={() => setActiveTab('profile')}>Profile Info</a></li>
-              <li><a href="#password" onClick={() => setActiveTab('password')}>Change Password</a></li>
-              <li><a href="#orders" onClick={() => setActiveTab('orders')}>My Orders</a></li>
-              <li><a href="#logout" onClick={() => setActiveTab('logout')}>Logout</a></li>
+        <div className="profile-layout">
+          {/* Sidebar cho các tab tài khoản */}
+          <aside className="sidebar">
+            <h2 className="sidebar-title">Account Settings</h2>
+            <ul className="sidebar-menu">
+              <li className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}>
+                <a href="#profile" onClick={() => setActiveTab('profile')}>Profile Info</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'password' ? 'active' : ''}`}>
+                <a href="#password" onClick={() => setActiveTab('password')}>Change Password</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`}>
+                <a href="#orders" onClick={() => setActiveTab('orders')}>My Orders</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'logout' ? 'active' : ''}`}>
+                <a href="#logout" onClick={() => setActiveTab('logout')}>Logout</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'logout' ? 'active' : ''}`}>
+                <a href="#logout" onClick={() => setActiveTab('logout')}>Create Post</a>
+              </li>
             </ul>
-          </div>
-
-          {/* Main Content */}
-          <div className="profile-content">
-            <h1>{activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Section</h1>
+          </aside>
+  
+          {/* Nội dung chính hiển thị thông tin từng mục */}
+          <section className="profile-content">
+            <h1 className="profile-header">
+              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Section
+            </h1>
             {error && <p className="error-message">{error}</p>}
             {renderTabContent()}
-          </div>
-
-          <Footer />
-        </>
+          </section>
+        </div>
       )}
     </div>
   );
+  
 };
 
 export default ProfilePage;
