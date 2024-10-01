@@ -12,21 +12,21 @@ import java.util.Optional;
 @Service
 public class EventFlowerPostingService implements IEventFlowerPostingService {
     @Autowired
-    private IEventFlowerPostingRepository iEventFlowerPostingRepositry;
+    private IEventFlowerPostingRepository iEventFlowerPostingRepository;
 
     @Override
     public List<EventFlowerPosting> getAllEventPostings() {
-        return iEventFlowerPostingRepositry.findAll();
+        return iEventFlowerPostingRepository.findAll();
     }
 
     @Override
     public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting) {
-        return iEventFlowerPostingRepositry.save(eventFlowerPosting);
+        return iEventFlowerPostingRepository.save(eventFlowerPosting);
     }
 
     @Override
     public EventFlowerPosting updateEventFlowerPosting(int postId, EventFlowerPosting eventFlowerPosting) {
-        EventFlowerPosting post=iEventFlowerPostingRepositry.getById(postId);
+        EventFlowerPosting post= iEventFlowerPostingRepository.getById(postId);
         if(post != null){
             if (eventFlowerPosting.getTitle() != null) {
                 post.setTitle(eventFlowerPosting.getTitle());
@@ -53,7 +53,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
             if(eventFlowerPosting.getFlowerBatches()!= null) {
                 post.setFlowerBatches(eventFlowerPosting.getFlowerBatches());
             }
-            iEventFlowerPostingRepositry.save(post);
+            iEventFlowerPostingRepository.save(post);
 
         }
         return post;
@@ -61,15 +61,15 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     @Override
     public void deleteEventFlowerPosting(int postId) {
-        iEventFlowerPostingRepositry.deleteById(postId);
+        iEventFlowerPostingRepository.deleteById(postId);
     }
 
     @Override
     public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId) {
-        return iEventFlowerPostingRepositry.findById(postId);
+        return iEventFlowerPostingRepository.findById(postId);
     }
     public boolean deleteFlowerBatch(int postID, int flowerID) {
-        Optional<EventFlowerPosting> optionalPost = iEventFlowerPostingRepositry.findById(postID);
+        Optional<EventFlowerPosting> optionalPost = iEventFlowerPostingRepository.findById(postID);
         if (optionalPost.isPresent()) {
             EventFlowerPosting post = optionalPost.get();
             List<FlowerBatch> flowerBatches = post.getFlowerBatches();
@@ -83,7 +83,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
             if (flowerBatchToRemove != null) {
                 flowerBatches.remove(flowerBatchToRemove);
                 post.setFlowerBatches(flowerBatches);
-                iEventFlowerPostingRepositry.save(post);
+                iEventFlowerPostingRepository.save(post);
                 return true;
             }
         }

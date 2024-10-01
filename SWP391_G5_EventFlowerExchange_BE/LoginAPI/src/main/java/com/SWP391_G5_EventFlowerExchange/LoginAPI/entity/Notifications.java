@@ -20,7 +20,7 @@ public class Notifications {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID", nullable = true)
     private User user;
 
     // Getters and Setters

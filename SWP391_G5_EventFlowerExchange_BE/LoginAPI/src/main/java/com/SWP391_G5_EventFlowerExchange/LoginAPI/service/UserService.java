@@ -5,7 +5,10 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.INotificationsRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +16,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class UserService  implements IUserService{
+public class UserService {
     @Autowired
-    private IUserRepository userRepository;
-
+    private UserRepository userRepository;
+    @Autowired
+    private INotificationsRepository notificationsRepository;
+    @Autowired
+    private IEventFlowerPostingRepository iEventFlowerPostingRepository;
     // Create User
-    @Override
     public User createRequest(UserCreationRequest request) {
         User user = new User();
 
@@ -38,18 +43,16 @@ public class UserService  implements IUserService{
         return userRepository.save(user);
     }
 
-    @Override
     public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    @Override
     public User getUser(int userID) {
         return userRepository.findById(userID)
         .orElseThrow(()-> new RuntimeException("User cannot be found"));
     }
 
-    @Override
+
     public User updateUser(int userID, UserUpdateRequest request) {
         User user = getUser(userID);
 
@@ -61,13 +64,14 @@ public class UserService  implements IUserService{
 
         return userRepository.save(user);
     }
-
-    @Override
+    @Transactional
     public void deleteUser(int userID) {
+        // Xóa tất cả các thông báo liên quan đến userId trước
+        iEventFlowerPostingRepository.deleteByUser_userID(userID);
+        notificationsRepository.deleteByUser_userID(userID);
         userRepository.deleteById(userID);
     }
 
-    @Override
     public User getUserByEmailAndPassword(String email, String password) {
         return userRepository.findByEmailAndPassword(email, password);
     }

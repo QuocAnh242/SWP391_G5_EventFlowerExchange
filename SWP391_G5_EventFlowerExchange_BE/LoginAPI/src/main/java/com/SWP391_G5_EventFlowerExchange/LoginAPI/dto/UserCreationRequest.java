@@ -10,11 +10,11 @@ public class UserCreationRequest {
     private String username;
     private String email;
 
-    @Size(min= 6, message = "PASSWORD_INVALID")
+    @Size(min= 10, message = "PASSWORD_INVALID")
     private String password;
     private String address;
     private String phoneNumber;
-    private String role= "customer";
+    private String role;
     private LocalDate createdAt;
 
     public String getUsername() {
