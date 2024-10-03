@@ -6,6 +6,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPosting
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,18 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId) {
         return iEventFlowerPostingRepository.findById(postId);
     }
+
+    @Override
+    public List<EventFlowerPosting> searchByKeyword(String title) {
+        return iEventFlowerPostingRepository.searchByTitle(title);
+    }
+
+    @Override
+    public List<EventFlowerPosting> searchByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
+        return iEventFlowerPostingRepository.searchByPriceRange(minPrice, maxPrice);
+    }
+
+    @Override
     public boolean deleteFlowerBatch(int postID, int flowerID) {
         Optional<EventFlowerPosting> optionalPost = iEventFlowerPostingRepository.findById(postID);
         if (optionalPost.isPresent()) {

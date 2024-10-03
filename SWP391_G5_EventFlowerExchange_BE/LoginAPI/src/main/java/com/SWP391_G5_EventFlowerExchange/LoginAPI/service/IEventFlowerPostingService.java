@@ -3,6 +3,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.EventFlowerPosting;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,4 +18,7 @@ public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowe
 public EventFlowerPosting updateEventFlowerPosting(int postId,EventFlowerPosting eventFlowerPosting);
 public void deleteEventFlowerPosting(int postId);
 public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId);
+public boolean deleteFlowerBatch(int postID, int flowerID);
+public List<EventFlowerPosting> searchByKeyword(String keyword);
+public List<EventFlowerPosting> searchByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) ;
 }
