@@ -60,7 +60,7 @@ public class UserController {
         ApiResponse<User> apiResponse = new ApiResponse<>();
 
         // Fetch user based on email and password
-        User user = userService.getUserByEmailAndPassword(request.getEmail(), request.getPassword());
+        User user = userService.getUserByEmailAndPassword(request);
 
         // Check if user exists (valid login)
         if (user == null) {

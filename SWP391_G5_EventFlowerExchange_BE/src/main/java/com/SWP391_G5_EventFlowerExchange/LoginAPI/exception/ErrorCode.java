@@ -8,6 +8,8 @@ public enum ErrorCode {
     EMAIL_EXISTED(1001, "Email is already existed!"),
     USERNAME_INVALID(1002, "User is invalid!"),
     PASSWORD_INVALID(1003, "Password must be at least 5 characters!"),
+    USER_NOT_EXISTED(1004, "User is not existed"),
+    UNAUTHENTICATED(1005, "Unauthenticated")
     ;
     private int code;
     private String message;

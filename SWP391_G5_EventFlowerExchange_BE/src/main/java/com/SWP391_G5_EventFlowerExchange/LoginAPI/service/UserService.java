@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserLoginRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
@@ -10,6 +11,8 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.INotificationsRepos
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,6 +43,8 @@ public class UserService {
         user.setRole(request.getRole());
         user.setCreatedAt(LocalDateTime.now());
 
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         return userRepository.save(user);
     }
 
@@ -49,7 +54,7 @@ public class UserService {
 
     public User getUser(int userID) {
         return userRepository.findById(userID)
-        .orElseThrow(()-> new RuntimeException("User cannot be found"));
+        .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
     }
 
 
@@ -73,8 +78,11 @@ public class UserService {
         userRepository.deleteById(userID);
     }
 
-    public User getUserByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+    public User getUserByEmailAndPassword(UserLoginRequest request) {
+        User user= userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return user;
     }
 
 }
