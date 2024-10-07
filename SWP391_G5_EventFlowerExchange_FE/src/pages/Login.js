@@ -16,6 +16,7 @@ const Login = () => {
   
   const navigate = useNavigate();
 
+
   useEffect(() => {
     // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
@@ -25,39 +26,58 @@ const Login = () => {
     // Cleanup timer nếu component bị unmount
     return () => clearTimeout(timer);
   }, []);
+
+if (loading) {
+    return (
+      <div className="loading-container">
+  <div className="spinner"></div>
+  <p className="loading-text">Đang tải dữ liệu...</p>
+</div>
+
+    );
+  }
+
   
 
-const handleLogin = async (e) => {
-  e.preventDefault(); // Ngăn chặn reload trang khi submit form
-
-  const loginValues = { email, password };
-
-  try {
-    const response = await api.post('http://localhost:8080/identity/users/login', loginValues);
-    console.log('Response:', response.data);
-
-    // Kiểm tra xem result có hợp lệ không (không null)
-    if (response.data && response.data.result) {
-      console.log('Đăng nhập thành công:', response.data.result);
-      
-      // Lưu thông tin người dùng vào localStorage
-      localStorage.setItem('user', JSON.stringify(response.data.result));
-      
-      // Điều hướng người dùng sau khi đăng nhập thành công
-      navigate('/');
-      // Reload the page to ensure user data is loaded properly
-      window.location.reload();
-    } else {
-      // Nếu result là null hoặc không tồn tại, hiển thị lỗi
-      setError("Tài khoản hoặc mật khẩu sai"); 
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Ngăn chặn reload trang khi submit form
+  
+    const loginValues = { email, password };
+  
+    try {
+      const response = await api.post('http://localhost:8080/identity/users/login', loginValues);
+      console.log('Response:', response.data);
+  
+      // Kiểm tra xem result có hợp lệ không (không null)
+      if (response.data && response.data.result) {
+        console.log('Đăng nhập thành công:', response.data.result);
+        
+        // Lưu thông tin người dùng vào localStorage
+        localStorage.setItem('user', JSON.stringify(response.data.result));
+  
+        // Điều hướng người dùng sau khi đăng nhập thành công dựa trên role
+        const role = response.data.result.role;
+        if (role === 'admin') {
+          navigate('/admin-user-management'); // Điều hướng đến trang admin
+        } else if (role === 'customer') {
+          navigate('/customer'); // Điều hướng đến trang customer
+        } else {
+          navigate('/'); // Điều hướng mặc định nếu role không xác định
+        }
+  
+        // Reload the page to ensure user data is loaded properly
+        window.location.reload();
+      } else {
+        // Nếu result là null hoặc không tồn tại, hiển thị lỗi
+        setError("Tài khoản hoặc mật khẩu sai"); 
+      }
+  
+    } catch (error) {
+      // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
+      setError("Tài khoản hoặc mật khẩu sai");
     }
-
-  } catch (error) {
-    // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
-    setError("Tài khoản hoặc mật khẩu sai");
-  }
-};
-
+  };
+  
 
 
 
@@ -85,15 +105,7 @@ const handleLogin = async (e) => {
   //   }
   // };
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-  <div className="spinner"></div>
-  <p className="loading-text">Đang tải dữ liệu...</p>
-</div>
-
-    );
-  }
+  
 
   return (
     <div className="login-container">

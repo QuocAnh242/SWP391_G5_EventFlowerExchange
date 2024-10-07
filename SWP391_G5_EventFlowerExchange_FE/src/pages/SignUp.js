@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons for visibility toggle
 import { Link } from 'react-router-dom';
 import Footer from '../components/Footer';
@@ -17,8 +17,33 @@ const SignUp = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle for Confirm Password visibility
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Giả lập trạng thái tải dữ liệu
+    const timer = setTimeout(() => {
+      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
+    }, 2000); // Bạn có thể thay đổi thời gian này theo yêu cầu
+
+    // Cleanup timer nếu component bị unmount
+    return () => clearTimeout(timer);
+  }, []);
+  
+  //
+  if (loading) {
+    return (
+      <div className="loading-container">
+  <div className="spinner"></div>
+  <p className="loading-text">Đang tải dữ liệu...</p>
+</div>
+
+    );
+  }
+
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

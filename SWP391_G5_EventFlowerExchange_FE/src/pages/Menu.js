@@ -1,97 +1,67 @@
-import React, { useState } from "react";
-import { MenuList } from "../helpers/MenuList"; // Import danh sách các loại hoa
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Thêm useNavigate để điều hướng
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
-import ImageProduct from '../assets/about-img/a7.jpg'
+import a2 from '../assets/about-img/a5.jpg';
+
 
 function Menu() {
-  const [selectedPost, setSelectedPost] = useState(null);
-  const [recentlyViewed, setRecentlyViewed] = useState([]); // Lưu trữ bài post đã xem
-  const [category, setCategory] = useState("Tất cả hoa"); // Lưu loại hoa hiện tại
+  const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
+  const [category, setCategory] = useState("Tất cả hoa"); // Danh mục hiện tại
+  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  // Gọi API khi component được load lần đầu
+  useEffect(() => {
+    fetchFlowerList();
+  }, []);
 
-  const handlePostClick = (post) => {
-    setSelectedPost(post);
-    // Cập nhật danh sách bài post đã xem gần đây
-    setRecentlyViewed((prev) => {
-      if (prev.some((p) => p.name === post.name)) return prev; // Nếu đã có thì không thêm nữa
-      return [post, ...prev].slice(0, 5); // Giới hạn số bài đã xem là 5
-    });
+  // Hàm lấy dữ liệu từ Spring Boot API
+  const fetchFlowerList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/identity/post/");
+      setFlowerList(response.data); // Lưu dữ liệu hoa vào state
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+    }
   };
 
-  const handleBackClick = () => {
-    setSelectedPost(null); // Quay lại danh sách
+  // Hàm xử lý khi nhấn vào một bài viết
+  const handlePostClick = (id) => {
+    navigate(`/flower/${id}`); // Điều hướng sang trang chi tiết với ID
   };
+  
 
-  const handleCategoryClick = (category) => {
-    setCategory(category); // Thay đổi danh mục hoa
-  };
+  useEffect(() => {
+    // Giả lập trạng thái tải dữ liệu
+    const timer = setTimeout(() => {
+      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
+    }, 2000); // Bạn có thể thay đổi thời gian này theo yêu cầu
 
-  const filteredMenuList = MenuList.filter((item) =>
-    category === "Tất cả hoa" ? true : item.category === category
-  );
+    // Cleanup timer nếu component bị unmount
+    return () => clearTimeout(timer);
+  }, []);
 
-  if (selectedPost) {
+if (loading) {
     return (
-      <div className="post-detail-container">
-        <button onClick={handleBackClick} className="back-button">
-          ← Quay lại
-        </button>
-        <div className="post-detail">
-          <h2>{selectedPost.name}</h2>
-          <img
-            src={selectedPost.image}
-            alt={selectedPost.name}
-            className="post-detail-image"
-          />
-          <p>{selectedPost.description}</p>
-          <p>
-            Giá khuyến mãi:{" "}
-            <span className="price">{selectedPost.discountPrice}₫</span>{" "}
-            (Giá gốc: <s>{selectedPost.price}₫</s>)
-          </p>
-          <button className="buy-now-button">Mua Ngay</button>
-        </div>
+      <div className="loading-container">
+  <div className="spinner"></div>
+  <p className="loading-text">Đang tải dữ liệu...</p>
+</div>
 
-        {/* Bài viết đã xem gần đây */}
-        <div className="recently-viewed">
-          <h3>Bài viết đã xem gần đây</h3>
-          <div className="post-grid">
-            {recentlyViewed.map((item, index) => (
-              <div
-                className="post-card"
-                key={index}
-                onClick={() => handlePostClick(item)}
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="post-card-image"
-                />
-                <h3>{item.name}</h3>
-                <p className="discount-price">Giá: {item.discountPrice}₫</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
     );
   }
-
   return (
     <div className="shop-container">
-      {/* Thanh tùy chọn bên trái */}
+      {/* Sidebar với danh sách các loại hoa */}
       <div className="sidebar">
         <h3 className="sidebar-title">Loại hoa</h3>
         <ul className="category-list">
-          <li onClick={() => handleCategoryClick("Tất cả hoa")}>Tất cả hoa</li>
-          <li onClick={() => handleCategoryClick("Hoa cưới")}>Hoa cưới</li>
-          <li onClick={() => handleCategoryClick("Hoa sinh nhật")}>
-            Hoa sinh nhật
-          </li>
-          <li onClick={() => handleCategoryClick("Hoa chúc mừng")}>
-            Hoa chúc mừng
-          </li>
-          <li onClick={() => handleCategoryClick("Hoa khô")}>Hoa khô</li>
+          <li onClick={() => setCategory("Tất cả hoa")}>Tất cả hoa</li>
+          <li onClick={() => setCategory("Hoa cưới")}>Hoa cưới</li>
+          <li onClick={() => setCategory("Hoa sinh nhật")}>Hoa sinh nhật</li>
+          <li onClick={() => setCategory("Hoa chúc mừng")}>Hoa chúc mừng</li>
+          <li onClick={() => setCategory("Hoa khô")}>Hoa khô</li>
         </ul>
       </div>
 
@@ -99,59 +69,27 @@ function Menu() {
       <div className="main-content">
         <h1 className="shop-title">Cửa hàng hoa - {category}</h1>
         <div className="post-grid">
-          {filteredMenuList.map((item, index) => (
+          {flowerList.map((item, index) => (
             <div
               className="post-card"
               key={index}
-              onClick={() => handlePostClick(item)}
+              onClick={() => handlePostClick(item.id)} // Điều hướng theo ID của hoa
             >
               <img
-                /*src={item.image}*/
-                src={ImageProduct}
-                alt={item.name}
+                src={a2}
+                alt={item.title}
                 className="post-card-image"
               />
-              <h3>{item.name}</h3>
-              <p className="discount-price">Giá: {item.discountPrice}₫</p>
-              <p className="feature-content">#Rẻ_Sock chỉ #39k/1 bó 9-10c chùm áp dụng mua từ 2 bó
-                                             Lẻ bó #45k
-                                             Hồng chùm cam rực rỡ tưng bừng tươi lâu
-                                            Màu trendy rất hợp không khí mùa thu
-                                           🍂Giá siêu tốt nhất trước tới giờ
-                                            Shop nhận đơn trả trong ngày
-                                            Mời Anh Chị mua hoa</p>
+              <h3>{item.title}</h3>
+              <p className="discount-price">Giá: {item.price}₫</p>
+              <p className="feature-content">{item.description}</p>
               <p className="feature-detail">Xem chi tiết</p>
             </div>
           ))}
         </div>
       </div>
-
-      {/* Bài viết đã xem gần đây */}
-      {/* {recentlyViewed.length > 0 && (
-        <div className="recently-viewed">
-          <h3>Bài viết đã xem gần đây</h3>
-          <div className="post-grid">
-            {recentlyViewed.map((item, index) => (
-              <div
-                className="post-card"
-                key={index}
-                onClick={() => handlePostClick(item)}
-              >
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="post-card-image"
-                />
-                <h3>{item.name}</h3>
-                <p className="discount-price">Giá: {item.discountPrice}₫</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
-      <div className="footer"><Footer /></div>
+      <Footer />
     </div>
-    
   );
 }
 

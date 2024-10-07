@@ -1,0 +1,150 @@
+.flower-detail-container {
+  display: flex;
+  justify-content: center; /* Center the whole content */
+  align-items: flex-start; /* Align the left and right sections to the top */
+  margin-top: 60px;
+  gap: 40px; /* Gap between left and right sections */
+  padding: 0 10%; /* Add padding to center the container */
+}
+
+.left-detail-flowerbatch {
+  width: 30%; /* Take 40% of the container width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.image {
+  width: 100%;
+  max-width: 450px; /* Ensure a reasonable max size */
+  border-radius: 10px;
+  object-fit: cover; /* Ensure the image scales properly */
+}
+
+.bottom-img {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between images */
+  margin-top: 20px;
+}
+
+.bottom-img img {
+  width: 80px;
+  height: 80px;
+  cursor: pointer; /* Indicate they are clickable */
+  border-radius: 10px;
+  object-fit: cover;
+  transition: transform 0.3s ease; /* Animation on hover */
+}
+
+.bottom-img img:hover {
+  transform: scale(1.1); /* Scale on hover */
+}
+
+.right-detail-flowerbatch {
+  width: 45%; /* Ensure it takes a bit less than the left */
+  height: 500px;
+  background-color: white;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Align items properly */
+}
+
+.right-detail-flowerbatch h2 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.right-detail-flowerbatch .flower-description {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.price {
+  color: red;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.buy-now-button, .add-cart-button {
+  background-color: green;
+  font-size: 15px;
+  width: 15vw;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 30%;
+  display: inline-block; /* Đặt cả hai nút trên cùng một hàng */
+  margin: 10px 10px; /* Tạo khoảng cách giữa hai nút */
+  
+}
+
+.buy-now-button:hover, .add-cart-button:hover {
+  background-color: darkgreen;
+}
+
+.flower-type-selection {
+  margin: 20px 0;
+}
+
+.flower-type-selection label {
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.star-rating {
+  font-size: 18px;
+  margin: 10px 0;
+  color: gold;
+}
+
+.stock-availability {
+  font-size: 18px;
+}
+
+.in-stock {
+  color: green;
+  font-weight: bold;
+}
+
+.out-of-stock {
+  color: red;
+  font-weight: bold;
+}
+
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #FFC0CB; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+}

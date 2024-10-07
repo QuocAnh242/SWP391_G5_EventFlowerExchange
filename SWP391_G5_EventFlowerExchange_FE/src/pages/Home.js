@@ -136,7 +136,7 @@ function Home() {
 
       
 
-      {/* Footer */}
+  
       <Footer />
     </div>
   );

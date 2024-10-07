@@ -1,81 +1,301 @@
-/* src/styles/AdminUserManagement.css */
+/* Tổng quan quản lý người dùng */
 .admin-user-management {
-    margin: 50px auto;
-    max-width: 1000px;
-    padding: 20px;
-    background-color: #f4f4f9;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-  }
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px 100px;
+  background-color: #f8fafc;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #2d3e50;
+  font-size: 26px;
+  font-weight: 600;
+}
+
+/* Dashboard tổng quan */
+.dashboard {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+  margin-left: 15%;
+  gap: 20px;
+}
+
+.dashboard .stat {
+  background-color: #fff;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.dashboard .stat:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard .stat h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+  color: #555;
+}
+
+.dashboard .stat p {
+  margin-top: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d3e50;
+}
+
+/* Thanh tìm kiếm */
+.search-bar {
+  margin-bottom: 20px;
+  margin-left: 15%;
+  width: 100px;
   
-  .admin-user-management h2 {
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
+}
+
+.search-bar input {
+  padding: 10px;
+  width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+  border-color: #007bff;
   
-  .admin-user-management table {
+}
+
+/* Bảng người dùng */
+table {
+  width: 80%; /* Giảm chiều rộng bảng để không tràn ra ngoài */
+  margin-left: 15%; /* Căn giữa bảng, cách đều hai bên */
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+  background-color: #FFC0CB;
+  color: black;
+  font-weight: bold;
+}
+
+thead th {
+  padding: 15px;
+  font-size: 14px;
+  text-align: left;
+  font-weight: 500;
+}
+
+tbody tr {
+  border-bottom: 1px solid #eaeaea;
+  transition: background-color 0.3s ease;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+tbody td {
+  padding: 15px;
+  font-size: 14px;
+  color: #333;
+}
+
+tbody td button {
+  padding: 8px 15px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+tbody td button:first-of-type {
+  background-color: #28a745;
+  color: white;
+}
+
+tbody td button:first-of-type:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
+tbody td button:last-of-type {
+  background-color: #dc3545;
+  color: white;
+}
+
+tbody td button:last-of-type:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f2f5;
+  text-align: center;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #FFC0CB; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  color: #333;
+  margin-top: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* CSS tổng thể */
+.admin-panel {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: #ccc;
+  padding-top: 20px;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0; 
+  /* margin: 0; */
+  margin-top: 30%;
+}
+
+.sidebar ul li {
+  padding: 15px 20px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease, padding-left 0.3s ease;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.sidebar ul li:hover {
+  background-color: #1b2735;
+  padding-left: 30px; /* Hiệu ứng dịch chuyển nhẹ khi hover */
+}
+
+.sidebar ul li.active {
+  background-color: #007bff;
+}
+
+.sidebar ul li.active:hover {
+  background-color: #0056b3;
+}
+
+.sidebar ul li:not(.active):hover {
+  background-color: #1b2735;
+}
+
+.sidebar ul li:first-child {
+  margin-top: 20px;
+}
+
+/* Nội dung chính */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  margin: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-content h1 {
+  font-size: 24px;
+  color: #2d3e50;
+  margin-bottom: 20px;
+}
+
+.main-content p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Responsive cho màn hình nhỏ hơn */
+@media (max-width: 768px) {
+  .admin-panel {
+    flex-direction: column;
+  }
+
+  .sidebar {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    box-shadow: none;
+    margin-bottom: 20px;
   }
-  
-  .admin-user-management table thead {
-    background-color: #007bff;
-    color: #fff;
+
+  .main-content {
+    margin: 0;
+    padding: 20px;
   }
-  
-  .admin-user-management table th, 
-  .admin-user-management table td {
-    padding: 12px 15px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard {
+    flex-direction: column;
+    align-items: center;
   }
-  
-  .admin-user-management table th {
-    font-size: 1.1rem;
+
+  .dashboard .stat {
+    width: 100%;
+    margin-bottom: 15px;
   }
-  
-  .admin-user-management table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
+
+  table {
+    width: 100%; /* Đảm bảo bảng luôn vừa với màn hình nhỏ */
+    margin-left: 0; /* Không căn lề trên thiết bị nhỏ */
   }
-  
-  .admin-user-management table tbody tr:hover {
-    background-color: #e6f7ff;
+
+  tbody td button {
+    padding: 6px 10px;
+    font-size: 12px;
   }
-  
-  .admin-user-management table tbody td button {
-    padding: 8px 12px;
-    margin: 0 5px;
-    border: none;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+
+  .search-bar input {
+    width: 100%;
   }
-  
-  .admin-user-management table tbody td button:hover {
-    background-color: #0056b3;
-    color: white;
-  }
-  
-  .admin-user-management table tbody td button:active {
-    transform: scale(0.98);
-  }
-  
-  .admin-user-management table tbody td .block-btn {
-    background-color: #ff4d4f;
-    color: #fff;
-  }
-  
-  .admin-user-management table tbody td .delete-btn {
-    background-color: #dc3545;
-    color: #fff;
-  }
-  
-  .admin-user-management table tbody td .unblock-btn {
-    background-color: #28a745;
-    color: #fff;
-  }
-  
+}
