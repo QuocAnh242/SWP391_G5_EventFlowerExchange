@@ -9,17 +9,19 @@ const AdminUserManagement = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
-  const [activeTab, setActiveTab] = useState('dashboard'); // Quản lý tab
+  const [posts, setPosts] = useState([]); // State for managing posts
+  const [activeTab, setActiveTab] = useState('dashboard'); // Manage tab switching
+
 
   useEffect(() => {
     fetchUsers();
+    fetchPosts(); // Fetch posts when component loads
   }, []);
 
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/users');
       const usersData = response.data;
-
       setUsers(usersData);
       setTotalUsers(usersData.length);
       setActiveUsers(usersData.filter((user) => !user.isBlocked).length);
@@ -28,6 +30,24 @@ const AdminUserManagement = () => {
     } catch (error) {
       console.error('Error fetching users:', error);
       setLoading(false);
+    }
+  };
+
+  const fetchPosts = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/identity/post/');
+      setPosts(response.data); // Save post data to state
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      await axios.delete(`http://localhost:8080/identity/post/${postId}`);
+      fetchPosts(); // Refresh posts after deletion
+    } catch (error) {
+      console.error('Error deleting post:', error);
     }
   };
 
@@ -43,13 +63,14 @@ const AdminUserManagement = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await axios.delete('http://localhost:8080/identity/users/1');
+      await axios.delete(`http://localhost:8080/identity/users/${userId}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
     }
   };
- //Thanh tìm kiếm
+
+  // Search bar for users
   const filteredUsers = users.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -65,7 +86,7 @@ const AdminUserManagement = () => {
     );
   }
 
-  // Hàm render từng tab
+  // Render content based on active tab
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -135,7 +156,40 @@ const AdminUserManagement = () => {
             )}
           </div>
         );
-      // Bạn có thể thêm các tab khác như Chi tiết người dùng, Quản lý quyền hạn, v.v.
+      case 'post-setting':
+        return (
+          <div>
+            <h2>Quản lý bài viết</h2>
+            {posts.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tiêu đề</th>
+                    <th>Mô tả</th>
+                    <th>Giá</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {posts.map((post) => (
+                    <tr key={post.id}>
+                      <td>{post.id}</td>
+                      <td>{post.title}</td>
+                      <td>{post.description}</td>
+                      <td>{post.price}₫</td>
+                      <td>
+                        <button onClick={() => handleDeletePost(post.id)}>Xóa</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Không có bài viết nào.</p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -148,14 +202,11 @@ const AdminUserManagement = () => {
         <ul>
           <li onClick={() => setActiveTab('dashboard')}>Dashboard Tổng quan</li>
           <li onClick={() => setActiveTab('userList')}>Danh sách người dùng</li>
-          {/* <li onClick={() => setActiveTab('userDetails')}>Chi tiết người dùng</li> */}
-          <li onClick={() => setActiveTab('roleManagement')}>Yêu cầu của người dùng</li>
-          <li onClick={() => setActiveTab('interactionManagement')}>Quản lý Post</li>
-          <li onClick={() => setActiveTab('logsReports')}>Logs và Báo cáo</li>
+          <li onClick={() => setActiveTab('post-setting')}>Quản lý Post</li>
         </ul>
       </div>
 
-      {/* Nội dung chính */}
+      {/* Main Content */}
       <div className="main-content">
         {renderContent()}
       </div>

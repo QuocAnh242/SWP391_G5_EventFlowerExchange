@@ -23,6 +23,7 @@ h2 {
   margin-top: 25px;
   margin-left: 15%;
   gap: 20px;
+  height:fit-content;
 }
 
 .dashboard .stat {
