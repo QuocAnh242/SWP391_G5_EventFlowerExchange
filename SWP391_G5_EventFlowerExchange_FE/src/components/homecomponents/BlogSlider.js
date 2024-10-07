@@ -1,4 +1,5 @@
-import React from 'react';
+// Chuyển tự động các blog trong home
+import React from 'react'; 
 import Slider from 'react-slick'; // Import Slider từ react-slick
 // import BlogImage1 from '../assets/about-img/a2.jpg';
 // import BlogImage2 from '../assets/about-img/a3.jpg';

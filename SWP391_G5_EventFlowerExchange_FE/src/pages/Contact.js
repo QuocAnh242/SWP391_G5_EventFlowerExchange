@@ -1,6 +1,7 @@
 import React from "react";
 import PizzaLeft from "../assets/background-hoa-hong_045205487.jpg";
 import "../styles/Contact.css";
+import Footer from "../components/Footer";
 
 function Contact() {
   return (
@@ -27,6 +28,7 @@ function Contact() {
           <button type="submit"> Send Message</button>
         </form>
       </div>
+      {/* <Footer/> */}
     </div>
   );
 }

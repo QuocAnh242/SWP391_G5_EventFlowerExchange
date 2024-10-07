@@ -85,52 +85,57 @@ function Navbar() {
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Contact</NavLink>
         <NavLink to="/blog" className="nav-link" activeClassName="activeLink">Blog</NavLink>
         <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink>
+        {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
       </div>
 
       <div className="navbar-right">
-        <FaSearch className="navbar-icon" onClick={toggleSearchBar} />
+  {/* Icon search */}
+  <FaSearch className="navbar-icon" onClick={toggleSearchBar} />
 
-        {isSearchVisible && (
-          <div className="search-container">
-            <input
-              type="text"
-              className="search-bar"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            {searchResults.length > 0 && (
-              <div className="search-results">
-                {searchResults.map((product) => (
-                  <div key={product.id} className="search-result-item">
-                    <h4>{product.name}</h4>
-                    <p>{product.description}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-
-        {user ? (
-          <>
-            <span className="navbar-user">Welcome, {user.username || user.name || 'User'}</span>
-            <Link to="/profile-page">
-              <FaUser className="navbar-icon" />
-            </Link>
-            <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
-          </>
-        ) : (
-          <Link to="/login">
-            <FaUser className="navbar-icon" />
-          </Link>
-        )}
-
-        <div className="cart-icon-wrapper">
-          <FaShoppingBag className="navbar-icon" />
-          <span className="cart-count">{cartCount}</span>
+  {/* Search input field */}
+  {isSearchVisible && (
+    <div className="search-bar-wrapper">
+      <input
+        type="text"
+        className="search-bar-nav"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+      {searchResults.length > 0 && (
+        <div className="search-results">
+          {searchResults.map((product) => (
+            <div key={product.id} className="search-result-item">
+              <h4>{product.name}</h4>
+              <p>{product.description}</p>
+            </div>
+          ))}
         </div>
-      </div>
+      )}
+    </div>
+  )}
+
+  {/* User and cart icons */}
+  {user ? (
+    <>
+      <span className="navbar-user">Welcome, {user.username || 'User'}</span>
+      <Link to="/profile-page">
+        <FaUser className="navbar-icon" />
+      </Link>
+      <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
+    </>
+  ) : (
+    <Link to="/login">
+      <FaUser className="navbar-icon" />
+    </Link>
+  )}
+
+  <div className="cart-icon-wrapper">
+    <FaShoppingBag className="navbar-icon" />
+    <span className="cart-count">{cartCount}</span>
+  </div>
+</div>
+
     </nav>
   );
 }
