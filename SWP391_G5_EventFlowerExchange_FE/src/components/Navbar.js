@@ -84,7 +84,7 @@ function Navbar() {
         <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Postings</NavLink>
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Contact</NavLink>
         <NavLink to="/blog" className="nav-link" activeClassName="activeLink">Blog</NavLink>
-        <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink>
+        {/* <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink> */}
         {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
       </div>
 
@@ -131,8 +131,10 @@ function Navbar() {
   )}
 
   <div className="cart-icon-wrapper">
+    <Link to ="/cart">
     <FaShoppingBag className="navbar-icon" />
     <span className="cart-count">{cartCount}</span>
+    </Link>
   </div>
 </div>
 
