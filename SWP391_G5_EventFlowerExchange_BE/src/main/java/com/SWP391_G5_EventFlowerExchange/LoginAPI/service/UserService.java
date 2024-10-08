@@ -1,31 +1,36 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserLoginRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.Role;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.INotificationsRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
-    @Autowired
-    private IUserRepository userRepository;
-    @Autowired
-    private INotificationsRepository notificationsRepository;
-    @Autowired
-    private IEventFlowerPostingRepository iEventFlowerPostingRepository;
+    IUserRepository userRepository;
+    INotificationsRepository notificationsRepository;
+    IEventFlowerPostingRepository iEventFlowerPostingRepository;
+    PasswordEncoder passwordEncoder;
     // Create User
     public User createRequest(UserCreationRequest request) {
         User user = new User();
@@ -40,15 +45,24 @@ public class UserService {
         user.setPassword(request.getPassword());
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
-        user.setRole("buyer");
+//      user.setRole("buyer");
         user.setCreatedAt(LocalDateTime.now());
-
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        // encode password
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        // set role for user is BUYER
+        HashSet<String> Roles = new HashSet<>();
+        Roles.add(Role.BUYER.name());
+
+        user.setRoles(Roles);
         return userRepository.save(user);
     }
 
     public List<User> getUsers() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
+
         return userRepository.findAll();
     }
 
@@ -78,11 +92,5 @@ public class UserService {
         userRepository.deleteById(userID);
     }
 
-    public User getUserByEmailAndPassword(UserLoginRequest request) {
-        User user= userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword());
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        return user;
-    }
 
 }

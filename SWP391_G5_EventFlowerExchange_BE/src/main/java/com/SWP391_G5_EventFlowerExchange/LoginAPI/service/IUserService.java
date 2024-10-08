@@ -12,5 +12,4 @@ public interface IUserService {
     public User getUser(int userID);
     public User updateUser(int userID, UserUpdateRequest request);
     public void deleteUser(int userID);
-    public User getUserByEmailAndPassword(String email, String password);
 }

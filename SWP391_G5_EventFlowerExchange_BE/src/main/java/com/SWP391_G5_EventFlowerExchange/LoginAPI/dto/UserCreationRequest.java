@@ -15,12 +15,10 @@ public class UserCreationRequest {
     @Size(min = 3, max = 20, message = "USERNAME_INVALID")
     String username;
     String email;
-
     @Size(min= 5, message = "PASSWORD_INVALID")
     String password;
     String address;
     String phoneNumber;
-    String role ="buyer";
     LocalDate createdAt;
 
 }

@@ -53,29 +53,4 @@ public class UserController {
         return "User has been deleted";
     }
 
-    // Login API
-    // Adjusted Login API
-    @PostMapping("/login")
-    public ApiResponse<User> loginUser(@RequestBody @Valid UserLoginRequest request) {
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-
-        // Fetch user based on email and password
-        User user = userService.getUserByEmailAndPassword(request);
-
-        // Check if user exists (valid login)
-        if (user == null) {
-            // Set failure response
-            apiResponse.setCode(401); // Unauthorized
-            apiResponse.setMessage("Invalid email or password. Please try again.");
-            apiResponse.setResult(null);
-        } else {
-            // Set success response
-            apiResponse.setCode(200); // OK
-            apiResponse.setMessage("Login successful.");
-            apiResponse.setResult(user);
-        }
-
-        return apiResponse;
-    }
-
 }
