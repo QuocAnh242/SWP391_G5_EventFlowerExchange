@@ -3,14 +3,14 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Thêm useNavigate để điều hướng
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
-import a2 from '../assets/about-img/a5.jpg';
-
+import a2 from '../assets/about-img/a5.jpg'; // Sample image
 
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
   const [category, setCategory] = useState("Tất cả hoa"); // Danh mục hiện tại
   const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
   const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+
   // Gọi API khi component được load lần đầu
   useEffect(() => {
     fetchFlowerList();
@@ -30,32 +30,29 @@ function Menu() {
   const handlePostClick = (id) => {
     navigate(`/flower/${id}`); // Điều hướng sang trang chi tiết với ID
   };
-  
 
   useEffect(() => {
-    // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
-      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
-    }, 2000); // Bạn có thể thay đổi thời gian này theo yêu cầu
-
-    // Cleanup timer nếu component bị unmount
+      setLoading(false);
+    }, 2000); // Mô phỏng việc tải dữ liệu
     return () => clearTimeout(timer);
   }, []);
 
-if (loading) {
+  if (loading) {
     return (
       <div className="loading-container">
-  <div className="spinner"></div>
-  <p className="loading-text">Đang tải dữ liệu...</p>
-</div>
-
+        <div className="spinner"></div>
+        <p className="loading-text">Đang tải dữ liệu...</p>
+      </div>
     );
   }
+
   return (
     <div className="shop-container">
       {/* Sidebar với danh sách các loại hoa */}
-      <div className="sidebar">
-        <h3 className="sidebar-title">Loại hoa</h3>
+      <div className="sidebar-post-exchange">
+        <h3 className="sidebar-title">Danh mục hoa</h3>
+        <hr className="sidebar-divider" />
         <ul className="category-list">
           <li onClick={() => setCategory("Tất cả hoa")}>Tất cả hoa</li>
           <li onClick={() => setCategory("Hoa cưới")}>Hoa cưới</li>
@@ -70,16 +67,8 @@ if (loading) {
         <h1 className="shop-title">Cửa hàng hoa - {category}</h1>
         <div className="post-grid">
           {flowerList.map((item, index) => (
-            <div
-              className="post-card"
-              key={index}
-              onClick={() => handlePostClick(item.id)} // Điều hướng theo ID của hoa
-            >
-              <img
-                src={a2}
-                alt={item.title}
-                className="post-card-image"
-              />
+            <div className="post-card" key={index} onClick={() => handlePostClick(item.id)}>
+              <img src={a2} alt={item.title} className="post-card-image" />
               <h3>{item.title}</h3>
               <p className="discount-price">Giá: {item.price}₫</p>
               <p className="feature-content">{item.description}</p>
@@ -88,6 +77,9 @@ if (loading) {
           ))}
         </div>
       </div>
+
+     
+
       <Footer />
     </div>
   );

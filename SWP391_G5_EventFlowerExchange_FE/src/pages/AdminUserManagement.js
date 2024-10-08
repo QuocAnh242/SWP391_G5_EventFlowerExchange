@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { FaTachometerAlt, FaUsers, FaClipboardList } from 'react-icons/fa'; // Import các icon từ react-icons
 import '../styles/AdminUserManagement.css';
 
 const AdminUserManagement = () => {
@@ -9,14 +10,20 @@ const AdminUserManagement = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
-  const [posts, setPosts] = useState([]); // State for managing posts
-  const [activeTab, setActiveTab] = useState('dashboard'); // Manage tab switching
-
-
+  const [posts, setPosts] = useState([]); 
+  const [activeTab, setActiveTab] = useState('dashboard');
+  // const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  
+   //hiện thông tin khách hàng và bài post
   useEffect(() => {
     fetchUsers();
-    fetchPosts(); // Fetch posts when component loads
+    fetchPosts();
   }, []);
+  
+
+
+ 
+
 
   const fetchUsers = async () => {
     try {
@@ -36,7 +43,7 @@ const AdminUserManagement = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/post/');
-      setPosts(response.data); // Save post data to state
+      setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
@@ -45,7 +52,7 @@ const AdminUserManagement = () => {
   const handleDeletePost = async (postId) => {
     try {
       await axios.delete(`http://localhost:8080/identity/post/${postId}`);
-      fetchPosts(); // Refresh posts after deletion
+      fetchPosts();
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -70,7 +77,6 @@ const AdminUserManagement = () => {
     }
   };
 
-  // Search bar for users
   const filteredUsers = users.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -86,13 +92,12 @@ const AdminUserManagement = () => {
     );
   }
 
-  // Render content based on active tab
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
           <div>
-            <h2>Tổng quan</h2>
+            <h2 className='admin-title'>Tổng quan</h2>
             <div className="dashboard">
               <div className="stat">
                 <h3>Tổng số người dùng</h3>
@@ -112,7 +117,7 @@ const AdminUserManagement = () => {
       case 'userList':
         return (
           <div>
-            <h2>Danh sách người dùng</h2>
+            <h2 className='admin-title'>Danh sách người dùng</h2>
             <div className="search-bar">
               <input
                 type="text"
@@ -135,17 +140,17 @@ const AdminUserManagement = () => {
                 </thead>
                 <tbody>
                   {filteredUsers.map((user) => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
+                    <tr key={user.userID}>
+                      <td>{user.userID}</td>
                       <td>{user.username}</td>
                       <td>{user.email}</td>
                       <td>{user.role}</td>
                       <td>{user.isBlocked ? 'Bị khóa' : 'Hoạt động'}</td>
                       <td>
-                        <button onClick={() => handleBlockUser(user.id, user.isBlocked)}>
+                        <button className='button-block' onClick={() => handleBlockUser(user.id, user.isBlocked)}>
                           {user.isBlocked ? 'Bỏ khóa' : 'Khóa'}
                         </button>
-                        <button onClick={() => handleDeleteUser(user.id)}>Xóa</button>
+                        <button className='button-delete' onClick={() => handleDeleteUser(user.id)}>Xóa</button>
                       </td>
                     </tr>
                   ))}
@@ -159,7 +164,7 @@ const AdminUserManagement = () => {
       case 'post-setting':
         return (
           <div>
-            <h2>Quản lý bài viết</h2>
+            <h2 className='admin-title'>Quản lý bài viết</h2>
             {posts.length > 0 ? (
               <table>
                 <thead>
@@ -173,13 +178,13 @@ const AdminUserManagement = () => {
                 </thead>
                 <tbody>
                   {posts.map((post) => (
-                    <tr key={post.id}>
-                      <td>{post.id}</td>
+                    <tr key={post.postID}>
+                      <td>{post.postID}</td>
                       <td>{post.title}</td>
                       <td>{post.description}</td>
                       <td>{post.price}₫</td>
                       <td>
-                        <button onClick={() => handleDeletePost(post.id)}>Xóa</button>
+                        <button className='button-post-delete' onClick={() => handleDeletePost(post.id)}>Xóa</button>
                       </td>
                     </tr>
                   ))}
@@ -200,9 +205,15 @@ const AdminUserManagement = () => {
       {/* Sidebar */}
       <div className="sidebar">
         <ul>
-          <li onClick={() => setActiveTab('dashboard')}>Dashboard Tổng quan</li>
-          <li onClick={() => setActiveTab('userList')}>Danh sách người dùng</li>
-          <li onClick={() => setActiveTab('post-setting')}>Quản lý Post</li>
+          <li onClick={() => setActiveTab('dashboard')}>
+            <FaTachometerAlt className="icon" /> Dashboard Tổng quan
+          </li>
+          <li onClick={() => setActiveTab('userList')}>
+            <FaUsers className="icon" /> Danh sách người dùng
+          </li>
+          <li onClick={() => setActiveTab('post-setting')}>
+            <FaClipboardList className="icon" /> Quản lý Post
+          </li>
         </ul>
       </div>
 

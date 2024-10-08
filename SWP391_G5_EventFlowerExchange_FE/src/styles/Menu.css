@@ -7,19 +7,47 @@
 }
 
 /* Thanh tùy chọn bên trái */
-.sidebar {
-  width: 100px;
-  background-color: #C75959;
-  padding: 20px;
-  border-right: 1px solid #ccc;
-  margin-top: 10px;
-  
+/* Container chung cho sidebar */
+.sidebar-post-exchange {
+  width: 250px; /* Chiều rộng của sidebar */
+  height: 100vh; /* Chiều cao 100% màn hình */
+  position: fixed; /* Đặt sidebar cố định bên trái */
+  left: 0; /* Căn lề trái */
+  top: 0; /* Căn lề trên */
+  background-color: #f7f7f7; /* Màu nền */
+  padding: 20px; /* Khoảng cách bên trong */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Đổ bóng để tạo hiệu ứng nổi */
+  padding-top: 100px;
 }
 
+/* Tiêu đề của sidebar */
 .sidebar-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 60px 5px;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+
+/* Danh sách các loại hoa */
+.category-list {
+  list-style-type: none; /* Loại bỏ dấu gạch đầu dòng */
+  padding: 0;
+}
+
+/* Item trong danh sách */
+.category-list li {
+  padding: 10px 0;
+  cursor: pointer; /* Hiển thị con trỏ khi hover */
+  color: #555;
+  font-size: 1.1em;
+  border-bottom: 1px solid #e0e0e0; /* Đường viền dưới từng mục */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hiệu ứng khi hover vào các mục */
+.category-list li:hover {
+  background-color: #eaeaea;
+  color: #000;
 }
 
 .category-list {
@@ -35,7 +63,7 @@
 }
 
 .category-list li:hover {
-  background-color: #ff5733;
+  background-color: #FFC0CB;
   color: white;
 }
 

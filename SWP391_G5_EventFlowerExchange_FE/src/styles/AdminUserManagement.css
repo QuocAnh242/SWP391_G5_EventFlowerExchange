@@ -7,15 +7,62 @@
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
-h2 {
+/*Tiêu đề mỗi trang*/
+/* h2 {
   text-align: center;
   margin-bottom: 25px;
   color: #2d3e50;
   font-size: 26px;
-  font-weight: 600;
+  font-weight: bold;
+  padding-left: 10%;
+  padding-bottom: 10px;
+} */
+.admin-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #2d3e50;
+  font-size: 28px;
+  font-weight: bold;
+  position: relative;
+  padding-left: 10%;
+  padding-bottom: 10px; 
+  
+
+}
+.admin-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 0;  
+  width: 20%; 
+  height: 3px;
+  background-color: #FFC0CB; 
+  border-radius: 2px;
+  margin-left:5%;
 }
 
+/* Nội dung chính */
+.main-content {
+  flex-grow: 1;
+  padding: 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  margin: 0 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.main-content h1 {
+  font-size: 24px;
+  color: #2d3e50;
+  margin-bottom: 20px;
+}
+
+.main-content p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.6;
+}
 /* Dashboard tổng quan */
 .dashboard {
   display: flex;
@@ -75,7 +122,8 @@ h2 {
 }
 
 .search-bar input:focus {
-  border-color: #007bff;
+  border-color: #FFC0CB;
+  outline: #FFC0CB ;
   
 }
 
@@ -85,6 +133,7 @@ table {
   margin-left: 15%; /* Căn giữa bảng, cách đều hai bên */
   border-collapse: collapse;
   background-color: #fff;
+  border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
@@ -92,6 +141,7 @@ thead {
   background-color: #FFC0CB;
   color: black;
   font-weight: bold;
+  padding: 0 50px;
 }
 
 thead th {
@@ -103,7 +153,7 @@ thead th {
 
 tbody tr {
   border-bottom: 1px solid #eaeaea;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 tbody tr:nth-child(even) {
@@ -112,6 +162,7 @@ tbody tr:nth-child(even) {
 
 tbody tr:hover {
   background-color: #f1f1f1;
+  transform: scale(1.02);
 }
 
 tbody td {
@@ -129,25 +180,62 @@ tbody td button {
   font-size: 14px;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
-
-tbody td button:first-of-type {
-  background-color: #28a745;
+button {
   color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Chuyển động mượt */
+  transform: scale(1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
 }
 
-tbody td button:first-of-type:hover {
-  background-color: #218838;
-  transform: scale(1.05);
+/* Hiệu ứng khi hover vào nút xanh  */
+.button-block {
+  background-color: #006600;
+}
+.button-block:hover {
+  background-color: #006600; /* Màu xanh lá đậm hơn khi hover */
+  transform: scale(1.1); /* Phóng to nhẹ khi hover */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Đổ bóng mạnh hơn khi hover */
 }
 
-tbody td button:last-of-type {
-  background-color: #dc3545;
-  color: white;
+/* Focus effect - để làm nổi bật khi được chọn */
+.button-block:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Đường viền sáng khi focus */
 }
 
-tbody td button:last-of-type:hover {
-  background-color: #c82333;
-  transform: scale(1.05);
+.button-delete {
+  background-color: #CC3333;
+}
+.button-delete:hover {
+  background-color: #CC3333; /* Màu xanh lá đậm hơn khi hover */
+  transform: scale(1.1); /* Phóng to nhẹ khi hover */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Đổ bóng mạnh hơn khi hover */
+}
+
+.button-post-delete:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);  /* Đường viền sáng khi focus */
+}
+
+.button-post-delete { 
+  background-color: #FFC0CB;
+}
+.button-post-delete:hover {
+  background-color: #FFC0CB;
+  transform: scale(1.1); 
+  box-shadow: 0 10px 20px rgba(255, 192, 203, 0.8); 
+}
+
+.button-post-delete:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 192, 203, 0.8);
+ 
 }
 
 /* Loading */
@@ -191,10 +279,12 @@ tbody td button:last-of-type:hover {
 
 /* Sidebar */
 .sidebar {
-  width: 250px;
-  background-color: #ccc;
+  width: 270px;
+  height: 100%;
+  background-color: #FFC0CB;
   padding-top: 20px;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
 }
 
 .sidebar ul {
@@ -206,55 +296,59 @@ tbody td button:last-of-type:hover {
 
 .sidebar ul li {
   padding: 15px 20px;
-  color: #fff;
+  color: #fff;  
   cursor: pointer;
   transition: background-color 0.3s ease, padding-left 0.3s ease;
   font-size: 16px;
   font-weight: 500;
 }
 
+/* Sidebar list items */
+.sidebar ul li {
+  padding: 15px 20px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 500;
+  border-left: 4px black solid transparent; /* Đường viền trái để dùng cho hiệu ứng focus */
+  transition: background-color 0.3s ease, padding-left 0.3s ease, border-left 0.3s ease;
+}
+
+/* Hover effect for items */
 .sidebar ul li:hover {
-  background-color: #1b2735;
-  padding-left: 30px; /* Hiệu ứng dịch chuyển nhẹ khi hover */
+  background-color: #374151; /* Màu nền khi hover */
+  padding-left: 25px; /* Dịch chuyển nhẹ khi hover */
+  border-left: 4px solid whitesmoke; 
 }
 
+/* Active item styling */
 .sidebar ul li.active {
-  background-color: #007bff;
+  background-color: whitesmoke; /* Màu xanh dương cho mục đang chọn */
+  padding-left: 25px; /* Giữ padding khi item active */
+  border-left: 4px solid #ffffff; /* Đường viền trắng cho mục đang chọn */
+  transition: all 0.3s ease; /* Mượt mà hơn khi chuyển đổi */
 }
 
+/* Hover on active item */
 .sidebar ul li.active:hover {
-  background-color: #0056b3;
+  background-color: whitesmoke; /* Màu xanh đậm hơn khi hover vào item active */
 }
 
+/* Hover effect for non-active items */
 .sidebar ul li:not(.active):hover {
-  background-color: #1b2735;
+  background-color: whitesmoke; /* Màu nền xám đậm khi hover */
+  padding-left: 25px; /* Giảm dịch chuyển quá nhiều */
+  border-left: 4px solid black; /* Giữ đường viền xanh khi hover */
 }
 
+/* First list item */
 .sidebar ul li:first-child {
   margin-top: 20px;
 }
 
-/* Nội dung chính */
-.main-content {
-  flex-grow: 1;
-  padding: 40px;
-  background-color: #fff;
-  border-radius: 12px;
-  margin: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
 
-.main-content h1 {
-  font-size: 24px;
-  color: #2d3e50;
-  margin-bottom: 20px;
-}
 
-.main-content p {
-  font-size: 16px;
-  color: #555;
-  line-height: 1.6;
-}
 
 /* Responsive cho màn hình nhỏ hơn */
 @media (max-width: 768px) {
