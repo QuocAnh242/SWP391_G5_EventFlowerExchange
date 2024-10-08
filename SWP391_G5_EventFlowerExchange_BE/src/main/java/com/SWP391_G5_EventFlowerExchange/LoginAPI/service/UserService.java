@@ -40,7 +40,7 @@ public class UserService {
         user.setPassword(request.getPassword());
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
-        user.setRole(request.getRole());
+        user.setRole("buyer");
         user.setCreatedAt(LocalDateTime.now());
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);

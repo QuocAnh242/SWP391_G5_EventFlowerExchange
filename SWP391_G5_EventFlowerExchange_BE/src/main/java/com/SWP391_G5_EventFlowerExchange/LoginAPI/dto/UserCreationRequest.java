@@ -20,7 +20,7 @@ public class UserCreationRequest {
     String password;
     String address;
     String phoneNumber;
-    String role;
+    String role ="buyer";
     LocalDate createdAt;
 
 }
