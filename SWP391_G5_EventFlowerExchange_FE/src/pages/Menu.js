@@ -1,42 +1,88 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Thêm useNavigate để điều hướng
+import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
+import { Link } from 'react-router-dom';
 import a2 from '../assets/about-img/a5.jpg'; // Sample image
+import b1 from '../assets/banner-post.png';
 
 function Menu() {
-  const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
-  const [category, setCategory] = useState("Tất cả hoa"); // Danh mục hiện tại
-  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [flowerList, setFlowerList] = useState([]); // Flower list from API
+  const [category, setCategory] = useState("Tất cả hoa"); // Current category
+  const navigate = useNavigate(); // For navigation
+  const [loading, setLoading] = useState(true); // Loading state
+  const [filteredFlowers, setFilteredFlowers] = useState([]); // Filtered flower list
+  const [priceFilter, setPriceFilter] = useState(""); // Current price filter
+  const [sortOrder, setSortOrder] = useState(""); // Current sort order
 
-  // Gọi API khi component được load lần đầu
+
+  // Fetch flower list when component mounts
   useEffect(() => {
     fetchFlowerList();
   }, []);
 
-  // Hàm lấy dữ liệu từ Spring Boot API
+  // Fetch data from Spring Boot API
   const fetchFlowerList = async () => {
     try {
       const response = await axios.get("http://localhost:8080/identity/post/");
-      setFlowerList(response.data); // Lưu dữ liệu hoa vào state
+      setFlowerList(response.data); // Save flower data in state
+      setFilteredFlowers(response.data); // Initialize the filtered list
     } catch (error) {
       console.error("Error fetching data: ", error);
     }
   };
 
-  // Hàm xử lý khi nhấn vào một bài viết
+  // Handle post click
   const handlePostClick = (id) => {
-    navigate(`/flower/${id}`); // Điều hướng sang trang chi tiết với ID
+    navigate(`/flower/${id}`); // Navigate to the post's detail page
   };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Mô phỏng việc tải dữ liệu
+    }, 2000); // Simulate loading delay
     return () => clearTimeout(timer);
   }, []);
+
+  // Filtering logic based on price range
+  const filterByPrice = (value) => {
+    setPriceFilter(value); // Set selected price range
+
+    let filtered = [...flowerList];
+    if (value === "<100k") {
+      filtered = filtered.filter((flower) => flower.price < 100000);
+    } else if (value === "100k-500k") {
+      filtered = filtered.filter((flower) => flower.price >= 100000 && flower.price <= 500000);
+    } else if (value === ">500k") {
+      filtered = filtered.filter((flower) => flower.price > 500000);
+    }
+
+    // Apply sorting if a sort order is selected
+    if (sortOrder) {
+      filtered = sortFlowers(filtered, sortOrder);
+    }
+
+    setFilteredFlowers(filtered);
+  };
+
+  // Sorting logic for ascending or descending price
+  const sortFlowers = (flowers, order) => {
+    if (order === "asc") {
+      return flowers.sort((a, b) => a.price - b.price);
+    } else if (order === "desc") {
+      return flowers.sort((a, b) => b.price - a.price);
+    }
+    return flowers;
+  };
+
+  // Handle sorting by price
+  const handleSortChange = (value) => {
+    setSortOrder(value); // Set selected sort order
+
+    let sortedFlowers = sortFlowers([...filteredFlowers], value);
+    setFilteredFlowers(sortedFlowers);
+  };
 
   if (loading) {
     return (
@@ -48,8 +94,8 @@ function Menu() {
   }
 
   return (
+    //Thanh sidebar chọn hoa
     <div className="shop-container">
-      {/* Sidebar với danh sách các loại hoa */}
       <div className="sidebar-post-exchange">
         <h3 className="sidebar-title">Danh mục hoa</h3>
         <hr className="sidebar-divider" />
@@ -62,23 +108,52 @@ function Menu() {
         </ul>
       </div>
 
-      {/* Nội dung chính */}
+      {/* Main content */}
       <div className="main-content">
-        <h1 className="shop-title">Cửa hàng hoa - {category}</h1>
+        <img src={b1} alt="" className="banner-post" />
+        {/* <h1 className="shop-title">Cửa hàng hoa - {category}</h1> */}
+        <div className="breadcrumb">
+          <Link to="/" className="home-link-breadcrumb" >Trang chủ</Link>
+          <span> / </span>
+          <span>Posting / {category} </span>
+        </div>
+
+        {/* Filter and Sorting dropdowns */}
+        <div className="filter-sort-bar">
+          <select
+            className="filter-dropdown"
+            value={priceFilter}
+            onChange={(e) => filterByPrice(e.target.value)}
+          >
+            <option value="">Lọc theo giá</option>
+            <option value="<100k">Dưới 100k</option>
+            <option value="100k-500k">100k - 500k</option>
+            <option value=">500k">Trên 500k</option>
+          </select>
+
+          <select
+            className="sort-dropdown"
+            value={sortOrder}
+            onChange={(e) => handleSortChange(e.target.value)}
+          >
+            <option value="">Sắp xếp</option>
+            <option value="asc">Giá: Thấp đến Cao</option>
+            <option value="desc">Giá: Cao đến Thấp</option>
+          </select>
+        </div>
+
         <div className="post-grid">
-          {flowerList.map((item, index) => (
+          {filteredFlowers.map((item, index) => (
             <div className="post-card" key={index} onClick={() => handlePostClick(item.id)}>
               <img src={a2} alt={item.title} className="post-card-image" />
               <h3>{item.title}</h3>
               <p className="discount-price">Giá: {item.price}₫</p>
               <p className="feature-content">{item.description}</p>
-              <p className="feature-detail">Xem chi tiết</p>
+              <button className="feature-detail-button">Xem chi tiết</button>
             </div>
           ))}
         </div>
       </div>
-
-     
 
       <Footer />
     </div>

@@ -81,7 +81,7 @@ const Login = () => {
 
 
 
-
+// Ẩn hiện password
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -170,4 +170,4 @@ const Login = () => {
   );
 };
 
-export default Login; // Sử dụng HOC với Home
+export default Login;   

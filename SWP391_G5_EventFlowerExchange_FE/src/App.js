@@ -13,13 +13,13 @@ import ProfilePage from './pages/ProfilePage';
 import Cart from './pages/Cart';
 import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
-// import ScrollToTop from "./components/ScrollToTop"; 
+import ScrollToTop from "./components/ScrollToTop"; 
 
 function App() {
   return (
     <div className="App">
       <Router>
-        {/* <ScrollToTop /> */}
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

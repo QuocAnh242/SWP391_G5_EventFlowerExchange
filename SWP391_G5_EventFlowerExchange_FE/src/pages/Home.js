@@ -18,12 +18,13 @@ import '../styles/Home.css';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
 import Testimonials from '../components/homecomponents/Testimonials';
+import BlogSlider from '../components/homecomponents/BlogSlider';
 
 
 function Home() {
   // Cấu hình cho slider
   const settings = {
-    dots: true, // Hiển thị các chấm dưới banner để chuyển đổi giữa các ảnh
+    dots: false, // Hiển thị các chấm dưới banner để chuyển đổi giữa các ảnh
     infinite: true, // Vòng lặp các ảnh
     speed: 500, // Tốc độ chuyển ảnh (500ms)
     slidesToShow: 1, // Số ảnh hiện trên màn hình cùng lúc
@@ -33,7 +34,7 @@ function Home() {
   };
 
   const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-
+  // Loading trang
   useEffect(() => {
     // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
@@ -72,71 +73,25 @@ function Home() {
       <Services />
       {/* Featured Section */}
       <div className="about-featured">
-        <h2>Featured Flowers & Offers</h2>
+        <h2>Hoa Nổi Bật & Ưu Đãi</h2>
         <div className="featured-banner">
           <img src={FeaturedImage} alt="Featured Flower" />
           <div className="featured-text">
-            <h3>Spring Blossom Collection</h3>
+            <h3>Bộ Sưu Tập Hoa Mùa Xuân</h3>
             <p>
-              Discover our exclusive Spring Blossom collection. Fresh flowers
-              handpicked from the best local growers.
+            Khám phá bộ sưu tập hoa Mùa Xuân độc quyền của chúng tôi. Những bông hoa tươi được chọn lọc kỹ càng từ các nhà trồng hoa địa phương tốt nhất.
             </p>
-            <button>Shop Now</button>
+            <button src > Mua ngay </button>
           </div>
         </div>
       </div>
-      
       {/* Blog Section */}
-      <div className="about-blog">
-        <h2>From Our Blog</h2>
-        <div className="blog-posts">
-          <div className="blog-card">
-            <img src={BlogImage1} alt="Blog Post 1" />
-            <h3>The Best Flowers for Your Wedding Day</h3>
-            <p>
-              Explore the top flowers that will make your wedding unforgettable.
-            </p>
-            <button>Read More</button>
-          </div>
-          <div className="blog-card">
-            <img src={FeaturedImage} alt="Blog Post 2" />
-            <h3>Caring for Roses: Tips & Tricks</h3>
-            <p>
-              Roses are timeless, but they need proper care. Learn how to keep
-              them fresh and vibrant.
-            </p>
-            <button>Read More</button>
-          </div>
-        </div>
-      </div>
+      
        {/* Phần sản phẩm mới */}
       <NewProducts />
-      
-      {/* Testimonials Section */}
-      {/* <div className="about-testimonials">
-        <h2>What Our Customers Are Saying</h2>
-        <div className="testimonial">
-          <p>
-            "Flower Haven made my anniversary extra special. The bouquet I
-            ordered was stunning, and it arrived right on time!"
-          </p>
-          <h4>- Sarah W.</h4>
-        </div>
-        <div className="testimonial">
-          <p>
-            "I love the variety of flowers on Flower Haven. It's easy to find
-            unique and exotic arrangements!"
-          </p>
-          <h4>- John D.</h4>
-        </div>
-      </div> */}
+      <BlogSlider/>
       <Testimonials/>
 
-      
-
-      
-
-  
       <Footer />
     </div>
   );
