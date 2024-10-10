@@ -36,9 +36,9 @@ const ProfilePage = () => {
       case 'profile':
         return <ProfileInfo userID={loggedInUserID} />; // Render ProfileInfoComponent with userID
       case 'password':
-        return <h2>Change Password Section</h2>;
+        return 
       case 'orders':
-        return <h2>My Orders Section</h2>;
+        return 
       case 'create-post':
         return <CreatePost/>;
       default:
@@ -55,8 +55,8 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="profile-layout">
-          <aside className="sidebar">
-            <h2 className="sidebar-title">Account Settings</h2>
+          <aside className="sidebar-profile-page">
+            <h2 className="sidebar-profile-title">Account Settings</h2>
             <ul className="sidebar-menu">
               <li className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}>
                 <a href="#profile" onClick={() => setActiveTab('profile')}>Profile Info</a>

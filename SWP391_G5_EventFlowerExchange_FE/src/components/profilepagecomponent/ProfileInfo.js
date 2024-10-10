@@ -47,7 +47,7 @@ const ProfileInfo = ({ userID }) => {
 
   return (
     <div className="profile-info-component">
-      <h2>Your Profile Info</h2>
+      <h2>Thông tin của bạn</h2>
       {error && <p className="error-message">{error}</p>}
       <form onSubmit={handleUpdate}>
         <label>
@@ -68,6 +68,7 @@ const ProfileInfo = ({ userID }) => {
             name="email"
             value={profile.email}
             onChange={handleChange}
+            readOnly
           />
         </label>
 
@@ -91,7 +92,7 @@ const ProfileInfo = ({ userID }) => {
           />
         </label>
 
-        <button type="submit">Update Profile</button>
+        <button type="submit">Thay đổi thông tin</button>
       </form>
     </div>
   );

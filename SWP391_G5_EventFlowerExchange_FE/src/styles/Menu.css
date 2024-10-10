@@ -132,12 +132,13 @@
 .post-card {
   background-color: white;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  padding-left: 30px;
+  /* padding: 20px; */
+  /* padding-left: 30px; */
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease;
-  
+  position: relative;
+  /* max-width: 5px; */
 }
 
 .post-card:hover {
@@ -154,8 +155,9 @@
   text-align: center;
 }
 .feature-detail-button {
-  /* position: absolute; */
+  position: absolute;
   bottom: 15px;
+  margin-right: 10px;
   /* margin-right: 100px; */
   /* width: 100%; */
   background-color: #FFC0CB;

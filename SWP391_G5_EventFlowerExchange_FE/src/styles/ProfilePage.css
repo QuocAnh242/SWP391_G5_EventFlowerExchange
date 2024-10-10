@@ -16,30 +16,35 @@ body {
 }
 
 /* Sidebar */
-.sidebar {
-  background-color: #2C3E50;
-  color: white;
+.sidebar-profile-page {
+  background-color: #FFC0CB;
+  color: #2C3E50;
   width: 250px;
   height: 102vh;
   padding: 20px;
-  position: absolute;
+  position: fixed  ;
   left: 0;
   top: 0;
   bottom: 0;
   z-index: 1000; /* Ensure sidebar stays on top */
   overflow-y: auto;
 }
-
-.sidebar ul {
+.sidebar-profile-page h2 {
+  padding-top: 30px;
+  text-align: center;
+  color: #2C3E50;
+}
+.sidebar-profile-page ul {
   list-style: none;
   padding: 0;
 }
 
-.sidebar li {
+.sidebar-profile-page li {
   margin-bottom: 10px;
+  font-size: 20px;
 }
 
-.sidebar a {
+.sidebar-profile-page a {
   color: white;
   text-decoration: none;
   padding: 10px 15px;
@@ -48,11 +53,13 @@ body {
   transition: background-color 0.3s ease;
 }
 
-.sidebar a:hover {
-  background-color: #34495E;
+.sidebar-profile-page a:hover {
+  background-color: white;
+  color: #2C3E50;
+  transition: ease-in cubic-bezier(0.075, 0.82, 0.165, 1)
 }
 
-.sidebar h2 {
+.sidebar-profile-page h2 {
 margin-top: 50px;
 color: #fff;
 
