@@ -155,7 +155,7 @@
   text-align: center;
 }
 .feature-detail-button {
-  position: absolute;
+  /* position: absolute; */
   bottom: 15px;
   margin-right: 10px;
   /* margin-right: 100px; */

@@ -24,7 +24,7 @@ const AdminUserManagement = () => {
 
  
 
-
+//Hiển thị người dùng
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/users');
@@ -39,7 +39,7 @@ const AdminUserManagement = () => {
       setLoading(false);
     }
   };
-
+//Hiển thị post
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/post/');
@@ -48,29 +48,29 @@ const AdminUserManagement = () => {
       console.error('Error fetching posts:', error);
     }
   };
-
-  const handleDeletePost = async (postId) => {
+//Xóa post
+  const handleDeletePost = async (postID) => {
     try {
-      await axios.delete(`http://localhost:8080/identity/post/${postId}`);
+      await axios.delete(`http://localhost:8080/identity/post/${postID}`);
       fetchPosts();
     } catch (error) {
       console.error('Error deleting post:', error);
     }
   };
 
-  const handleBlockUser = async (userId, isBlocked) => {
+  const handleBlockUser = async (userID, isBlocked) => {
     try {
       const action = isBlocked ? 'unblock' : 'block';
-      await axios.post(`http://localhost:8080/admin/users/${action}/${userId}`);
+      await axios.post(`http://localhost:8080/admin/users/${action}/${userID}`);
       fetchUsers();
     } catch (error) {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
     }
   };
 
-  const handleDeleteUser = async (userId) => {
+  const handleDeleteUser = async (userID) => {
     try {
-      await axios.delete(`http://localhost:8080/identity/users/${userId}`);
+      await axios.delete(`http://localhost:8080/identity/users/${userID}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -147,10 +147,10 @@ const AdminUserManagement = () => {
                       <td>{user.role}</td>
                       <td>{user.isBlocked ? 'Bị khóa' : 'Hoạt động'}</td>
                       <td>
-                        <button className='button-block' onClick={() => handleBlockUser(user.id, user.isBlocked)}>
+                        <button className='button-block' onClick={() => handleBlockUser(user.userID, user.isBlocked)}>
                           {user.isBlocked ? 'Bỏ khóa' : 'Khóa'}
                         </button>
-                        <button className='button-delete' onClick={() => handleDeleteUser(user.id)}>Xóa</button>
+                        <button className='button-delete' onClick={() => handleDeleteUser(user.userID)}>Xóa</button>
                       </td>
                     </tr>
                   ))}
@@ -184,7 +184,7 @@ const AdminUserManagement = () => {
                       <td>{post.description}</td>
                       <td>{post.price}₫</td>
                       <td>
-                        <button className='button-post-delete' onClick={() => handleDeletePost(post.id)}>Xóa</button>
+                        <button className='button-post-delete' onClick={() => handleDeletePost(post.postID)}>Xóa</button>
                       </td>
                     </tr>
                   ))}

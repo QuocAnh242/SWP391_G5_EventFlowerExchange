@@ -10,9 +10,9 @@ const CreatePostComponent = () => {
     description: '',
     price: '',
     imageUrl: '',
-    status: 'Mới', // Giá trị mặc định cho status
+    status: 'Còn hàng', // Giá trị mặc định cho status
     user: {
-      userID: '', // Giá trị userID cố định trong ví dụ của bạn
+      userID: 2, // Thay đổi giá trị userID theo yêu cầu
     },
   });
 
@@ -43,15 +43,28 @@ const CreatePostComponent = () => {
     try {
       // Gửi request POST đến server với dữ liệu trong post
       await axios.post('http://localhost:8080/identity/post/', post);
-      setSuccessMessage('Post created successfully!');
+      setSuccessMessage('Đã tạo bài đăng thành công!'); // Hiện thông báo thành công
       setError('');
+      // Reset form sau khi gửi thành công
+      setPost({
+        title: '',
+        description: '',
+        price: '',
+        imageUrl: '',
+        status: 'Mới',
+        user: { userID: '' },
+      });
     } catch (error) {
       console.error('Error creating post:', error);
-      setError('Failed to create post. Please try again.');
+      setError('Không thể tạo bài đăng. Vui lòng thử lại.');
       setSuccessMessage('');
+      if (error.response) {
+        console.error('Response data:', error.response.data); // In ra dữ liệu phản hồi từ server
+      }
     }
   };
-  // Up ảnh băng link hoặc hình ảnh
+
+  // Up ảnh bằng link hoặc hình ảnh
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -59,16 +72,14 @@ const CreatePostComponent = () => {
       setPost({ ...post, imageUrl }); // Cập nhật giá trị imageUrl với URL tạm thời
     }
   };
-  
 
   return (
     <div className="create-post-component">
-      <h2>Create a New Post</h2>
-      {error && <p className="error-message">{error}</p>}
-      {successMessage && <p className="success-message">{successMessage}</p>}
+      <h2>Tạo Bài Đăng Mới</h2>
+      
       <form onSubmit={handleSubmit}>
         <label>
-          Title:
+          Tiêu đề:
           <input
             type="text"
             name="title"
@@ -79,7 +90,7 @@ const CreatePostComponent = () => {
         </label>
 
         <label>
-          Description:
+          Mô tả:
           <textarea
             name="description"
             value={post.description}
@@ -89,7 +100,7 @@ const CreatePostComponent = () => {
         </label>
 
         <label>
-          Price:
+          Giá:
           <input
             type="number"
             name="price"
@@ -100,29 +111,28 @@ const CreatePostComponent = () => {
         </label>
 
         <label>
-  Image URL:
-  <input
-    type="text"
-    name="imageUrl"
-    value={post.imageUrl}
-    onChange={handleChange}
-    required
-  />
-</label>
-<br />
-<label>
-  Upload Image:
-  <input
-    type="file"
-    name="imageFile"
-    accept="image/*"
-    onChange={handleImageUpload} // Hàm để xử lý khi người dùng chọn ảnh
-  />
-</label>
-
+          URL hình ảnh:
+          <input
+            type="text"
+            name="imageUrl"
+            value={post.imageUrl}
+            onChange={handleChange}
+            required
+          />
+        </label>
+        <br />
+        <label>
+          Tải lên hình ảnh:
+          <input
+            type="file"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleImageUpload} // Hàm để xử lý khi người dùng chọn ảnh
+          />
+        </label>
 
         <label>
-          Status:
+          Trạng thái:
           <input
             type="text"
             name="status"
@@ -132,8 +142,9 @@ const CreatePostComponent = () => {
           />
         </label>
 
-
-        <button type="submit">Create Post</button>
+        <button type="submit">Tạo Bài Đăng</button>
+        {error && <p className="error-message">{error}</p>}
+        {successMessage && <p className="success-message">{successMessage}</p>}
       </form>
     </div>
   );
