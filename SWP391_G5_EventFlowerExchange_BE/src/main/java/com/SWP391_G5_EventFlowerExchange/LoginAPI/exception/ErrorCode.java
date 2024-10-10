@@ -1,5 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.exception;
 
+import lombok.Getter;
+
+@Getter
 public enum ErrorCode {
     // Advance Exception Handling Class
     // Define Error here:
@@ -9,29 +12,14 @@ public enum ErrorCode {
     USERNAME_INVALID(1002, "User is invalid!"),
     PASSWORD_INVALID(1003, "Password must be at least 5 characters!"),
     USER_NOT_EXISTED(1004, "User is not existed"),
-    UNAUTHENTICATED(1005, "Unauthenticated")
-    ;
-    private int code;
-    private String message;
+    UNAUTHENTICATED(1005, "Unauthenticated"),
+    DELETE_USER_ERROR(1006, "Cannot delete this user");
+
+    private final int code;
+    private final String message;
 
     ErrorCode(int code, String message) {
         this.code = code;
-        this.message = message;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
         this.message = message;
     }
 }

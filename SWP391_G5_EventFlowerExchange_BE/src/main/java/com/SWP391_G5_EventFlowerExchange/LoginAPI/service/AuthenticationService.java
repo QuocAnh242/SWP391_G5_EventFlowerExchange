@@ -1,9 +1,10 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.AuthenticationRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.AuthenticationResponse;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.IntrospectRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.IntrospectResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.AuthenticationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.AuthenticationResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.IntrospectRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.IntrospectResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
@@ -22,11 +23,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
@@ -61,31 +64,35 @@ public class AuthenticationService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated= passwordEncoder.matches(request.getPassword(), user.getPassword());
+
         if(!authenticated) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        var token= generateToken(request.getEmail());
+        var token= generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
                 .build();
     }
 
-    private String generateToken(String email) {
+    private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimSet= new JWTClaimsSet.Builder()
-                .subject(email)
-                .issuer("Login API")
+                .subject(user.getUsername())
+                .issuer("EventFlowerExchange")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
-                .claim("customClaim", "custom")
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload= new Payload(jwtClaimSet.toJSONObject());
+
         JWSObject jwsObject = new JWSObject(header, payload);
+
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
             return jwsObject.serialize();
@@ -93,5 +100,13 @@ public class AuthenticationService {
             log.error("Cannot create token", e);
             throw new RuntimeException(e);
         }
+    }
+
+    private String buildScope(User user) {
+            StringJoiner stringJoiner= new StringJoiner(" ");
+            if(!CollectionUtils.isEmpty(user.getRoles())) {
+                user.getRoles().forEach(stringJoiner::add);
+            }
+            return stringJoiner.toString();
     }
 }
