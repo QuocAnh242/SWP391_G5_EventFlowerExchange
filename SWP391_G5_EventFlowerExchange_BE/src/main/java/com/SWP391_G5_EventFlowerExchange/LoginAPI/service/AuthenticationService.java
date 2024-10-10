@@ -1,9 +1,9 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.AuthenticationRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.AuthenticationResponse;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.IntrospectRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.IntrospectResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.AuthenticationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.AuthenticationResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.IntrospectRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.IntrospectResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;

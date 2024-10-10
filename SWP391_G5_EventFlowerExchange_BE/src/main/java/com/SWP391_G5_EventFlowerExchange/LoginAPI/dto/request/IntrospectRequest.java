@@ -1,4 +1,4 @@
-package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto;
+package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class IntrospectResponse {
-    boolean valid;
+public class IntrospectRequest {
+    String token;
 }

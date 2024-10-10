@@ -1,7 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserUpdateRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.UserResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.Role;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
@@ -14,11 +15,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 
@@ -26,37 +28,83 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserService {
+public class UserService implements IUserService {
     IUserRepository userRepository;
     INotificationsRepository notificationsRepository;
     IEventFlowerPostingRepository iEventFlowerPostingRepository;
     PasswordEncoder passwordEncoder;
-    // Create User
-    public User createRequest(UserCreationRequest request) {
+
+    // USER METHODS
+    @Override
+    public User createUser(UserCreationRequest request) {
         User user = new User();
 
-        // Advance Exception Handling
+        // Advance Exception Handling For Already Existed Email
         if(userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
-//      user.setRole("buyer");
-        user.setCreatedAt(LocalDateTime.now());
-        // encode password
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        // set role for user is BUYER
-        HashSet<String> Roles = new HashSet<>();
-        Roles.add(Role.BUYER.name());
 
-        user.setRoles(Roles);
+        // Encode password
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // Set role for user is BUYER
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.BUYER.name());
+        user.setRoles(roles);
+
         return userRepository.save(user);
     }
 
+    // Show Profile
+    @Override
+    @PostAuthorize("returnObject.email == authentication.name")
+    public UserResponse getUser(int userID) {
+        UserResponse userResponse = new UserResponse();
+        // Test Security...
+        log.info("In method getUser");
+
+        // Retrieve User entity
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Convert User to UserResponse
+        userResponse.setUserID(user.getUserID());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setAddress(user.getAddress());
+        userResponse.setPhoneNumber(user.getPhoneNumber());
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.BUYER.name());
+        user.setRoles(roles);
+        userResponse.setCreatedAt(user.getCreatedAt());
+
+        return userResponse;
+    }
+
+    @Override
+    @PostAuthorize("returnObject.email == authentication.name")
+    public User updateUser(int userID, UserUpdateRequest request) {
+        User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Update user's information
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setAddress(request.getAddress());
+        user.setPhoneNumber(request.getPhoneNumber());
+
+        return userRepository.save(user);
+    }
+
+    // ADMIN METHODS
+    // Get all users
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -66,31 +114,19 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User getUser(int userID) {
-        return userRepository.findById(userID)
-        .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
-    }
-
-
-    public User updateUser(int userID, UserUpdateRequest request) {
-        User user = getUser(userID);
-
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setAddress(request.getAddress());
-        user.setPhoneNumber(request.getPhoneNumber());
-
-        return userRepository.save(user);
-    }
-
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteUser(int userID) {
-        // Xóa tất cả các thông báo liên quan đến userId trước
-        iEventFlowerPostingRepository.deleteByUser_userID(userID);
-        notificationsRepository.deleteByUser_userID(userID);
-        userRepository.deleteById(userID);
+        try {
+            // Delete all notifications and related entities before deleting the user
+            iEventFlowerPostingRepository.deleteByUser_userID(userID);
+            notificationsRepository.deleteByUser_userID(userID);
+            userRepository.deleteById(userID);
+        } catch (Exception e) {
+            log.error("Error occurred while deleting user with ID {}: {}", userID, e.getMessage());
+            throw new AppException(ErrorCode.DELETE_USER_ERROR, e);  // Pass the original exception
+        }
     }
-
 
 }

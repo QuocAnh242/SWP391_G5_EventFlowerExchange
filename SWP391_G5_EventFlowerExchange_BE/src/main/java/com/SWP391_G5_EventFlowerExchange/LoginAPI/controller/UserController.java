@@ -1,13 +1,15 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.ApiResponse;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserCreationRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserLoginRequest;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.UserUpdateRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserUpdateRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.UserResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,42 +17,62 @@ import java.util.List;
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/users")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
-    @Autowired
-    private UserService userService;
+    UserService userService;
 
+    // USER API
     // Create User
     @PostMapping("/create")
     ApiResponse<User> createUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiResponse<User> apiResponse = new ApiResponse<>();
-
-        apiResponse.setResult(userService.createRequest(request));
-        return apiResponse;
+        return ApiResponse.<User>builder()
+                .result(userService.createUser(request))
+                .code(1000) // Set success code
+                .message("User created successfully") // Set success message
+                .build();
     }
 
+    // Find User by their ID
+    @GetMapping("/{userId}")
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") int userID) {
+        return ApiResponse.<UserResponse>builder()
+                .result(userService.getUser(userID))
+                .code(1000) // Set success code
+                .message("User created successfully") // Set success message
+                .build();
+    }
+
+    // Update Users by their ID
+    @PutMapping("/{userID}")
+    ApiResponse<User> updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
+        return ApiResponse.<User>builder()
+                .result(userService.updateUser(userID, request))
+                .code(1000) // Set success code
+                .message("User created successfully") // Set success message
+                .build();
+    }
+
+    // ADMIN METHODS
     // List Users
     @GetMapping
-    List<User> getAllUsers() {
-        return userService.getUsers();
-    }
-
-    // Find User by Id
-    @GetMapping("/{userID}")
-    User getUser(@PathVariable("userID") int userID) {
-        return userService.getUser(userID);
-    }
-
-    // Update Users
-    @PutMapping("/{userID}")
-    User updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
-        return userService.updateUser(userID, request);
+    ApiResponse<List<User>> getAllUsers() {
+        return ApiResponse.<List<User>>builder()
+                .result(userService.getUsers())
+                .code(1000) // Set success code
+                .message("User created successfully") // Set success message
+                .build();
     }
 
     // Delete User
-    @DeleteMapping("/{userID}")
-    String deleteUser(@PathVariable int userID) {
-        userService.deleteUser(userID);
-        return "User has been deleted";
+    @DeleteMapping("/{userId}")
+    ApiResponse<String> deleteUser(@PathVariable int userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.<String>builder()
+                .result("User has been deleted")
+                .code(1000) // Set success code
+                .message("User created successfully") // Set success message
+                .build();
     }
 
 }

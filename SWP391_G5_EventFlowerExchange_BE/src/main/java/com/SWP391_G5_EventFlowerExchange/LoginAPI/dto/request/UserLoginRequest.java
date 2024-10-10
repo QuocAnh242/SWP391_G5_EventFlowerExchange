@@ -1,4 +1,4 @@
-package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto;
+package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
