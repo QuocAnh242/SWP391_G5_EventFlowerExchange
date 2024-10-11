@@ -16,4 +16,6 @@ public interface IEventFlowerPostingRepository extends JpaRepository<EventFlower
      // Tìm kiếm theo khoảng giá
      @Query("SELECT e FROM EventFlowerPosting e WHERE e.price BETWEEN :minPrice AND :maxPrice")
      List<EventFlowerPosting> searchByPriceRange(@Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice);
+
+
 }

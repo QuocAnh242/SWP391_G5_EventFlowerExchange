@@ -2,8 +2,8 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,35 +14,38 @@ import java.util.List;
 @Table(name = "EventFlowerPosting")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class EventFlowerPosting {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int postID;
+    int postID;
 
-    private String title;
+    String title;
 
-    private String description;
+    String description;
 
-    private BigDecimal price;
+    BigDecimal price;
 
-    private String imageUrl;
+    String imageUrl;
 
-    private String status;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
+    String status;
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "eventFlowerPosting", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<FlowerBatch> flowerBatches = new ArrayList<>();
+    List<FlowerBatch> flowerBatches = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
-    private User user;
+    User user;
 
     @PrePersist
     protected void onCreate() {
