@@ -11,19 +11,19 @@ import './BlogSlider.css';
 // Blog Section as Slider
 function BlogSlider() {
   const settings = {
-    dots: true,           // Hiển thị các chấm điều hướng dưới slider
+    dots: false,           // Hiển thị các chấm điều hướng dưới slider
     infinite: true,       // Lặp lại vô hạn
     speed: 500,           // Tốc độ chuyển ảnh
     slidesToShow: 3,      // Hiển thị 3 bài blog cùng lúc
     slidesToScroll: 1,    // Di chuyển từng bài một
     autoplay: true,       // Tự động chuyển bài blog
     autoplaySpeed: 3000,  // Thời gian mỗi lần tự động chuyển
-    rtl: true,            // Chuyển từ phải sang trái
+    rtl: false,            // Chuyển từ phải sang trái
     responsive: [
       {
         breakpoint: 768, // Khi màn hình nhỏ hơn 768px
         settings: {
-          slidesToShow: 1,  // Chỉ hiện 1 bài blog trên màn hình
+          slidesToShow: 3,  // Chỉ hiện 1 bài blog trên màn hình
         },
       },
     ],
@@ -31,37 +31,37 @@ function BlogSlider() {
 
   return (
     <div className="about-blog">
-      <h2>From Our Blog</h2>
+      <h2 className='blog-title'>Từ Blog Của Chúng Tôi</h2>
       <Slider {...settings}>
         <div className="blog-card">
           {/* <img src={BlogImage1} alt="Blog Post 1" /> */}
-          <h3>The Best Flowers for Your Wedding Day</h3>
-          <p>Explore the top flowers that will make your wedding unforgettable.</p>
-          <button>Read More</button>
+          <h3>Những Loài Hoa Tuyệt Vời Cho Ngày Cưới Của Bạn</h3>
+          <p>Khám phá những loài hoa hàng đầu giúp đám cưới của bạn trở nên khó quên.</p>
+          <button className='button-blog'>Đọc Thêm</button>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage2} alt="Blog Post 2" /> */}
-          <h3>Caring for Roses: Tips & Tricks</h3>
+          <h3>Chăm Sóc Hoa Hồng: Mẹo & Bí Quyết</h3>
           <p>Roses are timeless, but they need proper care. Learn how to keep them fresh and vibrant.</p>
-          <button>Read More</button>
+          <button className='button-blog'>Đọc Thêm</button>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage3} alt="Blog Post 3" /> */}
-          <h3>Top 5 Summer Flowers to Brighten Your Home</h3>
-          <p>Learn which summer flowers will add beauty and fragrance to your home.</p>
-          <button>Read More</button>
+          <h3>Top 5 Loài Hoa Mùa Hè Giúp Ngôi Nhà Thêm Rực Rỡ</h3>
+          <p>Tìm hiểu những loài hoa mùa hè sẽ mang lại vẻ đẹp và hương thơm cho ngôi nhà của bạn.</p>
+          <button className='button-blog'>Đọc Thêm</button>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage4} alt="Blog Post 4" /> */}
-          <h3>How to Arrange Flowers Like a Pro</h3>
-          <p>Master the art of flower arrangement with these tips from the experts.</p>
-          <button>Read More</button>
+          <h3>Cách Cắm Hoa Như Một Chuyên Gia</h3>
+          <p>Nắm vững nghệ thuật cắm hoa với những mẹo từ các chuyên gia.</p>
+          <button className='button-blog'>Đọc Thêm</button>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage5} alt="Blog Post 5" /> */}
-          <h3>The Importance of Choosing Local Flowers</h3>
-          <p>Discover why supporting local growers can make a big difference.</p>
-          <button>Read More</button>
+          <h3>Tầm Quan Trọng Của Việc Chọn Hoa Địa Phương</h3>
+          <p>Tầm Quan Trọng Của Việc Chọn Hoa Địa Phương</p>
+          <button className='button-blog'>Đọc Thêm</button>
         </div>
       </Slider>
     </div>

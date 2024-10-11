@@ -6,6 +6,7 @@
   z-index: 9999; /* Đảm bảo navbar luôn trên cùng */
   background-color: #fff; 
   display: flex;
+  padding-bottom: 5px;
   justify-content: space-between;
   align-items: center;
   height: 80px;
@@ -16,7 +17,7 @@
 
 /* Đảm bảo có khoảng trống dưới navbar để nội dung không bị che */
 body {
-  padding-top: 80px; /* Tạo khoảng trống phía trên cho nội dung để không bị navbar che mất */
+  padding-top: 80px; 
 }
 
 /* Left section with logo and brand name */
@@ -34,6 +35,7 @@ body {
   display: flex;
   gap: 30px;
   align-items: center;
+  margin-left: 15%;
 }
 
 .nav-link {

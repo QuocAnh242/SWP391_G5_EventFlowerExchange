@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
 import Logo from '../assets/Flower_preview_rev_1.png';
-import { FaSearch, FaUser, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
+import { FaUser, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
 
 const products = [
   { id: 1, name: "Rose", description: "Beautiful red roses" },
@@ -40,13 +40,13 @@ function Navbar() {
     setCartCount(storedCart.length);
   }, []);
 
-  const toggleSearchBar = () => {
-    setIsSearchVisible(!isSearchVisible);
-    if (!isSearchVisible) {
-      setSearchTerm('');
-      setSearchResults([]);
-    }
-  };
+  // const toggleSearchBar = () => {
+  //   setIsSearchVisible(!isSearchVisible);
+  //   if (!isSearchVisible) {
+  //     setSearchTerm('');
+  //     setSearchResults([]);
+  //   }
+  // };
 
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -79,64 +79,64 @@ function Navbar() {
       </div>
 
       <div className="navbar-center">
-        <NavLink exact to="/" className="nav-link" activeClassName="activeLink">Home</NavLink>
-        <NavLink to="/about" className="nav-link" activeClassName="activeLink">About</NavLink>
-        <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Postings</NavLink>
-        <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Contact</NavLink>
-        <NavLink to="/blog" className="nav-link" activeClassName="activeLink">Blog</NavLink>
+        <NavLink exact to="/" className="nav-link" activeClassName="activeLink">Trang chủ</NavLink>
+        <NavLink to="/about" className="nav-link" activeClassName="activeLink">Giới thiệu</NavLink>
+        <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
+        <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
+        <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
         {/* <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink> */}
         {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
       </div>
 
       <div className="navbar-right">
-  {/* Icon search */}
-  <FaSearch className="navbar-icon" onClick={toggleSearchBar} />
+        {/* Icon search (giữ nếu bạn vẫn muốn hiển thị icon, nhưng không cần tính năng click) */}
+        {/* <FaSearch className="navbar-icon" /> */}
 
-  {/* Search input field */}
-  {isSearchVisible && (
-    <div className="search-bar-wrapper">
-      <input
-        type="text"
-        className="search-bar-nav"
-        placeholder="Search products..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          {searchResults.map((product) => (
-            <div key={product.id} className="search-result-item">
-              <h4>{product.name}</h4>
-              <p>{product.description}</p>
+        {/* Search input field (luôn hiển thị) */}
+        <div className="search-bar-wrapper">
+          <input
+            type="text"
+            className="search-bar-nav"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          {searchResults.length > 0 && (
+            <div className="search-results">
+              {searchResults.map((product) => (
+                <div key={product.id} className="search-result-item">
+                  <h4>{product.name}</h4>
+                  <p>{product.description}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
-      )}
-    </div>
-  )}
 
-  {/* User and cart icons */}
-  {user ? (
-    <>
-      <span className="navbar-user">Welcome, {user.username || 'User'}</span>
-      <Link to="/profile-page">
-        <FaUser className="navbar-icon" />
-      </Link>
-      <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
-    </>
-  ) : (
-    <Link to="/login">
-      <FaUser className="navbar-icon" />
-    </Link>
-  )}
 
-  <div className="cart-icon-wrapper">
-    <Link to ="/cart">
-    <FaShoppingBag className="navbar-icon" />
-    <span className="cart-count">{cartCount}</span>
-    </Link>
-  </div>
-</div>
+        {/* User and cart icons */}
+        {user ? (
+          <>
+            <span className="navbar-user">Welcome, {user.username || 'User'}</span>
+            <Link to={user.role === 'admin' ? '/admin-user-management' : '/profile-page'}>
+              <FaUser className="navbar-icon" />
+            </Link>
+            <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
+          </>
+        ) : (
+          <Link to="/login">
+            <FaUser className="navbar-icon" />
+          </Link>
+        )}
+
+
+        <div className="cart-icon-wrapper">
+          <Link to="/cart">
+            <FaShoppingBag className="navbar-icon" />
+            <span className="cart-count">{cartCount}</span>
+          </Link>
+        </div>
+      </div>
 
     </nav>
   );

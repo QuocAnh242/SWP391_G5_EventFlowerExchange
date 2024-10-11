@@ -3,23 +3,50 @@
   display: flex;
   min-height: 100vh; /* Chiếm toàn bộ chiều cao của màn hình */
   flex-direction: column; /* Đảm bảo các phần tử bên trong theo cột */
+  margin : 0 20px;
   
 }
-
-/* Thanh tùy chọn bên trái */
-.sidebar {
-  width: 100px;
-  background-color: #C75959;
+/* Container chung cho sidebar */
+.sidebar-post-exchange {
+  width: 250px; 
+  height: 100vh; 
+  position: fixed; 
+  left: 0; 
+  top: 0; 
+  background-color: #f7f7f7; 
   padding: 20px;
-  border-right: 1px solid #ccc;
-  margin-top: 10px;
-  
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+  padding-top: 100px;
 }
 
+/* Tiêu đề của sidebar */
 .sidebar-title {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 60px 5px;
+  font-size: 1.5em;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+
+/* Danh sách các loại hoa */
+.category-list {
+  list-style-type: none; 
+  padding: 0;
+}
+
+/* Item trong danh sách */
+.category-list li {
+  padding: 10px 0;
+  cursor: pointer; 
+  color: #555;
+  font-size: 1.1em;
+  border-bottom: 1px solid #e0e0e0; 
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hiệu ứng khi hover vào các mục */
+.category-list li:hover {
+  background-color: #eaeaea;
+  color: #000;
 }
 
 .category-list {
@@ -35,7 +62,7 @@
 }
 
 .category-list li:hover {
-  background-color: #ff5733;
+  background-color: #FFC0CB;
   color: white;
 }
 
@@ -50,35 +77,97 @@
   font-size: 24px;
   margin-bottom: 20px;
 }
+.banner-post{
+  width: 100%;  
+  height: 500px;
+  max-width: 1350px; 
+  margin-left : 200px; 
+}
+
+/*Chỉnh link hiển thị dưới phần banner*/
+.breadcrumb{
+  margin-left: 200px;
+  margin-top : 10px
+}
+.home-link-breadcrumb{
+  text-decoration: none; /* Remove underline */
+  color: #000;
+}
+.home-link-breadcrumb:hover {
+  color: #FFC0CB; 
+}
+
+/*Thanh lọc về giá*/
+.filter-sort-bar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; 
+  margin-bottom: 20px; 
+
+}
+.filter-dropdown, .sort-dropdown {
+  padding: 7px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Optional: Add hover effects for better UI */
+.filter-dropdown:hover, .sort-dropdown:hover {
+  border-color: black;
+  cursor: pointer;
+}
+
+  
 
 /* Lưới bài post */
 .post-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  padding:0 300px;
+  margin-left: 200px;
+  
 }
 
 .post-card {
   background-color: white;
-  border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  padding-left: 30px;
+  /* padding: 20px; */
+  /* padding-left: 30px; */
   text-align: center;
   cursor: pointer;
   transition: transform 0.3s ease;
+  position: relative;
+  /* max-width: 5px; */
 }
 
 .post-card:hover {
   transform: translateY(-5px);
 }
 
+.feature-content {
+  text-align: justify;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  
+ 
+}
+.post-card-title, .discount-price,.feature-detail-button {
+  text-align: center;
+}
+.feature-detail-button {
+  /* position: absolute; */
+  bottom: 15px;
+  margin-right: 10px;
+  /* margin-right: 100px; */
+  /* width: 100%; */
+  background-color: #FFC0CB;
+}
 .post-card-image {
   width: 100%;
-  height: 200px;
+  height: 500px;
   object-fit: cover;
   border-radius: 8px;
+  
 }
 
 .discount-price {
@@ -140,9 +229,9 @@
 }
 
 .footer {
-  position: relative;  /* Đảm bảo footer nằm ở dưới */
-  width: 100vw;        /* Chiếm toàn bộ chiều rộng của viewport */
-  margin: 0;           /* Loại bỏ bất kỳ margin nào */ /* Màu nền của footer */      /* Màu chữ */     /* Khoảng cách bên trong */
-  text-align: center;  /* Căn giữa nội dung */
+  position: relative;  
+  width: 100vw;        
+  margin: 0;           
+  text-align: center;  
 
 }

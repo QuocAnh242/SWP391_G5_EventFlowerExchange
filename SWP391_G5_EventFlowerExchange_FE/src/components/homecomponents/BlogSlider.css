@@ -1,51 +1,56 @@
 .about-blog {
-    margin: 50px 0;
-  }
-  
-  .blog-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease;
-  }
-  
-  .blog-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  .blog-card h3 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-  }
-  
-  .blog-card p {
-    color: #666;
-  }
-  
-  .blog-card button {
-    background-color: #e74c3c;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .blog-card button:hover {
-    background-color: #c0392b;
-  }
-  
-  .slick-slide {
-    margin: 0 10px;
-  }
-  
-  .slick-dots {
-    bottom: -30px;
-  }
-  
+  padding: 20px;
+ 
+}
+
+.blog-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.blog-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px;
+  margin: 10px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  min-height: 300px; /* Đảm bảo các bài blog có chiều cao tối thiểu bằng nhau */
+  position: relative;
+}
+
+.blog-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+.blog-card h3{
+  text-align: center;
+}
+/* .blog-card p {
+  flex-grow: 1;
+  margin-bottom: 20px;
+} */
+
+.button-blog {
+  position: absolute;
+  bottom: 20px; /* Align button 20px from the bottom */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Adjust centering */
+  padding: 10px 15px;
+  font-size: 1rem;
+  background-color: #FF6B6B;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.blog-card:hover {
+  transform: translateY(-5px);
+}
