@@ -80,14 +80,20 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimSet= new JWTClaimsSet.Builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .issuer("EventFlowerExchange")
                 .issueTime(new Date())
                 .expirationTime(new Date(
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
+                .claim("userID", user.getUserID())
+                .claim("email", user.getEmail())
+                .claim("address", user.getAddress())
+                .claim("phoneNumber", user.getPhoneNumber())
+                .claim("roles", user.getRoles())
                 .claim("scope", buildScope(user))
                 .build();
+
 
         Payload payload= new Payload(jwtClaimSet.toJSONObject());
 
