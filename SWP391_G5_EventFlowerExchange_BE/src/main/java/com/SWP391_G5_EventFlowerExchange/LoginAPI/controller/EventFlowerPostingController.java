@@ -17,7 +17,9 @@ import java.util.Optional;
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/post")
+
 public class EventFlowerPostingController {
+
     @Autowired
     private EventFlowerPostingService eventFlowerPostingService;
     @GetMapping("/")
