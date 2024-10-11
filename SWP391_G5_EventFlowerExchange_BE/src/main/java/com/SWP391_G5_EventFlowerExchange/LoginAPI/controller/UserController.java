@@ -20,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
+
     UserService userService;
 
     // USER API
@@ -39,7 +40,7 @@ public class UserController {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userID))
                 .code(1000) // Set success code
-                .message("User created successfully") // Set success message
+                .message("Get user successfully") // Set success message
                 .build();
     }
 
@@ -49,7 +50,7 @@ public class UserController {
         return ApiResponse.<User>builder()
                 .result(userService.updateUser(userID, request))
                 .code(1000) // Set success code
-                .message("User created successfully") // Set success message
+                .message("Update user successfully") // Set success message
                 .build();
     }
 
@@ -60,7 +61,7 @@ public class UserController {
         return ApiResponse.<List<User>>builder()
                 .result(userService.getUsers())
                 .code(1000) // Set success code
-                .message("User created successfully") // Set success message
+                .message("Get all users successfully") // Set success message
                 .build();
     }
 
@@ -71,7 +72,6 @@ public class UserController {
         return ApiResponse.<String>builder()
                 .result("User has been deleted")
                 .code(1000) // Set success code
-                .message("User created successfully") // Set success message
                 .build();
     }
 
