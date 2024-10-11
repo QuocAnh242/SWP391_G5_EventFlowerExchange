@@ -83,7 +83,7 @@ function Navbar() {
         <NavLink to="/about" className="nav-link" activeClassName="activeLink">Giới thiệu</NavLink>
         <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
-        <NavLink to="/blog" className="nav-link" activeClassName="activeLink">Blog</NavLink>
+        <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
         {/* <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink> */}
         {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
       </div>

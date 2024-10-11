@@ -14,6 +14,7 @@ import Cart from './pages/Cart';
 import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
 import ScrollToTop from "./components/ScrollToTop"; 
+import BlogPage from "./pages/Blog";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/profile-page" element={<ProfilePage />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
+          <Route path="/blog-page" element={<BlogPage />} />
         </Routes>
         {/* <Footer/> */}
       </Router>

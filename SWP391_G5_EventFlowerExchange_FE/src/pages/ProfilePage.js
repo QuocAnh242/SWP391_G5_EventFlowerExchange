@@ -36,9 +36,9 @@ const ProfilePage = () => {
       case 'profile':
         return <ProfileInfo userID={loggedInUserID} />; // Render ProfileInfoComponent with userID
       case 'password':
-        return <h2>Change Password Section</h2>;
+        return 
       case 'orders':
-        return <h2>My Orders Section</h2>;
+        return 
       case 'create-post':
         return <CreatePost/>;
       default:
@@ -55,27 +55,24 @@ const ProfilePage = () => {
         </div>
       ) : (
         <div className="profile-layout">
-          <aside className="sidebar">
-            <h2 className="sidebar-title">Account Settings</h2>
+          <aside className="sidebar-profile-page">
+            <h2 className="sidebar-profile-title">Account Settings</h2>
             <ul className="sidebar-menu">
               <li className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}>
-                <a href="#profile" onClick={() => setActiveTab('profile')}>Profile Info</a>
+                <a href="#profile" onClick={() => setActiveTab('profile')}>Thông tin cá nhân </a>
               </li>
-              <li className={`menu-item ${activeTab === 'password' ? 'active' : ''}`}>
+              {/* <li className={`menu-item ${activeTab === 'password' ? 'active' : ''}`}>
                 <a href="#password" onClick={() => setActiveTab('password')}>Change Password</a>
-              </li>
+              </li> */}
               <li className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`}>
-                <a href="#orders" onClick={() => setActiveTab('orders')}>My Orders</a>
+                <a href="#orders" onClick={() => setActiveTab('orders')}>Đơn hàng của tôi</a>
               </li>
               <li className={`menu-item ${activeTab === 'create-post' ? 'active' : ''}`}>
-                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Create Post</a>
+                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo Post</a>
               </li>
             </ul>
           </aside>
           <section className="profile-content">
-            <h1 className="profile-header">
-              {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Section
-            </h1>
             {error && <p className="error-message">{error}</p>}
             {renderTabContent()}
           </section>

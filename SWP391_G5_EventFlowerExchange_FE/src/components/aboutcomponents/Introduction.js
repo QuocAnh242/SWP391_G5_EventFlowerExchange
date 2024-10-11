@@ -4,13 +4,13 @@ import "./Introduction.css"; // Sửa lại tên file CSS
 
 function Introduction() {
   const settings = {
-    dots: true,
+    dots: false,
     infinite: true,
-    speed: 600,
+    speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 6000,
   };
 
   const introductions = [

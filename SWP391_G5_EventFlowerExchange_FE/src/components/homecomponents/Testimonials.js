@@ -4,7 +4,7 @@ import "./Testimonials.css";
 
 function Testimonials() {
   const settings = {
-    dots: true, // Hiển thị dấu chấm để di chuyển giữa các slide
+    dots: false, // Hiển thị dấu chấm để di chuyển giữa các slide
     infinite: true, // Lặp lại carousel khi hết slide
     speed: 500, // Tốc độ chuyển đổi slide (ms)
     slidesToShow: 1, // Hiển thị 1 slide mỗi lần
