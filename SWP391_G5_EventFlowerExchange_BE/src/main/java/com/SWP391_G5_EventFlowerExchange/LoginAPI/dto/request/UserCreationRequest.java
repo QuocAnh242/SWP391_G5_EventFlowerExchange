@@ -20,5 +20,4 @@ public class UserCreationRequest {
     String address;
     String phoneNumber;
     LocalDate createdAt;
-
 }

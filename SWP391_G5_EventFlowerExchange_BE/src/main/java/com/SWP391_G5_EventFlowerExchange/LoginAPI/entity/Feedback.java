@@ -1,10 +1,15 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Feedback")
+@Data
+@NoArgsConstructor
 public class Feedback {
 
     @EmbeddedId
@@ -16,65 +21,16 @@ public class Feedback {
     @Column(nullable = false)
     private int rating;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
     @MapsId("userID")
-    @JoinColumn(name = "userID")
+    @JoinColumn(name = "userID", nullable = false)
     private User user;
 
     @ManyToOne
     @MapsId("sellerID")
-    @JoinColumn(name = "sellerID")
+    @JoinColumn(name = "sellerID", nullable = false)
     private User seller;
-
-    // Getters and Setters
-
-    public FeedbackKey getId() {
-        return id;
-    }
-
-    public void setId(FeedbackKey id) {
-        this.id = id;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public User getSeller() {
-        return seller;
-    }
-
-    public void setSeller(User seller) {
-        this.seller = seller;
-    }
 }

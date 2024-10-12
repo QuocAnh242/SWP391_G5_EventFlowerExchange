@@ -3,7 +3,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.Interface.IOrderDetailService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

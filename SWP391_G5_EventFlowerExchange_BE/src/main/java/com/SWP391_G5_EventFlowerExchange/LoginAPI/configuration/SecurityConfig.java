@@ -26,7 +26,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users/create", "/auth/token", "/auth/introspect"
+            "/users/create", "/auth/token", "/auth/introspect", "/posts", "posts/{userID}"
     };
 
     @Value("${jwt.signerKey}")
@@ -40,7 +40,6 @@ public class SecurityConfig {
                 .permitAll()
                 // Admin Endpoints
                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-
                 .anyRequest()
                 .authenticated());
 

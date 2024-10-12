@@ -2,14 +2,13 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFlowerBatchRepository;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.Interface.IFlowerBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 @Service
-public class FlowerBatchSerivice implements IFlowerBatchService {
+public class FlowerBatchSerivice implements IFlowerBatchService{
     @Autowired
     private IFlowerBatchRepository flowerBatchRepository;
     @Override
