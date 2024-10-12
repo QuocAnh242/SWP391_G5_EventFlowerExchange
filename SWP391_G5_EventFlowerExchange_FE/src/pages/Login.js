@@ -1,111 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-// import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import api from '../config/axios';
 import '../styles/Login.css';
 import Footer from '../components/Footer';
-// import withLoading from '../components/withLoading';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-
+  const [loading, setLoading] = useState(false); // Trạng thái loading ban đầu là false
   const navigate = useNavigate();
 
-
-  useEffect(() => {
-    // Giả lập trạng thái tải dữ liệu
-    const timer = setTimeout(() => {
-      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
-    }, 2000); // Bạn có thể thay đổi thời gian này theo yêu cầu
-
-    // Cleanup timer nếu component bị unmount
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p className="loading-text">Đang tải dữ liệu...</p>
-      </div>
-
-    );
-  }
-
-
-
+  // Hàm login
   const handleLogin = async (e) => {
-    e.preventDefault(); // Ngăn chặn reload trang khi submit form
-
-    const loginValues = { email, password };
+    e.preventDefault(); // Ngăn không cho trang reload khi submit form
+    setLoading(true); // Bắt đầu quá trình login nên bật loading
 
     try {
-      const response = await api.post('http://localhost:8080/identity/users/login', loginValues);
-      console.log('Response:', response.data);
+      const response = await api.post('http://localhost:8080/identity/auth/token', {
+        email: email,
+        password: password,
+    });
 
-      // Kiểm tra xem result có hợp lệ không (không null)
-      if (response.data && response.data.result) {
-        console.log('Đăng nhập thành công:', response.data.result);
+      // Giả sử backend trả về { jwt: 'token_value', role: 'USER_ROLE' }
+      const { jwt: token, role } = response.data;
 
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem('user', JSON.stringify(response.data.result));
+      // Lưu token vào localStorage
+      localStorage.setItem('token', token);
 
-        // Điều hướng người dùng sau khi đăng nhập thành công dựa trên role
-        const role = response.data.result.role;
-        if (role === 'admin') {
-          navigate('/admin-user-management'); // Điều hướng đến trang admin
-        } else if (role === 'customer') {
-          navigate('/'); // Điều hướng đến trang customer
-        } else {
-          navigate('/'); // Điều hướng mặc định nếu role không xác định
-        }
+      alert('Login successful!');
 
-        // Reload the page to ensure user data is loaded properly
-        window.location.reload();
+      // Điều hướng dựa trên role của người dùng
+      if (role === 'ADMIN') {
+        navigate('/admin');
+      } else if (role === 'BUYER') {
+        navigate('/home');
       } else {
-        // Nếu result là null hoặc không tồn tại, hiển thị lỗi
-        setError("Tài khoản hoặc mật khẩu sai");
+        navigate('/dashboard'); // Điều hướng mặc định nếu không rõ role
       }
-
     } catch (error) {
-      // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
-      setError("Tài khoản hoặc mật khẩu sai");
+      console.error('Error logging in:', error.response?.data || error.message);
+      // Hiển thị thông báo lỗi chi tiết
+      setError(error.response?.data?.message || 'Login failed! Check your credentials.');
+    } finally {
+      setLoading(false); // Dừng loading sau khi hoàn thành
     }
   };
 
-
-
-
-// Ẩn hiện password
+  // Hàm để ẩn/hiện mật khẩu
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
-  // const handleGoogleLoginSuccess = async (credentialResponse) => {
-  //   const googleToken = credentialResponse.credential; // Lấy token từ Google
-
-  //   try {
-  //     const response = await api.post('http://localhost:8080/identity/', {
-  //       idToken: googleToken,
-  //     });
-
-  //     const { token, role, email } = response.data;
-  //     localStorage.setItem("token", token);
-  //     localStorage.setItem("userEmail", email);
-  //     localStorage.setItem("userRole", role);
-
-  //     role === 'admin' ? navigate("/admin") : navigate("/");
-  //   } catch (error) {
-  //     setError('Google login failed. Please try again.');
-  //   }
-  // };
-
-
 
   return (
     <div className="login-container">
@@ -137,7 +84,7 @@ const Login = () => {
             />
             <label htmlFor="password" className="form-label">Password</label>
 
-            {/* Password toggle icon */}
+            {/* Biểu tượng ẩn/hiện mật khẩu */}
             <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
@@ -145,20 +92,18 @@ const Login = () => {
 
           <div className="forgot-password">Forgot password?</div>
 
-          {/* Display error message */}
-          {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
+          {/* Hiển thị thông báo lỗi nếu có */}
+          {error && <div className="error-message" style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
 
-          <button type="submit" className="login-btn">
-            LOGIN
+          <button type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'LOGIN'}
           </button>
         </form>
 
         <div className="social-login">
           <p>Or Sign up using</p>
           <div className="social-icons">
-            {/* <a href="#"><FaFacebook /></a>
-            <a href="#"><FaTwitter /></a>
-            <a href="#"><FaGoogle /></a> */}
+            {/* Các icon social có thể được thêm ở đây */}
           </div>
         </div>
         <div className="signup-link">
@@ -170,4 +115,4 @@ const Login = () => {
   );
 };
 
-export default Login;   
+export default Login;

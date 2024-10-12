@@ -70,7 +70,7 @@ const AdminUserManagement = () => {
 
   const handleDeleteUser = async (userID) => {
     try {
-      await axios.delete(`http://localhost:8080/identity/users/${userID}`);
+      await axios.delete(`http://localhost:8080/identity/post/${userID}`);
       fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);

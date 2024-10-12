@@ -25,7 +25,7 @@ function Menu() {
   // Fetch data from Spring Boot API
   const fetchFlowerList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/identity/post/");
+      const response = await axios.get("http://localhost:8080/identity/posts");
       setFlowerList(response.data); // Save flower data in state
       setFilteredFlowers(response.data); // Initialize the filtered list
     } catch (error) {
