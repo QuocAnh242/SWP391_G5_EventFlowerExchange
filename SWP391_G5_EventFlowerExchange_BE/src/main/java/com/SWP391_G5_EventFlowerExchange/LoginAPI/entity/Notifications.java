@@ -1,17 +1,10 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Notifications")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Notifications {
 
     @Id
@@ -24,15 +17,51 @@ public class Notifications {
     @Column(nullable = false, length = 255)
     private String notificationType;
 
-    private LocalDateTime createdAt;  // No default value here
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = true)
     private User user;
 
-    // Constructor to initialize createdAt
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
+    // Getters and Setters
+
+    public int getNotificationID() {
+        return notificationID;
+    }
+
+    public void setNotificationID(int notificationID) {
+        this.notificationID = notificationID;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(String notificationType) {
+        this.notificationType = notificationType;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

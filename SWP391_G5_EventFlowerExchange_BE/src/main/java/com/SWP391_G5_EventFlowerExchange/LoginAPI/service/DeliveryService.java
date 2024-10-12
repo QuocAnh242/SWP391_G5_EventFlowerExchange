@@ -2,13 +2,14 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Delivery;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IDeliveryRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.Interface.IDeliveryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 @Service
-public class DeliveryService implements IDeliveryService{
+public class DeliveryService implements IDeliveryService {
     @Autowired
     private IDeliveryRepository deliveryRepository;
     @Override
@@ -35,8 +36,8 @@ public class DeliveryService implements IDeliveryService{
             if(deli.getRating()!=0){
                 deli.setRating(deli.getRating());
             }
-            if(deli.getOrders()!=null){
-                deli.setOrders(deli.getOrders());
+            if(deli.getOrder()!=null){
+                deli.setOrder(deli.getOrder());
             }
 
         }

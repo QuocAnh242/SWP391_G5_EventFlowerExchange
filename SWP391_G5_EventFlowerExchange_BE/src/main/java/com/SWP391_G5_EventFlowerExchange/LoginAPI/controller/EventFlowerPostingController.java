@@ -29,14 +29,14 @@ public class EventFlowerPostingController {
     public EventFlowerPosting savePost(@RequestBody EventFlowerPosting postId) {
         return eventFlowerPostingService.insertEventFlowerPosting(postId);//201 CREATED
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<EventFlowerPosting> updatePostId(@PathVariable int id, @RequestBody EventFlowerPosting post) {
-        EventFlowerPosting updatedPostId = eventFlowerPostingService.updateEventFlowerPosting(id, post);
+    @PutMapping("/{postID}")
+    public ResponseEntity<EventFlowerPosting> updatePostId(@PathVariable int postID, @RequestBody EventFlowerPosting post) {
+        EventFlowerPosting updatedPostId = eventFlowerPostingService.updateEventFlowerPosting(postID, post);
         return ResponseEntity.ok(updatedPostId);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deletePost(@PathVariable int id) {
-        eventFlowerPostingService.deleteEventFlowerPosting(id);
+    @DeleteMapping("/{postID}")
+    public ResponseEntity<String> deletePost(@PathVariable int postID) {
+        eventFlowerPostingService.deleteEventFlowerPosting(postID);
         return ResponseEntity.ok("Deleted!");
     }
     @DeleteMapping("/{postID}/flowerBatch/{flowerID}")
@@ -49,9 +49,9 @@ public class EventFlowerPostingController {
         } else {
             return ResponseEntity.notFound().build();
         }}
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<EventFlowerPosting>> getPostById(@PathVariable int id) {
-        Optional<EventFlowerPosting> post= eventFlowerPostingService.getEventFlowerPostingById(id);
+    @GetMapping("/{postID}")
+    public ResponseEntity<Optional<EventFlowerPosting>> getPostById(@PathVariable int postID) {
+        Optional<EventFlowerPosting> post= eventFlowerPostingService.getEventFlowerPostingById(postID);
         return ResponseEntity.ok(post);
     }
     // API tìm kiếm theo từ khóa (title, description, status)

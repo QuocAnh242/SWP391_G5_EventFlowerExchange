@@ -1,20 +1,19 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.exception;
 
-import lombok.Getter;
-
-@Getter
 public class AppException extends RuntimeException {
-    private final ErrorCode errorCode;
+    // extends RuntimeException khi app error
+    private ErrorCode errorCode;
 
-    // Existing constructor
     public AppException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
 
-    // New constructor that accepts both ErrorCode and Throwable (Exception)
-    public AppException(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessage(), cause);
+    public ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 }

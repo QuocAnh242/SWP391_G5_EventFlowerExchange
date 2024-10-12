@@ -1,6 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.exception;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

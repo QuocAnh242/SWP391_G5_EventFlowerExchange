@@ -2,13 +2,14 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Category;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.ICatetoryRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.Interface.ICatetoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 @Service
-public class CatetoryService implements ICatetoryService{
+public class CatetoryService implements ICatetoryService {
     @Autowired
     private ICatetoryRepository icatetoryRepository;
     @Override
