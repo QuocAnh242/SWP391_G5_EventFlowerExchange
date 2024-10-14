@@ -41,16 +41,30 @@
   bottom: 20px; /* Align button 20px from the bottom */
   left: 50%; /* Center horizontally */
   transform: translateX(-50%); /* Adjust centering */
-  padding: 10px 15px;
+  padding: 10px 20px; /* Slightly increase padding */
   font-size: 1rem;
   background-color: #FF6B6B;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+}
+
+.button-blog:hover {
+  background-color: #FF4B4B; /* Darker shade on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+  transform: translateX(-50%) translateY(-3px); /* Slightly lift button on hover */
+}
+
+.button-blog:active {
+  background-color: #E63946; /* Even darker shade when clicked */
+  transform: translateX(-50%) translateY(1px); /* Simulate button press */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Adjust shadow when pressed */
 }
 
 .blog-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px); /* Lift the blog card slightly on hover */
 }
+

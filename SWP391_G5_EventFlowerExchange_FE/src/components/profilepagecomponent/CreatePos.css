@@ -42,7 +42,6 @@
   .create-post-component form button {
     width: 100%;
     padding: 10px;
-    background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 5px;
@@ -51,7 +50,7 @@
   }
   
   .create-post-component form button:hover {
-    background-color: #45a049;
+    background-color: #FFC0CB;
   }
   
   .create-post-component .error-message {
@@ -61,10 +60,11 @@
     text-align: center;
   }
   
-  .create-post-component .success-message {
-    color: #4CAF50;
+  .create-post-component .success-message-post {
+    color: #f44336;
     font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 20px;
+    margin-top: 10px;
     text-align: center;
   }
   
