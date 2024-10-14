@@ -27,6 +27,7 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/users/create", "/auth/token", "/auth/introspect", "/posts", "posts/{userID}"
+
     };
 
     @Value("${jwt.signerKey}")
@@ -37,6 +38,8 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request -> request
                 // Public Endpoints
                 .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+                .permitAll()
+                .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS)
                 .permitAll()
                 // Admin Endpoints
                 .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())

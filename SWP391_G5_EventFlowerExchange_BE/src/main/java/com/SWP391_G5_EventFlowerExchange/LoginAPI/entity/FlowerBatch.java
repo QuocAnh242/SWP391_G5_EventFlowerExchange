@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 @Entity
 @Table(name = "FlowerBatch")
@@ -43,4 +44,25 @@ public class FlowerBatch {
     @ManyToOne
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
+    @Override
+    public String toString() {
+        return "FlowerBatch{" +
+                "flowerID=" + flowerID +
+                ", flowerName='" + flowerName + '\'' +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FlowerBatch)) return false;
+        FlowerBatch that = (FlowerBatch) o;
+        return flowerID == that.flowerID; // So sánh theo ID
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(flowerID);
+    }
 }
