@@ -32,6 +32,15 @@ function FlowerBatchDetail() {
     }
   };
 
+  // const fetchFloweDetail = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:8080/identity/post/');
+  //     setPost(response.data);
+  //   } catch (error) {
+  //     console.error("Error fetching post: ", error);
+  //   }
+  // };
+
   const handleThumbnailClick = (image) => {
     setCurrentImage(image); // Change the large image when thumbnail is clicked
   };
@@ -99,8 +108,8 @@ function FlowerBatchDetail() {
           </div>
 
           <div className="button-container">
-            <button className="buy-now-button">Buy Now</button>
-            <button className="add-cart-button">Add to Cart</button>
+            <button className="buy-now-button">Mua Ngay</button>
+            <button className="add-cart-button">Thêm vào giỏ hàng</button>
           </div>
         </div>
       </div>
