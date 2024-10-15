@@ -44,14 +44,14 @@ public class UserController {
                 .build();
     }
 
-    // Update Users by their ID
     @PutMapping("/{userID}")
-    ApiResponse<User> updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
-        return ApiResponse.<User>builder()
-                .result(userService.updateUser(userID, request))
-                .code(1000) // Set success code
-                .message("Update user successfully") // Set success message
-                .build();
+    public ApiResponse<User> updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
+        User userUpdate= userService.updateUser(userID, request);
+            return ApiResponse.<User>builder()
+                    .result(userUpdate)
+                    .code(1000) // Set success code
+                    .message("Update user successfully") // Set success message
+                    .build();
     }
 
     // ADMIN METHODS
