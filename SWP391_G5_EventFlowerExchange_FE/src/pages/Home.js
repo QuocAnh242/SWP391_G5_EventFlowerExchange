@@ -15,7 +15,7 @@ import FeaturedImage from '../assets/about-img/a1.jpg';
 import BlogImage1 from '../assets/about-img/a2.jpg';
 
 import '../styles/Home.css';
-import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Testimonials from '../components/homecomponents/Testimonials';
 import BlogSlider from '../components/homecomponents/BlogSlider';
@@ -79,18 +79,20 @@ function Home() {
           <div className="featured-text">
             <h3>Bộ Sưu Tập Hoa Mùa Xuân</h3>
             <p>
-            Khám phá bộ sưu tập hoa Mùa Xuân độc quyền của chúng tôi. Những bông hoa tươi được chọn lọc kỹ càng từ các nhà trồng hoa địa phương tốt nhất.
+              Khám phá bộ sưu tập hoa Mùa Xuân độc quyền của chúng tôi. Những bông hoa tươi được chọn lọc kỹ càng từ các nhà trồng hoa địa phương tốt nhất.
             </p>
-            <button src > Mua ngay </button>
-          </div>
+            <a href="/menu">
+              <button className='home-button'>Mua ngay</button>
+            </a>
+          </div>  
         </div>
       </div>
       {/* Blog Section */}
-      
-       {/* Phần sản phẩm mới */}
+
+      {/* Phần sản phẩm mới */}
       <NewProducts />
-      <BlogSlider/>
-      <Testimonials/>
+      <BlogSlider />
+      <Testimonials />
 
       <Footer />
     </div>

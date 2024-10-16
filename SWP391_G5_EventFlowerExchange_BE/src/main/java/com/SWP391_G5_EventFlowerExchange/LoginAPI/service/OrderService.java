@@ -2,7 +2,6 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

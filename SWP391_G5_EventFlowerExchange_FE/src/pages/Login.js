@@ -12,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loadQing
 
   const navigate = useNavigate();
 
@@ -39,44 +39,67 @@ const Login = () => {
 
 
 
-  const handleLogin = async (e) => {
-    e.preventDefault(); // Ngăn chặn reload trang khi submit form
+  // Function to decode JWT token
+const decodeToken = (token) => {
+  const tokenParts = token.split('.');
 
-    const loginValues = { email, password };
+  if (tokenParts.length !== 3) {
+      throw new Error("Invalid JWT token");
+  }
 
-    try {
-      const response = await api.post('http://localhost:8080/identity/users/login', loginValues);
-      console.log('Response:', response.data);
+  const base64Url = tokenParts[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  const jsonPayload = decodeURIComponent(
+      atob(base64)
+          .split('')
+          .map((c) => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
+          .join('')
+  );
 
-      // Kiểm tra xem result có hợp lệ không (không null)
-      if (response.data && response.data.result) {
-        console.log('Đăng nhập thành công:', response.data.result);
+  return JSON.parse(jsonPayload);
+};
 
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem('user', JSON.stringify(response.data.result));
+const handleLogin = async (e) => {
+  e.preventDefault(); // Prevent the page from reloading
 
-        // Điều hướng người dùng sau khi đăng nhập thành công dựa trên role
-        const role = response.data.result.role;
-        if (role === 'admin') {
-          navigate('/admin-user-management'); // Điều hướng đến trang admin
-        } else if (role === 'customer') {
-          navigate('/'); // Điều hướng đến trang customer
-        } else {
-          navigate('/'); // Điều hướng mặc định nếu role không xác định
-        }
+  try {
+      const response = await api.post('http://localhost:8080/identity/auth/token', {
+          email,
+          password,
+      });
 
-        // Reload the page to ensure user data is loaded properly
-        window.location.reload();
+      // Get the token from the response
+      const { token } = response.data.result; // Adjusted to match your provided structure
+
+      // Save the JWT token in localStorage
+      localStorage.setItem('token', token);
+
+      // Decode the JWT token to extract the payload
+      const decodedPayload = decodeToken(token);
+      console.log("Decoded JWT Payload:", decodedPayload);
+
+      // Extract the role from the decoded token
+      const { roles } = decodedPayload;
+
+      // Alert login success
+      // alert('Login successful!');
+
+      // Navigate based on user role
+      if (roles.includes('ADMIN')) {
+          navigate('/admin-user-management'); // Redirect to admin page
+      } else if (roles.includes('BUYER')) {
+          navigate('/'); // Redirect to home page
       } else {
-        // Nếu result là null hoặc không tồn tại, hiển thị lỗi
         setError("Tài khoản hoặc mật khẩu sai");
       }
+      window.location.reload();
+  } catch (error) {
+      // Handle errors by logging the response data or message
+       // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
+       setError("Tài khoản hoặc mật khẩu sai");
+  }
+};
 
-    } catch (error) {
-      // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
-      setError("Tài khoản hoặc mật khẩu sai");
-    }
-  };
 
 
 
@@ -110,7 +133,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Sign in</h2>
+        <h2>Đăng nhập</h2>
         <form onSubmit={handleLogin}>
           <div className="form-field">
             <input
@@ -135,7 +158,7 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <label htmlFor="password" className="form-label">Password</label>
+            <label htmlFor="password" className="form-label">Mật khẩu</label>
 
             {/* Password toggle icon */}
             <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
@@ -143,7 +166,7 @@ const Login = () => {
             </span>
           </div>
 
-          <div className="forgot-password">Forgot password?</div>
+          <div className="forgot-password">Quên mật khẩu?</div>
 
           {/* Display error message */}
           {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
@@ -162,7 +185,7 @@ const Login = () => {
           </div>
         </div>
         <div className="signup-link">
-          Don't have an account? <Link to="/signup">Sign Up</Link>
+          Bạn chưa có tài khoản? <Link to="/signup">Đăng kí tại đây</Link>
         </div>
       </div>
       <Footer />
