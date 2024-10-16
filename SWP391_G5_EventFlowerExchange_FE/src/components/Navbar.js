@@ -97,7 +97,7 @@ function Navbar() {
           <input
             type="text"
             className="search-bar-nav"
-            placeholder="Search products..."
+            placeholder="Tìm kiếm..."
             value={searchTerm}
             onChange={handleSearchChange}
           />

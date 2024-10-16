@@ -37,31 +37,41 @@ function BlogSlider() {
           {/* <img src={BlogImage1} alt="Blog Post 1" /> */}
           <h3>Những Loài Hoa Tuyệt Vời Cho Ngày Cưới Của Bạn</h3>
           <p>Khám phá những loài hoa hàng đầu giúp đám cưới của bạn trở nên khó quên.</p>
+          <a href='/blog-page'>
           <button className='button-blog'>Đọc Thêm</button>
+          </a>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage2} alt="Blog Post 2" /> */}
           <h3>Chăm Sóc Hoa Hồng: Mẹo & Bí Quyết</h3>
           <p>Roses are timeless, but they need proper care. Learn how to keep them fresh and vibrant.</p>
+          <a href='/blog-page'>
           <button className='button-blog'>Đọc Thêm</button>
+          </a>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage3} alt="Blog Post 3" /> */}
           <h3>Top 5 Loài Hoa Mùa Hè Giúp Ngôi Nhà Thêm Rực Rỡ</h3>
           <p>Tìm hiểu những loài hoa mùa hè sẽ mang lại vẻ đẹp và hương thơm cho ngôi nhà của bạn.</p>
+          <a href='/blog-page'>
           <button className='button-blog'>Đọc Thêm</button>
+          </a>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage4} alt="Blog Post 4" /> */}
           <h3>Cách Cắm Hoa Như Một Chuyên Gia</h3>
           <p>Nắm vững nghệ thuật cắm hoa với những mẹo từ các chuyên gia.</p>
+          <a href='/blog-page'>
           <button className='button-blog'>Đọc Thêm</button>
+          </a>
         </div>
         <div className="blog-card">
           {/* <img src={BlogImage5} alt="Blog Post 5" /> */}
           <h3>Tầm Quan Trọng Của Việc Chọn Hoa Địa Phương</h3>
           <p>Tầm Quan Trọng Của Việc Chọn Hoa Địa Phương</p>
+          <a href='/blog-page'>
           <button className='button-blog'>Đọc Thêm</button>
+          </a>
         </div>
       </Slider>
     </div>

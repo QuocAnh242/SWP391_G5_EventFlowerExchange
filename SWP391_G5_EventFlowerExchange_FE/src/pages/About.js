@@ -24,7 +24,7 @@ const About = () => {
     return (
       <div className="loading-container">
         <div className="spinner"></div>
-        <p className="loading-text">Loading content...</p>
+        <p className="loading-text">Đang tải dữ liệu...</p>
       </div>
     );
   }

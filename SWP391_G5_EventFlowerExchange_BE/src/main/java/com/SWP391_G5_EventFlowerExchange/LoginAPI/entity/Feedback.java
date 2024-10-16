@@ -33,4 +33,5 @@ public class Feedback {
     @MapsId("sellerID")
     @JoinColumn(name = "sellerID", nullable = false)
     private User seller;
+
 }
