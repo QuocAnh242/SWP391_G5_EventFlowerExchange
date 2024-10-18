@@ -35,8 +35,8 @@ public class UserController {
     }
 
     // Find User by their ID
-    @GetMapping("/{userId}")
-    ApiResponse<UserResponse> getUser(@PathVariable("userId") int userID) {
+    @GetMapping("/{userID}")
+    ApiResponse<UserResponse> getUser(@PathVariable("userID") int userID) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userID))
                 .code(1000) // Set success code
@@ -66,9 +66,9 @@ public class UserController {
     }
 
     // Delete User
-    @DeleteMapping("/{userId}")
-    ApiResponse<String> deleteUser(@PathVariable int userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping("/{userID}")
+    ApiResponse<String> deleteUser(@PathVariable int userID) {
+        userService.deleteUser(userID);
         return ApiResponse.<String>builder()
                 .result("User has been deleted")
                 .code(1000) // Set success code

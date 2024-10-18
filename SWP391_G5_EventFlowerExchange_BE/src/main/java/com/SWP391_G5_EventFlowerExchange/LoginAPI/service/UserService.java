@@ -61,7 +61,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.principal.getClaim('email')")
+//    @PostAuthorize("returnObject.email == authentication.principal.getClaim('email')")
     public UserResponse getUser(int userID) {
         UserResponse userResponse = new UserResponse();
 
@@ -82,7 +82,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.principal.email")
+//    @PostAuthorize("returnObject.email == authentication.principal.email")
     public User updateUser(int userID, UserUpdateRequest request) {
         log.info("Attempting to update user with ID: {}", userID);
         log.info("Request data: {}", request);
@@ -107,7 +107,7 @@ public class UserService implements IUserService {
     // ADMIN METHODS
     // Get all users
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -118,7 +118,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteUser(int userID) {
         try {

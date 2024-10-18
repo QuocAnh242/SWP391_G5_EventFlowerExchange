@@ -6,9 +6,8 @@ import './ProfileInfo.css';
 const ProfileInfo = ({ userID }) => {
   const [profile, setUserProfile] = useState({
     userID: '',
-    username: '',
+    username: '', 
     email: '',
-    password: '',
     phoneNumber: '',
     address: '',
   });
@@ -17,9 +16,7 @@ const ProfileInfo = ({ userID }) => {
   const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    if (userID) {
       loadUserProfile(userID);
-    }
   }, [userID]);
 
   const loadUserProfile = async (userID) => {
@@ -59,7 +56,7 @@ const ProfileInfo = ({ userID }) => {
           <input className='name'
             type="text"
             name="username"
-            value={profile.username}
+            value={setUserProfile.username}
             onChange={handleChange}
             readOnly
           />
@@ -70,19 +67,9 @@ const ProfileInfo = ({ userID }) => {
           <input className='mail'
             type="email"
             name="email"
-            value={profile.email}
+            value={setUserProfile.email}
             onChange={handleChange}
             readOnly
-          />
-        </label>
-
-        <label>
-          Mật khẩu :
-          <input className='pass'
-            type="password"
-            name="password"
-            value={profile.password}
-            onChange={handleChange}
           />
         </label>
 
@@ -91,7 +78,7 @@ const ProfileInfo = ({ userID }) => {
           <input className='phone'
             type="text"
             name="phoneNumber"
-            value={profile.phoneNumber}
+            value={setUserProfile.phoneNumber}
             onChange={handleChange}
           />
         </label>
@@ -101,14 +88,14 @@ const ProfileInfo = ({ userID }) => {
           <input className='address'
             type="text"
             name="address"
-            value={profile.address}
+            value={setUserProfile.address}
             onChange={handleChange}
           />
         </label>
 
-        <button className='profile-submit' type="submit">Cập nhật</button> {/* Sửa type="profile-submit" thành type="submit" */}
+        <button className='profile-submit' type="submit">Cập nhật</button> {/* Corrected button class */}
         {error && <p className="error-message">{error}</p>}
-        {successMessage && <p className="success-message">{successMessage}</p>} {/* Hiển thị thông báo thành công */}
+        {successMessage && <p className="success-message">{successMessage}</p>} {/* Display success message */}
       </form>
     </div>
   );

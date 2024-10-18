@@ -13,7 +13,6 @@ const products = [
 ];
 
 function Navbar() {
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [user, setUser] = useState(null); // Store user info
@@ -40,14 +39,6 @@ function Navbar() {
     setCartCount(storedCart.length);
   }, []);
 
-  // const toggleSearchBar = () => {
-  //   setIsSearchVisible(!isSearchVisible);
-  //   if (!isSearchVisible) {
-  //     setSearchTerm('');
-  //     setSearchResults([]);
-  //   }
-  // };
-
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -67,7 +58,7 @@ function Navbar() {
     // Clear user session
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('userRole');
+    localStorage.removeItem('cart');
     setUser(null); // Remove user data from state
     navigate("/login"); // Redirect to login page
   };
@@ -84,15 +75,10 @@ function Navbar() {
         <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
         <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
-        {/* <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink> */}
-        {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
       </div>
 
       <div className="navbar-right">
-        {/* Icon search (giữ nếu bạn vẫn muốn hiển thị icon, nhưng không cần tính năng click) */}
-        {/* <FaSearch className="navbar-icon" /> */}
-
-        {/* Search input field (luôn hiển thị) */}
+        {/* Search input field (always visible) */}
         <div className="search-bar-wrapper">
           <input
             type="text"
@@ -113,12 +99,11 @@ function Navbar() {
           )}
         </div>
 
-
         {/* User and cart icons */}
         {user ? (
           <>
             <span className="navbar-user">Welcome, {user.username || 'User'}</span>
-            <Link to={user.role === 'admin' ? '/admin-user-management' : '/profile-page'}>
+            <Link to={user.roles && user.roles.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
               <FaUser className="navbar-icon" />
             </Link>
             <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
@@ -128,7 +113,6 @@ function Navbar() {
             <FaUser className="navbar-icon" />
           </Link>
         )}
-
 
         <div className="cart-icon-wrapper">
           <Link to="/cart">

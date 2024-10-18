@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
@@ -15,7 +15,11 @@ function Menu() {
   const [filteredFlowers, setFilteredFlowers] = useState([]); // Filtered flower list
   const [priceFilter, setPriceFilter] = useState(""); // Current price filter
   const [sortOrder, setSortOrder] = useState(""); // Current sort order
+  
+  const [currentPage, setCurrentPage] = useState(1); // Current page
+  const [flowersPerPage] = useState(16); // Flowers per page
 
+  const postCardRef = useRef([]); // To store refs for each post card
 
   // Fetch flower list when component mounts
   useEffect(() => {
@@ -25,7 +29,7 @@ function Menu() {
   // Fetch data from Spring Boot API
   const fetchFlowerList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/identity/post/");
+      const response = await axios.get("http://localhost:8080/identity/posts/");
       setFlowerList(response.data); // Save flower data in state
       setFilteredFlowers(response.data); // Initialize the filtered list
     } catch (error) {
@@ -84,6 +88,55 @@ function Menu() {
     setFilteredFlowers(sortedFlowers);
   };
 
+  // Pagination logic
+  const indexOfLastFlower = currentPage * flowersPerPage;
+  const indexOfFirstFlower = indexOfLastFlower - flowersPerPage;
+  const currentFlowers = filteredFlowers.slice(indexOfFirstFlower, indexOfLastFlower);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Handle previous and next buttons
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredFlowers.length / flowersPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Intersection Observer API to handle scroll-triggered animations
+  const callback = (entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      } else {
+        entry.target.classList.remove('show');
+      }
+    });
+  };
+
+  const observer = new IntersectionObserver(callback, {
+    threshold: 0.1 // Trigger when 10% of the element is visible
+  });
+
+  useEffect(() => {
+    const currentPosts = postCardRef.current;
+    currentPosts.forEach(post => {
+      if (post) observer.observe(post);
+    });
+
+    // Cleanup observer when component unmounts
+    return () => {
+      currentPosts.forEach(post => {
+        if (post) observer.unobserve(post);
+      });
+    };
+  }, [currentFlowers]);
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -93,8 +146,13 @@ function Menu() {
     );
   }
 
+  // Generate page numbers based on filtered flowers length
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(filteredFlowers.length / flowersPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
-    //Thanh sidebar chọn hoa
     <div className="shop-container">
       <div className="sidebar-post-exchange">
         <h3 className="sidebar-title">Danh mục hoa</h3>
@@ -111,11 +169,10 @@ function Menu() {
       {/* Main content */}
       <div className="main-content">
         <img src={b1} alt="" className="banner-post" />
-        {/* <h1 className="shop-title">Cửa hàng hoa - {category}</h1> */}
         <div className="breadcrumb">
-          <Link to="/" className="home-link-breadcrumb" >Trang chủ</Link>
+          <Link to="/" className="home-link-breadcrumb">Trang chủ</Link>
           <span> / </span>
-          <span>Posting / {category} </span>
+          <span>Posting / {category}</span>
         </div>
 
         {/* Filter and Sorting dropdowns */}
@@ -143,18 +200,51 @@ function Menu() {
         </div>
 
         <div className="post-grid">
-          {filteredFlowers.map((item, index) => (
-            <div className="post-card" key={index} onClick={() => handlePostClick(item.id)}>
+          {currentFlowers.map((item, index) => (
+            <div
+              className="post-card scroll-appear" // Apply scroll-triggered animation
+              key={index}
+              ref={(el) => postCardRef.current[index] = el} // Add ref to observe this card
+              onClick={() => handlePostClick(item.id)}
+            >
               <img src={a2} alt={item.title} className="post-card-image" />
               <h3>{item.title}</h3>
-              <p className="discount-price">Giá: {item.price}₫</p>
+              <p className="discount-price">Giá dự kiến : {item.price}VNĐ</p>
               <p className="feature-content">{item.description}</p>
               <button className="feature-detail-button">Xem chi tiết</button>
             </div>
           ))}
         </div>
-      </div>
 
+        {/* Pagination */}
+        <div className="pagination">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className="pagination-arrow"
+          >
+            &laquo; 
+          </button>
+
+          {pageNumbers.map((number) => (
+            <button
+              key={number}
+              onClick={() => paginate(number)}
+              className={number === currentPage ? "active" : ""}
+            >
+              {number}
+            </button>
+          ))}
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === Math.ceil(filteredFlowers.length / flowersPerPage)}
+            className="pagination-arrow"
+          >
+             &raquo;
+          </button>
+        </div>
+      </div>
       <Footer />
     </div>
   );

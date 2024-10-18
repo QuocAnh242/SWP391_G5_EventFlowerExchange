@@ -13,6 +13,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true); // Thêm trạng thái loadQing
+  const [user, setUser] = useState(null); // Declare user state
 
   const navigate = useNavigate();
 
@@ -60,45 +61,62 @@ const decodeToken = (token) => {
 };
 
 const handleLogin = async (e) => {
-  e.preventDefault(); // Prevent the page from reloading
+  e.preventDefault(); // Ngăn chặn reload trang khi submit form
+
+  const loginValues = { email, password };
 
   try {
-      const response = await api.post('http://localhost:8080/identity/auth/token', {
-          email,
-          password,
-      });
+    const response = await api.post('http://localhost:8080/identity/auth/token', loginValues);
+    console.log('Response:', response.data);
 
-      // Get the token from the response
-      const { token } = response.data.result; // Adjusted to match your provided structure
+    // Kiểm tra xem result có hợp lệ không (không null)
+    if (response.data && response.data.result) {
+      console.log('Đăng nhập thành công:', response.data.result);
 
-      // Save the JWT token in localStorage
+      // Lấy token từ kết quả đăng nhập
+      const { token } = response.data.result;
+
+      // Lưu token vào localStorage
       localStorage.setItem('token', token);
 
-      // Decode the JWT token to extract the payload
+      // Save user information to localStorage
+      localStorage.setItem('user', JSON.stringify(response.data.result));
+
+      // Update user state with the logged-in user data
+      setUser(response.data.result);
+
+      // Print the user data to console
+      console.log('User information:', response.data.result);
+      
+      // Decode the JWT token to extract the payload (assuming you have a decodeToken function)
       const decodedPayload = decodeToken(token);
       console.log("Decoded JWT Payload:", decodedPayload);
-
-      // Extract the role from the decoded token
+      
+      // Lấy vai trò người dùng từ payload của token
       const { roles } = decodedPayload;
 
-      // Alert login success
-      // alert('Login successful!');
-
-      // Navigate based on user role
+      // Điều hướng người dùng sau khi đăng nhập thành công dựa trên role
       if (roles.includes('ADMIN')) {
-          navigate('/admin-user-management'); // Redirect to admin page
+        // navigate('/admin-user-management'); 
       } else if (roles.includes('BUYER')) {
-          navigate('/'); // Redirect to home page
+        navigate('/'); // Điều hướng đến trang customer
       } else {
         setError("Tài khoản hoặc mật khẩu sai");
       }
+
+      // Reload the page to ensure user data is loaded properly
       window.location.reload();
+    } else {
+      // Nếu result là null hoặc không tồn tại, hiển thị lỗi
+      setError("Tài khoản hoặc mật khẩu sai");
+    }
+
   } catch (error) {
-      // Handle errors by logging the response data or message
-       // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
-       setError("Tài khoản hoặc mật khẩu sai");
+    // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
+    setError("Tài khoản hoặc mật khẩu sai");
   }
 };
+
 
 
 

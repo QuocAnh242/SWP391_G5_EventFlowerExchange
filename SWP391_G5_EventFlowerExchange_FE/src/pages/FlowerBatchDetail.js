@@ -25,21 +25,21 @@ function FlowerBatchDetail() {
   // Gọi API để lấy dữ liệu bài viết theo ID
   const fetchPost = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/identity/post/');
+      const response = await axios.get('http://localhost:8080/identity/posts/');
       setPost(response.data);
     } catch (error) {
       console.error("Error fetching post: ", error);
     }
   };
 
-  // const fetchFloweDetail = async () => {
-  //   try {
-  //     const response = await axios.get('http://localhost:8080/identity/post/');
-  //     setPost(response.data);
-  //   } catch (error) {
-  //     console.error("Error fetching post: ", error);
-  //   }
-  // };
+  const fetchFloweDetail = async () => {
+    try {
+      const response = await axios.get('/identity/flower/');
+      setPost(response.data);
+    } catch (error) {
+      console.error("Error fetching post: ", error);
+    }
+  };
 
   const handleThumbnailClick = (image) => {
     setCurrentImage(image); // Change the large image when thumbnail is clicked
