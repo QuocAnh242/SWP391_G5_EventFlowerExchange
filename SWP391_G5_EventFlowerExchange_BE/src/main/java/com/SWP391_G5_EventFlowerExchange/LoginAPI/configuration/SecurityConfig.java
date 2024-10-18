@@ -1,5 +1,4 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration;
-
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -17,8 +16,14 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
@@ -26,7 +31,8 @@ import javax.crypto.spec.SecretKeySpec;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/users/create", "/auth/token", "/auth/introspect", "/posts", "posts/{userID}"
+            "/users/create", "/auth/token", "/auth/introspect", "/posts/","/posts/${id}", "posts/{userID}",
+            "/users/{userID}", "/flower/","/catetory/" , "/flower/${id}"
     };
 
     @Value("${jwt.signerKey}")
@@ -34,23 +40,67 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(request -> request
-                // Public Endpoints
-                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
-                .permitAll()
-                // Admin Endpoints
-                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-                .anyRequest()
-                .authenticated());
 
-        http.oauth2ResourceServer(oauth2 -> oauth2
-                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+        http
+                .authorizeHttpRequests(request -> request
+                // Public Endpoints
+//                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+//                .requestMatchers(HttpMethod.PUT, "/users/{userID}").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/posts/").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/posts/${id}").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/flower/").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/flower/${id}").permitAll()
+//                .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
+//
+//                // Admin Endpoints
+//                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+//
+//                .anyRequest()
+//                .authenticated()
+                                .anyRequest().permitAll()
+                );
+
+
+//        http.oauth2ResourceServer(oauth2 -> oauth2
+//                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+//                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+//                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+//
+//        );
 
         http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
+//    @Bean
+//    public CorsConfigurationSource() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//
+//        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+//        corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST"));
+//        corsConfiguration.addAllowedHeader("*");
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//
+//        return source;
+//    }
+
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//
+//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+//        corsConfiguration.addAllowedMethod("*");
+//        corsConfiguration.addAllowedHeader("*");
+//
+//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+//
+//        return new CorsFilter(urlBasedCorsConfigurationSource);
+//    }
+
+
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {

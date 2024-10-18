@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Category;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.CatetoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,33 +13,41 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-@RequestMapping("/catetory")
+@RequestMapping("/category")
 public class CatetoryController {
+
     @Autowired
     private CatetoryService catetoryService;
+
     @GetMapping("/")
-    public ResponseEntity<List<Category>> fetchAll(){
-        return ResponseEntity.ok(catetoryService.getAllCategories());
+    public ApiResponse<List<Category>> fetchAll() {
+        List<Category> categories = catetoryService.getAllCategories();
+        return new ApiResponse<>(1000, "Categories retrieved successfully", categories);
     }
+
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Category saveCate(@RequestBody Category cateId) {
-        return catetoryService.insertCategory(cateId);//201 CREATED
+    public ApiResponse<Category> saveCate(@RequestBody Category cateId) {
+        Category savedCategory = catetoryService.insertCategory(cateId);
+        return new ApiResponse<>(1000, "Category created successfully", savedCategory);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCateId(@PathVariable int id, @RequestBody Category cate) {
-        Category updateCateId = catetoryService.updateCategory(id, cate);
-        return ResponseEntity.ok(updateCateId);
+    public ApiResponse<Category> updateCateId(@PathVariable int id, @RequestBody Category cate) {
+        Category updatedCate = catetoryService.updateCategory(id, cate);
+        return new ApiResponse<>(1000, "Category updated successfully", updatedCate);
     }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteCate(@PathVariable int id) {
+    public ApiResponse<String> deleteCate(@PathVariable int id) {
         catetoryService.deleteCategory(id);
-        return ResponseEntity.ok("Deleted!");
+        return new ApiResponse<>(1000, "Category deleted successfully", "Deleted!");
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Category>> getCateById(@PathVariable int id) {
-        Optional<Category> cate= catetoryService.getCategoryById(id);
-        return ResponseEntity.ok(cate);
+    public ApiResponse<Optional<Category>> getCateById(@PathVariable int id) {
+        Optional<Category> category = catetoryService.getCategoryById(id);
+        return new ApiResponse<>(1000, "Category retrieved successfully", category);
     }
 
 }

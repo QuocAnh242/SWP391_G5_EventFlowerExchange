@@ -1,11 +1,9 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Notifications;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.NotificationsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,31 +13,42 @@ import java.util.Optional;
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/noti")
 public class NotificationsController {
+
     @Autowired
     private NotificationsService notificationsService;
-    @GetMapping("/")
-    public ResponseEntity<List<Notifications>> fetchAll() {
 
-        return ResponseEntity.ok(notificationsService.getAllNotifications()) ;
+    // Lấy tất cả các Notifications
+    @GetMapping("/")
+    public ApiResponse<List<Notifications>> fetchAll() {
+        List<Notifications> notificationsList = notificationsService.getAllNotifications();
+        return new ApiResponse<>(1000, "Notifications retrieved successfully", notificationsList);
     }
+
+    // Cập nhật Notifications theo ID
     @PutMapping("/{id}")
-    public ResponseEntity<Notifications> updateNotiId(@PathVariable int id, @RequestBody Notifications noti) {
-        Notifications updatedNoId = notificationsService.updateNoti(id, noti);
-        return ResponseEntity.ok(updatedNoId);
+    public ApiResponse<Notifications> updateNotiId(@PathVariable int id, @RequestBody Notifications noti) {
+        Notifications updatedNotification = notificationsService.updateNoti(id, noti);
+        return new ApiResponse<>(1000, "Notification updated successfully", updatedNotification);
     }
+
+    // Tạo mới Notifications
     @PostMapping("/")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Notifications saveNoti(@RequestBody Notifications notiId) {
-        return notificationsService.insertNotifications(notiId);//201 CREATED
+    public ApiResponse<Notifications> saveNoti(@RequestBody Notifications noti) {
+        Notifications savedNotification = notificationsService.insertNotifications(noti);
+        return new ApiResponse<>(1000, "Notification created successfully", savedNotification);
     }
+
+    // Xóa Notifications theo ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteNoti(@PathVariable int id) {
+    public ApiResponse<String> deleteNoti(@PathVariable int id) {
         notificationsService.deleteNotifications(id);
-        return ResponseEntity.ok("Deleted!");
+        return new ApiResponse<>(1000, "Notification deleted successfully", "Deleted!");
     }
+
+    // Lấy Notifications theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Notifications>> getNotiById(@PathVariable int id) {
-        Optional<Notifications> noti= notificationsService.getNotificationsById(id);
-        return ResponseEntity.ok(noti);
+    public ApiResponse<Optional<Notifications>> getNotiById(@PathVariable int id) {
+        Optional<Notifications> notification = notificationsService.getNotificationsById(id);
+        return new ApiResponse<>(1000, "Notification retrieved successfully", notification);
     }
 }

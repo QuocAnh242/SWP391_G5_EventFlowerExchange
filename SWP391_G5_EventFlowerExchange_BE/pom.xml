@@ -56,7 +56,6 @@
 			<artifactId>mapstruct</artifactId>
 			<version>1.6.2</version>
 		</dependency>
-
 		<!-- Optional: Lombok to reduce boilerplate code -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>

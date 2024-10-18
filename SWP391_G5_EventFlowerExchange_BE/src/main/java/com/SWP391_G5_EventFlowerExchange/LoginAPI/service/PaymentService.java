@@ -1,7 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Payment;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.PaymentRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IPaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class PaymentService implements IPaymentService {
 
     @Autowired
-    private PaymentRepository paymentRepository;
+    private IPaymentRepository paymentRepository;
 
     @Override
     public Payment createPayment(Payment payment) {

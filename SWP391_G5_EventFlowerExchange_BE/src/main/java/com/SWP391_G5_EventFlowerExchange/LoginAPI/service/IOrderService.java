@@ -1,4 +1,4 @@
-package com.SWP391_G5_EventFlowerExchange.LoginAPI.repository;
+package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 
