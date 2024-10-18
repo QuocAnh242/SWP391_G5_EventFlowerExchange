@@ -20,7 +20,7 @@
     @RequestMapping("/posts")
     @RequiredArgsConstructor
     @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-    public class EventFlowerPostingController {
+    public class    EventFlowerPostingController {
         EventFlowerPostingService eventFlowerPostingService;
         @GetMapping("/")
         public ResponseEntity<List<EventFlowerPosting>> fetchAll(){

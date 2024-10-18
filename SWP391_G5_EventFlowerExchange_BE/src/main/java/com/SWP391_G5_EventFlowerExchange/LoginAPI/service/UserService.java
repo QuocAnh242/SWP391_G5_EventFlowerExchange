@@ -60,13 +60,10 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
-    // Show Profile
     @Override
-    @PostAuthorize("returnObject.email == authentication.name")
+//    @PostAuthorize("returnObject.email == authentication.principal.getClaim('email')")
     public UserResponse getUser(int userID) {
         UserResponse userResponse = new UserResponse();
-        // Test Security...
-        log.info("In method getUser");
 
         // Retrieve User entity
         User user = userRepository.findById(userID)
@@ -78,33 +75,49 @@ public class UserService implements IUserService {
         userResponse.setEmail(user.getEmail());
         userResponse.setAddress(user.getAddress());
         userResponse.setPhoneNumber(user.getPhoneNumber());
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.BUYER.name());
-        user.setRoles(roles);
+        userResponse.setRoles(user.getRoles());
         userResponse.setCreatedAt(user.getCreatedAt());
 
         return userResponse;
     }
 
     @Override
-    @PostAuthorize("returnObject.email == authentication.name")
+//    @PostAuthorize("returnObject.email == authentication.principal.email")
     public User updateUser(int userID, UserUpdateRequest request) {
-        User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        log.info("Attempting to update user with ID: {}", userID);
+        log.info("Request data: {}", request);
 
-        // Update user's information
+        // Tìm người dùng theo ID
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> {
+                    log.error("User with ID {} not found", userID);
+                    return new AppException(ErrorCode.USER_NOT_EXISTED);
+                });
+        log.info("Current user details before update: {}", user);
+
+        // Cập nhật các thuộc tính
         user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // Chỉ cập nhật mật khẩu nếu nó không rỗng
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        return userRepository.save(user);
+        // Lưu người dùng đã cập nhật
+        User updatedUser = userRepository.save(user);
+
+        // Ghi log thông tin người dùng đã cập nhật
+        log.info("User updated successfully: {}", updatedUser);
+        return updatedUser;
     }
 
     // ADMIN METHODS
     // Get all users
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -115,7 +128,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteUser(int userID) {
         try {
