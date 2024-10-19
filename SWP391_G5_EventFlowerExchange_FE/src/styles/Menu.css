@@ -235,3 +235,65 @@
   text-align: center;  
 
 }
+/*nút chuyển trang*/
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+  gap: 10px; /* Thêm khoảng cách giữa các nút */
+}
+
+.pagination button {
+  background-color: #fff;
+  border: 2px solid #FFC0CB;
+  color: #FFC0CB;
+  padding: 10px 15px;
+  border-radius: 50%;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.pagination button.active {
+  background-color: #FFC0CB;
+  color: white;
+  border-color: #FFC0CB;
+}
+
+.pagination button:hover {
+  background-color: #FFC0CB;
+  color: #fff;
+  transform: scale(1.1); /* Phóng to nhẹ khi hover */
+}
+
+.pagination button:focus {
+  outline: none;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Trạng thái ẩn ban đầu của các post-card */
+.scroll-appear {
+  opacity: 0;
+  transform: translateY(50px); /* Ban đầu phần tử dịch xuống */
+  transition: all 0.6s ease-in-out;
+}
+
+/* Khi phần tử hiện ra */
+.scroll-appear.show {
+  opacity: 1;
+  transform: translateY(0); /* Trở lại vị trí ban đầu */
+}
+
+/* Pagination */
+.pagination {
+  display: flex
+}
+
+

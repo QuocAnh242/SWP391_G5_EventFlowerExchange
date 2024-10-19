@@ -24,7 +24,7 @@ function RelatedPosts({ currentProductId }) {
 
   const fetchRelatedPosts = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/identity/post/");
+      const response = await axios.get("http://localhost:8080/identity/posts/");
       const filteredPosts = response.data.filter(item => item.id !== currentProductId);
       
       // Chọn ngẫu nhiên 4 bài

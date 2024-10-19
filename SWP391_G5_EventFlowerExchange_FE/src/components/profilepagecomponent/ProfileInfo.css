@@ -23,7 +23,7 @@
   }
   
   label {
-    font-size: 14px;
+    font-size: 15px;
     color: #555;
     margin-bottom: 5px;
     font-weight: 500;
@@ -46,32 +46,6 @@
     box-shadow: 0 0 5px #FFC0CB;
   }
   
-  button[type="profile-submit"] {   
-    background-color: #FFC0CB; /* Màu hồng nhạt */
-    color: black; /* Chữ màu đen */
-    padding: 10px 20px; /* Điều chỉnh kích thước hợp lý */
-    font-size: 14px; /* Phông chữ đủ lớn để dễ đọc */
-    font-weight: bold; 
-    border: none;
-    border-radius: 5px; 
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 10%; /* Đảm bảo nút chiếm đủ chiều rộng */
-    height: 20%;
-  }
-  
-  button[type="profile-submit"]:hover {
-    background-color: #FFF0F5; /* Hiệu ứng hover với màu hồng đậm hơn */
-  }
-  
-  
-  /* Error message styling */
-  .error-message {
-    color: red;
-    text-align: center;
-    margin-bottom: 15px;
-    font-size: 14px;
-  }
   
   /* Mobile responsive */
   @media (max-width: 600px) {
@@ -85,4 +59,74 @@
       padding: 10px;
     }
   }
+  
+
+
+  
+
+/* .profile-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+.profile-field {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.profile-field strong {
+  font-weight: bold;
+  color: #555;
+}
+
+
+.profile-card h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+
+.spinner {
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.2s linear infinite;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.loading-text {
+  margin-top: 15px;
+  font-size: 18px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+} */
+
   
