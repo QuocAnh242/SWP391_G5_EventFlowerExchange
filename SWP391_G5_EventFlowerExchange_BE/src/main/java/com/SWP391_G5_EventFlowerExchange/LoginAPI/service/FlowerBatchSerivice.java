@@ -17,10 +17,9 @@ public class FlowerBatchSerivice implements IFlowerBatchService{
     }
 
     @Override
-    public FlowerBatch insertFlowerBatch(FlowerBatch flowerBatch) {
-        return flowerBatchRepository.save(flowerBatch);
+    public List<FlowerBatch> insertFlowerBatch(List<FlowerBatch> flowerBatchList) {
+        return flowerBatchRepository.saveAll(flowerBatchList);
     }
-
     @Override
     public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch) {
         FlowerBatch fb=flowerBatchRepository.getById(flowerID);

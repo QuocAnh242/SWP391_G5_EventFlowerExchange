@@ -41,27 +41,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-//        http
-//                .authorizeHttpRequests(request -> request
-////                // Public Endpoints
-////                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-////                .requestMatchers(HttpMethod.PUT, "/users/{userID}").permitAll()
-////                .requestMatchers(HttpMethod.GET, "/posts/").permitAll()
-////                .requestMatchers(HttpMethod.GET, "/posts/${id}").permitAll()
-////                .requestMatchers(HttpMethod.GET, "/flower/").permitAll()
-////                        .requestMatchers(HttpMethod.GET, "/flower/${id}").permitAll()
-////                .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
-////
-////                // Admin Endpoints
-////                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-////
-////                .anyRequest()
-////                .authenticated());
-////
-////        http.oauth2ResourceServer(oauth2 -> oauth2
-////                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-////                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-////                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+        http
+                .authorizeHttpRequests(request -> request
+                // Public Endpoints
+//                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+//                .requestMatchers(HttpMethod.PUT, "/users/{userID}").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/posts/").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/posts/${id}").permitAll()
+//                .requestMatchers(HttpMethod.GET, "/flower/").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/flower/${id}").permitAll()
+//                .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
+//
+//                // Admin Endpoints
+//                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
+//
+//                .anyRequest()
+//                .authenticated()
+                                .anyRequest().permitAll()
+                );
+
+
+//        http.oauth2ResourceServer(oauth2 -> oauth2
+//                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+//                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+//                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
 //
 //        );
 
@@ -83,19 +86,19 @@ public class SecurityConfig {
 //        return source;
 //    }
 
-    @Bean
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-        corsConfiguration.addAllowedMethod("*");
-        corsConfiguration.addAllowedHeader("*");
-
-        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-
-        return new CorsFilter(urlBasedCorsConfigurationSource);
-    }
+//    @Bean
+//    public CorsFilter corsFilter() {
+//        CorsConfiguration corsConfiguration = new CorsConfiguration();
+//
+//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
+//        corsConfiguration.addAllowedMethod("*");
+//        corsConfiguration.addAllowedHeader("*");
+//
+//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
+//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
+//
+//        return new CorsFilter(urlBasedCorsConfigurationSource);
+//    }
 
 
 
