@@ -30,8 +30,8 @@ function FlowerBatchDetail() {
   // Hàm fetchPost nhận id và gọi API chính xác
   const fetchPost = async (id) => {
     try {
-      // const response = await axios.get(`http://localhost:8080/identity/posts/${id}`);
-      const response = await axios.get(`http://localhost:8080/identity/posts/2`);
+      const response = await axios.get(`http://localhost:8080/identity/posts/${id}`);
+      // const response = await axios.get(`http://localhost:8080/identity/posts/3`);
       setPost(response.data); // Lưu dữ liệu nhận được vào state
     } catch (error) {
       setError("Lỗi khi lấy chi tiết lô hoa. Vui lòng thử lại.");

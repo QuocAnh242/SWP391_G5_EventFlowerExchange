@@ -4,54 +4,54 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
-import a2 from '../assets/about-img/a5.jpg'; // Sample image
+import a2 from '../assets/about-img/a5.jpg'; // Hình ảnh mẫu
 import b1 from '../assets/banner-post.png';
 
 function Menu() {
-  const [flowerList, setFlowerList] = useState([]); // Flower list from API
-  const [category, setCategory] = useState("Tất cả hoa"); // Current category
-  const navigate = useNavigate(); // For navigation
-  const [loading, setLoading] = useState(true); // Loading state
-  const [filteredFlowers, setFilteredFlowers] = useState([]); // Filtered flower list
-  const [priceFilter, setPriceFilter] = useState(""); // Current price filter
-  const [sortOrder, setSortOrder] = useState(""); // Current sort order
-  
-  const [currentPage, setCurrentPage] = useState(1); // Current page
-  const [flowersPerPage] = useState(16); // Flowers per page
+  const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
+  const [category, setCategory] = useState("Tất cả hoa"); // Danh mục hiện tại
+  const navigate = useNavigate(); // Để điều hướng
+  const [loading, setLoading] = useState(true); // Trạng thái đang tải
+  const [filteredFlowers, setFilteredFlowers] = useState([]); // Danh sách hoa đã lọc
+  const [priceFilter, setPriceFilter] = useState(""); // Bộ lọc giá hiện tại
+  const [sortOrder, setSortOrder] = useState(""); // Thứ tự sắp xếp hiện tại
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [flowersPerPage] = useState(16); // Số lượng hoa mỗi trang
+  const postCardRef = useRef([]); // Để lưu refs cho mỗi thẻ bài viết
 
-  const postCardRef = useRef([]); // To store refs for each post card
-
-  // Fetch flower list when component mounts
+  // Lấy danh sách hoa khi component được tải
   useEffect(() => {
     fetchFlowerList();
   }, []);
 
-  // Fetch data from Spring Boot API
+  // Lấy dữ liệu từ API Spring Boot
   const fetchFlowerList = async () => {
     try {
       const response = await axios.get("http://localhost:8080/identity/posts/");
-      setFlowerList(response.data); // Save flower data in state
-      setFilteredFlowers(response.data); // Initialize the filtered list
+      console.log(response.data)
+      setFlowerList(response.data); // Lưu dữ liệu hoa vào state
+      setFilteredFlowers(response.data); // Khởi tạo danh sách đã lọc
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
 
-  // Handle post click
+  // Xử lý khi nhấn vào bài viết
   const handlePostClick = (id) => {
-    navigate(`/flower/${id}`); // Navigate to the post's detail page
+    navigate(`/flower/${id}`);
   };
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Simulate loading delay
+    }, 2000); // Mô phỏng độ trễ khi tải
     return () => clearTimeout(timer);
   }, []);
 
-  // Filtering logic based on price range
+  // Logic lọc theo khoảng giá
   const filterByPrice = (value) => {
-    setPriceFilter(value); // Set selected price range
+    setPriceFilter(value); // Thiết lập khoảng giá đã chọn
 
     let filtered = [...flowerList];
     if (value === "<100k") {
@@ -62,7 +62,7 @@ function Menu() {
       filtered = filtered.filter((flower) => flower.price > 500000);
     }
 
-    // Apply sorting if a sort order is selected
+    // Áp dụng sắp xếp nếu đã chọn thứ tự sắp xếp
     if (sortOrder) {
       filtered = sortFlowers(filtered, sortOrder);
     }
@@ -70,7 +70,7 @@ function Menu() {
     setFilteredFlowers(filtered);
   };
 
-  // Sorting logic for ascending or descending price
+  // Logic sắp xếp theo giá tăng dần hoặc giảm dần
   const sortFlowers = (flowers, order) => {
     if (order === "asc") {
       return flowers.sort((a, b) => a.price - b.price);
@@ -80,22 +80,22 @@ function Menu() {
     return flowers;
   };
 
-  // Handle sorting by price
+  // Xử lý sắp xếp theo giá
   const handleSortChange = (value) => {
-    setSortOrder(value); // Set selected sort order
+    setSortOrder(value); // Thiết lập thứ tự sắp xếp đã chọn
 
     let sortedFlowers = sortFlowers([...filteredFlowers], value);
     setFilteredFlowers(sortedFlowers);
   };
 
-  // Pagination logic
+  // Logic phân trang
   const indexOfLastFlower = currentPage * flowersPerPage;
   const indexOfFirstFlower = indexOfLastFlower - flowersPerPage;
   const currentFlowers = filteredFlowers.slice(indexOfFirstFlower, indexOfLastFlower);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // Handle previous and next buttons
+  // Xử lý nút trước và sau
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -108,7 +108,7 @@ function Menu() {
     }
   };
 
-  // Intersection Observer API to handle scroll-triggered animations
+  // Intersection Observer API để xử lý các hiệu ứng cuộn
   const callback = (entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -120,7 +120,7 @@ function Menu() {
   };
 
   const observer = new IntersectionObserver(callback, {
-    threshold: 0.1 // Trigger when 10% of the element is visible
+    threshold: 0.1 // Kích hoạt khi 10% của phần tử được nhìn thấy
   });
 
   useEffect(() => {
@@ -129,13 +129,13 @@ function Menu() {
       if (post) observer.observe(post);
     });
 
-    // Cleanup observer when component unmounts
+    // Dọn dẹp observer khi component bị hủy
     return () => {
       currentPosts.forEach(post => {
         if (post) observer.unobserve(post);
       });
     };
-  }, [currentFlowers]);
+  },);
 
   if (loading) {
     return (
@@ -146,7 +146,7 @@ function Menu() {
     );
   }
 
-  // Generate page numbers based on filtered flowers length
+  // Tạo số trang dựa trên độ dài của danh sách hoa đã lọc
   const pageNumbers = [];
   for (let i = 1; i <= Math.ceil(filteredFlowers.length / flowersPerPage); i++) {
     pageNumbers.push(i);
@@ -166,7 +166,7 @@ function Menu() {
         </ul>
       </div>
 
-      {/* Main content */}
+      {/* Nội dung chính */}
       <div className="main-content">
         <img src={b1} alt="" className="banner-post" />
         <div className="breadcrumb">
@@ -175,7 +175,7 @@ function Menu() {
           <span>Posting / {category}</span>
         </div>
 
-        {/* Filter and Sorting dropdowns */}
+        {/* Bộ lọc và sắp xếp */}
         <div className="filter-sort-bar">
           <select
             className="filter-dropdown"
@@ -200,23 +200,23 @@ function Menu() {
         </div>
 
         <div className="post-grid">
-          {currentFlowers.map((item, index) => (
+          {currentFlowers.map((flower, index) => (
             <div
-              className="post-card scroll-appear" // Apply scroll-triggered animation
+              className="post-card scroll-appear" // Áp dụng hiệu ứng cuộn
               key={index}
-              ref={(el) => postCardRef.current[index] = el} // Add ref to observe this card
-              onClick={() => handlePostClick(item.id)}
+              ref={(el) => postCardRef.current[index] = el} // Thêm ref để quan sát thẻ này
+              onClick={() => handlePostClick(flower.postID)}
             >
-              <img src={a2} alt={item.title} className="post-card-image" />
-              <h3>{item.title}</h3>
-              <p className="discount-price">Giá dự kiến : {item.price}VNĐ</p>
-              <p className="feature-content">{item.description}</p>
+              <img src={a2} alt={flower.title} className="post-card-image" />
+              <h3>{flower.title}</h3>
+              <p className="discount-price">Giá dự kiến : {flower.price}VNĐ</p>
+              <p className="feature-content">{flower.description}</p>
               <button className="feature-detail-button">Xem chi tiết</button>
             </div>
           ))}
         </div>
 
-        {/* Pagination */}
+        {/* Phân trang */}
         <div className="pagination">
           <button
             onClick={handlePreviousPage}

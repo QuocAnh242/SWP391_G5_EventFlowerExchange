@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.js'; 
 import CreatePost from "../components/profilepagecomponent/CreatePost.js";
 import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.js";
+import ManagePosts from "../components/profilepagecomponent/ManagePosts.js";
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
@@ -32,6 +33,8 @@ const ProfilePage = () => {
         return null; // Nội dung phần đơn hàng
       case 'create-post':
         return <CreatePost/>;
+        case 'manage-posts':
+          return <ManagePosts userID={userID}/>; // Add the ManagePosts component
       default:
         return null;
     }
@@ -60,6 +63,9 @@ const ProfilePage = () => {
               </li>
               <li className={`menu-item ${activeTab === 'create-post' ? 'active' : ''}`}>
                 <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo Post</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
+                <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lí bài post của tôi</a>
               </li>
             </ul>
           </aside>

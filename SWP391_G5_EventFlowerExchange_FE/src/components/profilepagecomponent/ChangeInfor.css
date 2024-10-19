@@ -33,15 +33,6 @@
     padding: 10px;
 }
 
-.success-message {
-    background-color: #d4edda;
-    color: #155724;
-}
-
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-}
 
 /* Form Styles */
 .change-info-form {

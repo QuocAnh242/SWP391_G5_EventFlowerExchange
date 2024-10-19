@@ -102,7 +102,7 @@ function Navbar() {
         {/* User and cart icons */}
         {user ? (
           <>
-            <span className="navbar-user">Chào mừng, {user.username || 'User'}</span>
+            <span className="navbar-user">Xin chào , {user.username || 'User'}</span>
             <Link to={user.roles && user.roles.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
               <FaUser className="navbar-icon" />
             </Link>

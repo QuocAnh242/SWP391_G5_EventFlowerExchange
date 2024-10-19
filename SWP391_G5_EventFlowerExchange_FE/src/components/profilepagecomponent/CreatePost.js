@@ -69,6 +69,17 @@ const CreatePostComponent = () => {
             required
           />
         </label>
+        
+        <label>
+          Giá dự kiến
+          <input
+            type="number"
+            name="price"
+            value={post.price}
+            onChange={handleChange}
+            // required
+          />
+        </label>
 
         <label>
           URL hình ảnh:
