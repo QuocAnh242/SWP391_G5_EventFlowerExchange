@@ -35,8 +35,8 @@ public class UserController {
     }
 
     // Find User by their ID
-    @GetMapping("/{userID}")
-    ApiResponse<UserResponse> getUser(@PathVariable("userID") int userID) {
+    @GetMapping("/{userId}")
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") int userID) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.getUser(userID))
                 .code(1000) // Set success code
@@ -45,13 +45,13 @@ public class UserController {
     }
 
     @PutMapping("/{userID}")
-    public ApiResponse<User> updateUser(@PathVariable int userID, @RequestBody UserUpdateRequest request) {
-        User userUpdate= userService.updateUser(userID, request);
-            return ApiResponse.<User>builder()
-                    .result(userUpdate)
-                    .code(1000) // Set success code
-                    .message("Update user successfully") // Set success message
-                    .build();
+    public ApiResponse<User> updateUser(@PathVariable int userID, @RequestBody @Valid UserUpdateRequest request) {
+        User userUpdate = userService.updateUser(userID, request);
+        return ApiResponse.<User>builder()
+                .result(userUpdate)
+                .code(1000) // Set success code
+                .message("Update user successfully") // Set success message
+                .build();
     }
 
     // ADMIN METHODS
@@ -66,9 +66,9 @@ public class UserController {
     }
 
     // Delete User
-    @DeleteMapping("/{userID}")
-    ApiResponse<String> deleteUser(@PathVariable int userID) {
-        userService.deleteUser(userID);
+    @DeleteMapping("/{userId}")
+    ApiResponse<String> deleteUser(@PathVariable int userId) {
+        userService.deleteUser(userId);
         return ApiResponse.<String>builder()
                 .result("User has been deleted")
                 .code(1000) // Set success code

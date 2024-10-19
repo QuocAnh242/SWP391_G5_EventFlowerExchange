@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,5 +128,12 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
         post.setStatus(request.getStatus());
         post.setUser(user);
         return iEventFlowerPostingRepository.save(post);
+    }
+    public List<EventFlowerPosting> getPostsByUserId(int userID) {
+        User user = iUserRepository.findById(userID).orElse(null);
+        if (user != null) {
+            return iEventFlowerPostingRepository.findByUser(user);
+        }
+        return Collections.emptyList();
     }
 }

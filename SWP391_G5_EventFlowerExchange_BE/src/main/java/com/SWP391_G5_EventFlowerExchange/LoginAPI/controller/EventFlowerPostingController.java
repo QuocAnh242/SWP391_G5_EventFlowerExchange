@@ -81,6 +81,11 @@
                     .message("Post created successfully") // Update success message to reflect post creation
                     .build();
         }
+        @GetMapping("/api/{userID}")
+        public ResponseEntity<List<EventFlowerPosting>> getPostsByUserId(@PathVariable int userID) {
+            List<EventFlowerPosting> posts = eventFlowerPostingService.getPostsByUserId(userID);
+            return ResponseEntity.ok(posts);
+        }
 
 
     }
