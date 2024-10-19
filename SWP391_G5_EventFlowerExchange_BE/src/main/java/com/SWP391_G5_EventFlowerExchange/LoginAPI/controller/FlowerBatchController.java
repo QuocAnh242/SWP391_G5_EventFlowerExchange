@@ -24,8 +24,8 @@ public class FlowerBatchController {
     }
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public FlowerBatch saveFlower(@RequestBody FlowerBatch orchid) {
-        return flowerBatchSerivice.insertFlowerBatch(orchid);//201 CREATED
+    public List<FlowerBatch> saveFlowers(@RequestBody List<FlowerBatch> flowers) {
+        return flowerBatchSerivice.insertFlowerBatch(flowers);
     }
     @PutMapping("/{id}")
     public ResponseEntity<FlowerBatch> updateFlowerId(@PathVariable int id, @RequestBody FlowerBatch fb) {

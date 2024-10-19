@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IFlowerBatchService {
     public List<FlowerBatch> getAllFlowerBatch();
-    public FlowerBatch insertFlowerBatch(FlowerBatch flowerBatch);
+    public List<FlowerBatch> insertFlowerBatch(List<FlowerBatch> flowerBatchList);
     public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
     public void deleteFlowerBatch(int flowerID);
     public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
