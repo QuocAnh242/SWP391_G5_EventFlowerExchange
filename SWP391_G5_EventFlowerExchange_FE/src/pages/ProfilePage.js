@@ -1,19 +1,20 @@
-// src/pages/ProfilePage.js
 import React, { useState, useEffect } from "react";
-// import Footer from '../components/Footer';
-import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.js'; // Import ProfileInfoComponent
+import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.js'; 
 import CreatePost from "../components/profilepagecomponent/CreatePost.js";
-// import axios from "axios";
+import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.js";
 import "../styles/ProfilePage.css";
-
 
 const ProfilePage = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
-  const [loggedInUserID, setLoggedInUserID] = useState(null);
+  const [userID, setUserID] = useState(null);  // State to store userID
 
   useEffect(() => {
+    // Giả sử bạn lấy userID từ localStorage hoặc từ API
+    const fetchedUserID = localStorage.getItem('userID'); // Tạm thời set là 1 nếu chưa có
+    setUserID(fetchedUserID);
+
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
@@ -21,24 +22,14 @@ const ProfilePage = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-
-    if (loggedInUser && loggedInUser.userID) {
-      setLoggedInUserID(loggedInUser.userID);
-    } else {
-      setError("No user is logged in.");
-    }
-  }, []);
-
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <ProfileInfo userID={loggedInUserID} />; // Render ProfileInfoComponent with userID
-      case 'password':
-        return 
+        return <ProfileInfo userID={userID}/>; // Truyền userID cho ProfileInfo nếu cần
+      case 'change-infor':
+        return <ChangeInfor userID={userID}/>;  // Truyền userID cho ChangeInfor
       case 'orders':
-        return 
+        return null; // Nội dung phần đơn hàng
       case 'create-post':
         return <CreatePost/>;
       default:
@@ -56,14 +47,14 @@ const ProfilePage = () => {
       ) : (
         <div className="profile-layout">
           <aside className="sidebar-profile-page">
-            <h2 className="sidebar-profile-title">Account Settings</h2>
+            <h2 className="sidebar-profile-title">Cài Đặt Tài Khoản</h2>
             <ul className="sidebar-menu">
               <li className={`menu-item ${activeTab === 'profile' ? 'active' : ''}`}>
-                <a href="#profile" onClick={() => setActiveTab('profile')}>Thông tin cá nhân </a>
+                <a href="#profile" onClick={() => setActiveTab('profile')}>Thông tin cá nhân</a>
               </li>
-              {/* <li className={`menu-item ${activeTab === 'password' ? 'active' : ''}`}>
-                <a href="#password" onClick={() => setActiveTab('password')}>Change Password</a>
-              </li> */}
+              <li className={`menu-item ${activeTab === 'change-infor' ? 'active' : ''}`}>
+                <a href="#change-infor" onClick={() => setActiveTab('change-infor')}>Thay đổi thông tin</a>
+              </li>
               <li className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`}>
                 <a href="#orders" onClick={() => setActiveTab('orders')}>Đơn hàng của tôi</a>
               </li>
