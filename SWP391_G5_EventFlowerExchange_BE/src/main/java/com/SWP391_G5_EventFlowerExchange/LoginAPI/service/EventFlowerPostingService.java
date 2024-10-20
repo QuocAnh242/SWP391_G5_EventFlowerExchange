@@ -39,8 +39,10 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     @Override
     public EventFlowerPosting updateEventFlowerPosting(int postId, EventFlowerPosting eventFlowerPosting) {
-        EventFlowerPosting post= iEventFlowerPostingRepository.getById(postId);
-        if(post != null){
+        EventFlowerPosting post= iEventFlowerPostingRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));;
+
+            // Cập nhật các trường từ eventFlowerPosting nếu không null
             if (eventFlowerPosting.getTitle() != null) {
                 post.setTitle(eventFlowerPosting.getTitle());
             }
@@ -59,13 +61,9 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
             if (eventFlowerPosting.getUpdatedAt() != null) {
                 post.setUpdatedAt(eventFlowerPosting.getUpdatedAt());
             }
-
-            if(eventFlowerPosting.getFlowerBatches()!= null) {
-                post.setFlowerBatches(eventFlowerPosting.getFlowerBatches());
-            }
             iEventFlowerPostingRepository.save(post);
 
-        }
+
         return post;
     }
 
