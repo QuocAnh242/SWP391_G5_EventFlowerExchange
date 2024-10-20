@@ -75,6 +75,7 @@ function Navbar() {
         <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
         <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
+        <NavLink to="/payment" className="nav-link" activeClassName="activeLink">Test</NavLink>
       </div>
 
       <div className="navbar-right">

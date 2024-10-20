@@ -9,48 +9,47 @@ const ManagePosts = () => {
   const [flowers, setFlowers] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null); // For editing
   const [userID, setUserID] = useState(null); // State to hold userID
-  
   useEffect(() => {
-    // Fetch the userID from localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      setUserID(parsedUser.id); // Set the userID state
-      console.log(storedUser);
-    }else{
-      console.log("Không có user")
+      setUserID(parsedUser.userID); // Gán userID
+      console.log("User ID:", parsedUser.userID); // Kiểm tra giá trị userID
+    } else {
+      console.log("Không tìm thấy user trong localStorage");
     }
   }, []);
   
   useEffect(() => {
     if (userID) {
       fetchPosts();
-      fetchFlowers();
+      // fetchFlowers();
     }
   }, [userID]);
 
   const fetchPosts = async () => {
     try {
-      const response = await axios.get(`http://localhost:8080/identity/posts/${userID}`);
-      setPosts(response.data);
+      const response = await axios.get(`http://localhost:8080/identity/posts/api/${userID}`);
+      console.log("Posts fetched:", response.data); // Kiểm tra dữ liệu trả về
+      setPosts(response.data || []); // Đảm bảo posts là một mảng
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Lỗi khi tải danh sách bài post:', error);
+      setLoading(false);
     }
   };
-
-  const fetchFlowers = async () => {
-    try {
-      const response = await axios.get('/api/flowers'); // API to get all available flowers
-      setFlowers(response.data);
-    } catch (error) {
-      console.error('Error fetching flowers:', error);
-    }
-  };
+  // const fetchFlowers = async () => {
+  //   try {
+  //     const response = await axios.get('/api/flowers'); // API to get all available flowers
+  //     setFlowers(response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching flowers:', error);
+  //   }
+  // };
 
   const deletePost = async (postID) => {
     try {
-      await axios.delete(`http://localhost:8080/identity/posts/`);
+      await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       setPosts(posts.filter(post => post.postID !== postID)); // Remove deleted post from the list
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -72,7 +71,7 @@ const ManagePosts = () => {
 
   const handleSavePost = async () => {
     try {
-      await axios.put(`/api/posts/${selectedPost.postID}`, selectedPost);
+      await axios.put(`http://localhost:8080/identity/posts/${selectedPost.postID}`, selectedPost);
       setSelectedPost(null); // Clear the editing form
       fetchPosts(); // Refresh posts
     } catch (error) {
@@ -92,27 +91,31 @@ const ManagePosts = () => {
   return (
     <div className="manage-posts">
       <h2>Quản lý bài post của tôi</h2>
-      {posts.map((post) => (
-        <div key={post.postID} className="post-item">
-          <h3>{post.title}</h3>
-          <p>{post.description}</p>
-          <p>Giá: {post.price} VNĐ</p>
-          <button onClick={() => deletePost(post.postID)}>Xóa bài post</button>
-          <button onClick={() => handleEditPost(post)}>Sửa bài post</button>
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <div key={post.postID} className="post-item">
+            <h3>{post.title}</h3>
+            <p>{post.description}</p>
+            <p>Giá: {post.price} VNĐ</p>
+            <button onClick={() => deletePost(post.postID)}>Xóa bài post</button>
+            <button onClick={() => handleEditPost(post)}>Sửa bài post</button>
 
-          <div className="add-flower-section">
-            <label>Thêm hoa:</label>
-            <select onChange={(e) => addFlowerToPost(post.postID, e.target.value)}>
-              <option value="">Chọn hoa</option>
-              {flowers.map((flower) => (
-                <option key={flower.flowerID} value={flower.flowerID}>
-                  {flower.title}
-                </option>
-              ))}
-            </select>
+            <div className="add-flower-section">
+              <label>Thêm hoa:</label>
+              <select onChange={(e) => addFlowerToPost(post.postID, e.target.value)}>
+                <option value="">Chọn hoa</option>
+                {flowers.map((flower) => (
+                  <option key={flower.flowerID} value={flower.flowerID}>
+                    {flower.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p>Không có bài post nào.</p> // Thông báo khi không có bài post
+      )}
 
       {selectedPost && (
         <div className="edit-post-form">
@@ -143,5 +146,6 @@ const ManagePosts = () => {
     </div>
   );
 };
+
 
 export default ManagePosts;
