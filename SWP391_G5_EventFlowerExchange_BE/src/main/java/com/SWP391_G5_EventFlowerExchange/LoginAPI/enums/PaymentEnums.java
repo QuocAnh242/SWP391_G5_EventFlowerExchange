@@ -1,7 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.enums;
 
 public enum PaymentEnums {
-    BANKING,
+    VNPays,
     COD,
     MOMO;
 }

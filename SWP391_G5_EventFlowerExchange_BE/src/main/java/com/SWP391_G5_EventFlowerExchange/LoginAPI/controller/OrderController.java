@@ -1,15 +1,19 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.RefundRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -18,6 +22,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderRepository orderRepository;
 
     // Tạo đơn hàng
     @PostMapping("/")
@@ -56,6 +62,11 @@ public class OrderController {
 
         return ResponseEntity.status(400).body("Payment failed or invalid response.");
     }
+//    @PutMapping("updateStatus/{id}")
+//    public ResponseEntity<Order> updateStatus(@PathVariable int id, @RequestBody Order order) {
+//        Order updatedOrder = orderService.updateOrder(id, order);
+//        return ResponseEntity.ok(updatedOrder);
+//    }
 
     // Lấy tất cả đơn hàng
     @GetMapping("/")
@@ -63,6 +74,7 @@ public class OrderController {
         List<Order> orders = orderService.getAllOrders();
         return ResponseEntity.ok(orders);
     }
+
 
     // Lấy đơn hàng theo ID
     @GetMapping("/{id}")
@@ -96,5 +108,26 @@ public class OrderController {
             return ResponseEntity.status(500).body("An error occurred while canceling the payment.");
         }
     }
+//    @PostMapping("/refund")
+//    public ResponseEntity<String> refundOrder(
+//            @RequestParam int orderId,
+//            @RequestParam String transactionNo,
+//            @RequestParam double refundAmount,
+//            @RequestParam String createdBy) {
+//        try {
+//            Optional<Order> optionalOrder = orderRepository.findById(orderId);
+//
+//            // Kiểm tra xem đơn hàng có tồn tại không
+//            if (optionalOrder.isPresent()) {
+//                Order order = optionalOrder.get(); // Lấy đối tượng Order từ Optional
+//
+//                String refundUrl = orderService.createVNPayRefundUrl(order, transactionNo, refundAmount, createdBy);
+//                return ResponseEntity.ok(refundUrl);
+//            } else {
+//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error occurred: " + e.getMessage());
+//        }}
 }
 

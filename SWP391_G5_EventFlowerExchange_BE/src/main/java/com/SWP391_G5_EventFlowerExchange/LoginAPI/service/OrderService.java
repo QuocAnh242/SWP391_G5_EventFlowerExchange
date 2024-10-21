@@ -7,7 +7,9 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IDeliveryRepository
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IPaymentRepository;
+import com.nimbusds.jose.shaded.gson.JsonObject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -108,7 +111,7 @@ public class OrderService implements IOrderService {
         vnp_Params.put("vnp_Locale", "vn");
         vnp_Params.put("vnp_CurrCode", "VND");
         vnp_Params.put("vnp_TxnRef", String.valueOf(order.getOrderID()));
-        vnp_Params.put("vnp_OrderInfo", "sa"+ order.getOrderID());
+        vnp_Params.put("vnp_OrderInfo", "Thông tin order"+ order.getOrderID());
         vnp_Params.put("vnp_OrderType", "other");
         vnp_Params.put("vnp_Amount", amount);
         vnp_Params.put("vnp_ReturnUrl", VNPayConfig.vnp_ReturnUrl);
@@ -157,42 +160,72 @@ public class OrderService implements IOrderService {
         }
         return result.toString();
     }
-//    public void createTransaction(int orderID) {
-//        // Tìm order dựa trên orderID
-//        Order orders = orderRepository.findById(orderID)
-//                .orElseThrow(() -> new EntityNotFoundException("Order not found!"));
-//        // Kiểm tra xem giao dịch đã tồn tại cho đơn hàng này chưa
-//        if (orders.getPayment() != null) {
-//            throw new RuntimeException("Payment already exists for this order.");
+
+
+//    public String createVNPayRefundUrl(Order order, String transactionNo, double refundAmount, String createdBy) throws Exception {
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+//        LocalDateTime createDate = LocalDateTime.now();
+//        String formattedCreateDate = createDate.format(formatter);
+//
+//        // Tạo các tham số cho VNPay
+//        Map<String, String> vnp_Params = new TreeMap<>();
+//        vnp_Params.put("vnp_RequestId", VNPayConfig.getRandomNumber(8));
+//        vnp_Params.put("vnp_Version", "2.1.0");
+//        vnp_Params.put("vnp_Command", "refund");
+//        vnp_Params.put("vnp_TmnCode", VNPayConfig.vnp_TmnCode);
+//        vnp_Params.put("vnp_TransactionType", "02"); // Hoàn trả toàn phần
+//        vnp_Params.put("vnp_TxnRef", String.valueOf(order.getOrderID())); // Mã giao dịch tại hệ thống của merchant
+//        vnp_Params.put("vnp_Amount", String.valueOf((int) (refundAmount * 100))); // Quy đổi thành đồng
+//        vnp_Params.put("vnp_OrderInfo", "Hoàn tiền GD OrderId:" + order.getOrderID());
+//        vnp_Params.put("vnp_TransactionNo", transactionNo); // Mã giao dịch hoàn trả
+//        vnp_Params.put("vnp_TransactionDate")
+//        vnp_Params.put("vnp_CreateBy", createdBy);
+//        vnp_Params.put("vnp_CreateDate", formattedCreateDate);
+//        vnp_Params.put("vnp_IpAddr", "127.0.0.1"); // Địa chỉ IP
+//
+//        // Tạo chuỗi dữ liệu để ký
+//        StringBuilder signDataBuilder = new StringBuilder();
+//        for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
+//            signDataBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
+//            signDataBuilder.append("=");
+//            signDataBuilder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.toString()));
+//            signDataBuilder.append("&");
 //        }
-//        // Tạo payment
-//        Payment payment=new Payment();
-//        payment.setMethod(PaymentEnums.BANKING);  // Đặt phương thức thanh toán
+//        signDataBuilder.deleteCharAt(signDataBuilder.length() - 1); // Remove last '&'
 //
-//        // Tạo danh sách chứa một Order
-//        List<Order> ordersList = new ArrayList<>();
-//        ordersList.add(orders); // Thêm đối tượng Order vào danh sách
+//        String signData = signDataBuilder.toString();
+//        String signed = generateHMAC(VNPayConfig.vnp_HashSecret, signData);
 //
-//        // Gán danh sách vào Payment
-//        payment.setOrders(ordersList);
+//        vnp_Params.put("vnp_SecureHash", signed);
 //
-//        Set<Transactions> transactionsSet = new HashSet<>();
-//        //VNPAY TO CUSTOMER
-//        User customer = authenticationService.getCurrentUser(); // Lấy thông tin người dùng hiện tại
+//        // Tạo URL hoàn tiền
+//        StringBuilder urlBuilder = new StringBuilder(VNPayConfig.vnp_RefundUrl);
+//        urlBuilder.append("?");
+//        for (Map.Entry<String, String> entry : vnp_Params.entrySet()) {
+//            urlBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
+//            urlBuilder.append("=");
+//            urlBuilder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.toString()));
+//            urlBuilder.append("&");
+//        }
+//        urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
+//
+//        return urlBuilder.toString();
 //    }
 
-@Transactional
+
+
+    @Transactional
 public void cancelPayment(int orderId) {
     Order order = orderRepository.findById(orderId)
             .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
     // Cập nhật trạng thái đơn hàng
-    order.setStatus("Canceled"); // Hoặc trạng thái phù hợp
+    order.setStatus("Canceled");
     order.setUpdatedAt(LocalDateTime.now());
 
     orderRepository.save(order);
 
-    // Thông báo cho người dùng (có thể dùng email hoặc thông báo trên UI)
+
 }
     public void updateOrderStatus(int orderId, String status) {
         Order order = orderRepository.findById(orderId)

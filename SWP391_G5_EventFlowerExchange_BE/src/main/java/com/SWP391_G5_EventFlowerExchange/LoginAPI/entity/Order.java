@@ -35,7 +35,7 @@ public class Order {
     private String shippingAddress;
 
     @Column(nullable = false, length = 50) // Limit length for status
-    private String status = "pending";
+    private String status = "Chưa Thanh Toán";
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)

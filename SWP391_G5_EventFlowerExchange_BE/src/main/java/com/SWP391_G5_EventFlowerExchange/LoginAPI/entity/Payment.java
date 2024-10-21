@@ -29,7 +29,7 @@ public class Payment {
 //    @Column(nullable = false, length = 255)
 //    private String status = "pending";
 
-    private LocalDateTime date = LocalDateTime.now();
+//    private LocalDateTime date = LocalDateTime.now();
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
@@ -40,9 +40,9 @@ public class Payment {
         order.setPayment(this); // Thiết lập liên kết ngược
     }
 
-    @PrePersist
-    protected void onCreate() {
-        date = LocalDateTime.now();
-    }
+//    @PrePersist
+//    protected void onCreate() {
+//        date = LocalDateTime.now();
+//    }
 
 }
