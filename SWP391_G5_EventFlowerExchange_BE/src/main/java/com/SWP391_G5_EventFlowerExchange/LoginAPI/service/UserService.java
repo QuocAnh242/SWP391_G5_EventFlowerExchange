@@ -60,10 +60,13 @@ public class UserService implements IUserService {
         return userRepository.save(user);
     }
 
+    // Show Profile
     @Override
-//    @PostAuthorize("returnObject.email == authentication.principal.getClaim('email')")
+    @PostAuthorize("returnObject.email == authentication.name")
     public UserResponse getUser(int userID) {
         UserResponse userResponse = new UserResponse();
+        // Test Security...
+        log.info("In method getUser");
 
         // Retrieve User entity
         User user = userRepository.findById(userID)
@@ -75,39 +78,33 @@ public class UserService implements IUserService {
         userResponse.setEmail(user.getEmail());
         userResponse.setAddress(user.getAddress());
         userResponse.setPhoneNumber(user.getPhoneNumber());
-        userResponse.setRoles(user.getRoles());
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.BUYER.name());
+        user.setRoles(roles);
         userResponse.setCreatedAt(user.getCreatedAt());
 
         return userResponse;
     }
 
     @Override
-//    @PostAuthorize("returnObject.email == authentication.principal.email")
+    @PostAuthorize("returnObject.email == authentication.name")
     public User updateUser(int userID, UserUpdateRequest request) {
-        log.info("Attempting to update user with ID: {}", userID);
-        log.info("Request data: {}", request);
-        User user = userRepository.findById(userID)
-                .orElseThrow(() -> {
-                    log.error("User with ID {} not found", userID);
-                    return new AppException(ErrorCode.USER_NOT_EXISTED);
-                });
-        log.info("Current user details before update: {}", user);
+        User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
+        // Update user's information
         user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
-        // Save the updated user
-        User updatedUser = userRepository.save(user);
-        // Log the updated user details
-        log.info("User updated successfully: {}", updatedUser);
-        return updatedUser;
+
+        return userRepository.save(user);
     }
 
     // ADMIN METHODS
     // Get all users
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -118,7 +115,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteUser(int userID) {
         try {

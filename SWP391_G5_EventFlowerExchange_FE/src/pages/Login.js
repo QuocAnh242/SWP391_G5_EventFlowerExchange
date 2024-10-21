@@ -1,29 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
-// import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import api from '../config/axios';
 import '../styles/Login.css';
 import Footer from '../components/Footer';
-// import withLoading from '../components/withLoading';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
-      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
-    }, 2000); // Bạn có thể thay đổi thời gian này theo yêu cầu
-
-    // Cleanup timer nếu component bị unmount
+      setLoading(false);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -33,84 +26,85 @@ const Login = () => {
         <div className="spinner"></div>
         <p className="loading-text">Đang tải dữ liệu...</p>
       </div>
-
     );
   }
 
-
+  const decodeToken = (token) => {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => `%${('00' + c.charCodeAt(0).toString(16)).slice(-2)}`)
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  };
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Ngăn chặn reload trang khi submit form
+    e.preventDefault();
 
     const loginValues = { email, password };
 
     try {
-      const response = await api.post('http://localhost:8080/identity/users/login', loginValues);
-      console.log('Response:', response.data);
+      const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
 
-      // Kiểm tra xem result có hợp lệ không (không null)
       if (response.data && response.data.result) {
-        console.log('Đăng nhập thành công:', response.data.result);
+        const { token } = response.data.result;
 
-        // Lưu thông tin người dùng vào localStorage
-        localStorage.setItem('user', JSON.stringify(response.data.result));
-
-        // Điều hướng người dùng sau khi đăng nhập thành công dựa trên role
-        const role = response.data.result.role;
-        if (role === 'admin') {
-          navigate('/admin-user-management'); // Điều hướng đến trang admin
-        } else if (role === 'customer') {
-          navigate('/'); // Điều hướng đến trang customer
-        } else {
-          navigate('/'); // Điều hướng mặc định nếu role không xác định
+        if (!token) {
+          console.error("Token not found in response");
+          return;
         }
 
-        // Reload the page to ensure user data is loaded properly
+        localStorage.setItem("token", token);
+        const decodedPayload = decodeToken(token);
+        console.log(decodedPayload);
+        console.log(token);
+        const user = {
+          address: decodedPayload.address,
+          email: decodedPayload.email,
+          exp: decodedPayload.exp,
+          iat: decodedPayload.iat,
+          iss: decodedPayload.iss,
+          phoneNumber: decodedPayload.phoneNumber,
+          roles: decodedPayload.roles,
+          scope: decodedPayload.scope,
+          sub: decodedPayload.sub,
+          userID: decodedPayload.userID,
+          username: decodedPayload.username,
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+        console.log("Infor", user);
+        
+        const { roles } = decodedPayload;
+        if (roles.includes('ADMIN')) {
+          navigate('/admin-user-management');
+        } else if (roles.includes('BUYER')) {
+          navigate('/');  // Navigate to profile page after login
+        } else {
+          setError("Tài khoản hoặc mật khẩu sai");
+        }
         window.location.reload();
       } else {
-        // Nếu result là null hoặc không tồn tại, hiển thị lỗi
         setError("Tài khoản hoặc mật khẩu sai");
       }
 
     } catch (error) {
-      // Cập nhật thông báo lỗi trong trường hợp yêu cầu thất bại
       setError("Tài khoản hoặc mật khẩu sai");
+      console.error("Login error:", error.response ? error.response.data : error.message);
     }
   };
 
-
-
-
-// Ẩn hiện password
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // const handleGoogleLoginSuccess = async (credentialResponse) => {
-  //   const googleToken = credentialResponse.credential; // Lấy token từ Google
-
-  //   try {
-  //     const response = await api.post('http://localhost:8080/identity/', {
-  //       idToken: googleToken,
-  //     });
-
-  //     const { token, role, email } = response.data;
-  //     localStorage.setItem("token", token);
-  //     localStorage.setItem("userEmail", email);
-  //     localStorage.setItem("userRole", role);
-
-  //     role === 'admin' ? navigate("/admin") : navigate("/");
-  //   } catch (error) {
-  //     setError('Google login failed. Please try again.');
-  //   }
-  // };
-
-
-
   return (
     <div className="login-container">
       <div className="login-card">
-        <h2>Sign in</h2>
+        <h2>Đăng nhập</h2>
         <form onSubmit={handleLogin}>
           <div className="form-field">
             <input
@@ -135,34 +129,21 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <label htmlFor="password" className="form-label">Password</label>
-
-            {/* Password toggle icon */}
+            <label htmlFor="password" className="form-label">Mật khẩu</label>
             <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
-          <div className="forgot-password">Forgot password?</div>
-
-          {/* Display error message */}
+          <div className="forgot-password">Quên mật khẩu?</div>
           {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
 
           <button type="submit" className="login-btn">
-            LOGIN
+            Đăng Nhập
           </button>
         </form>
-
-        <div className="social-login">
-          <p>Or Sign up using</p>
-          <div className="social-icons">
-            {/* <a href="#"><FaFacebook /></a>
-            <a href="#"><FaTwitter /></a>
-            <a href="#"><FaGoogle /></a> */}
-          </div>
-        </div>
         <div className="signup-link">
-          Don't have an account? <Link to="/signup">Sign Up</Link>
+          Bạn chưa có tài khoản? <Link to="/signup">Đăng kí tại đây</Link>
         </div>
       </div>
       <Footer />
@@ -170,4 +151,4 @@ const Login = () => {
   );
 };
 
-export default Login;   
+export default Login;

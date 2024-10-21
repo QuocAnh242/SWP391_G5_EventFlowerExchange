@@ -13,41 +13,32 @@ const products = [
 ];
 
 function Navbar() {
-  const [isSearchVisible, setIsSearchVisible] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // Store search input
+  const [searchResults, setSearchResults] = useState([]); // Store search results
   const [user, setUser] = useState(null); // Store user info
-  const [cartCount, setCartCount] = useState(0); // Cart items count
+  const [cartCount, setCartCount] = useState(0); // Store cart items count
   const navigate = useNavigate();
 
-  // Fetch user data and cart data from localStorage after login
+  // Fetch user and cart data from localStorage after login
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart from localStorage
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart data
 
     if (storedUser) {
       try {
-        const parsedUser = JSON.parse(storedUser); // Safely parse JSON
-        setUser(parsedUser); // Set the parsed user data
+        const parsedUser = JSON.parse(storedUser); // Parse user data from localStorage
+        setUser(parsedUser); // Set the parsed user data in state
       } catch (error) {
         console.error("Error parsing user data:", error);
-        // Clear localStorage if invalid data is stored
-        localStorage.removeItem('user');
+        localStorage.removeItem('user'); // Remove corrupted data
       }
     }
 
-    // Update cart count if items are present in the cart
+    // Update cart count if cart items exist
     setCartCount(storedCart.length);
   }, []);
 
-  // const toggleSearchBar = () => {
-  //   setIsSearchVisible(!isSearchVisible);
-  //   if (!isSearchVisible) {
-  //     setSearchTerm('');
-  //     setSearchResults([]);
-  //   }
-  // };
-
+  // Handle search input changes and filter products
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -59,16 +50,16 @@ function Navbar() {
       );
       setSearchResults(filteredProducts);
     } else {
-      setSearchResults([]);
+      setSearchResults([]); // Clear results if search is empty
     }
   };
 
+  // Handle user logout
   const handleLogout = () => {
-    // Clear user session
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('userRole');
-    setUser(null); // Remove user data from state
+    localStorage.removeItem('cart');
+    setUser(null); // Clear user from state
     navigate("/login"); // Redirect to login page
   };
 
@@ -84,20 +75,16 @@ function Navbar() {
         <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
         <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
         <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
-        {/* <NavLink to="/cart" className="nav-link" activeClassName="activeLink">Cart</NavLink> */}
-        {/* <NavLink to="/admin-user-management" className="nav-link" activeClassName="activeLink">Test</NavLink> */}
+        <NavLink to="/payment" className="nav-link" activeClassName="activeLink">Test</NavLink>
       </div>
 
       <div className="navbar-right">
-        {/* Icon search (giữ nếu bạn vẫn muốn hiển thị icon, nhưng không cần tính năng click) */}
-        {/* <FaSearch className="navbar-icon" /> */}
-
-        {/* Search input field (luôn hiển thị) */}
+        {/* Search bar */}
         <div className="search-bar-wrapper">
           <input
             type="text"
             className="search-bar-nav"
-            placeholder="Search products..."
+            placeholder="Tìm kiếm..."
             value={searchTerm}
             onChange={handleSearchChange}
           />
@@ -113,12 +100,11 @@ function Navbar() {
           )}
         </div>
 
-
         {/* User and cart icons */}
         {user ? (
           <>
-            <span className="navbar-user">Welcome, {user.username || 'User'}</span>
-            <Link to={user.role === 'admin' ? '/admin-user-management' : '/profile-page'}>
+            <span className="navbar-user">Xin chào , {user.username || 'User'}</span>
+            <Link to={user.roles && user.roles.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
               <FaUser className="navbar-icon" />
             </Link>
             <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
@@ -129,7 +115,7 @@ function Navbar() {
           </Link>
         )}
 
-
+        {/* Cart icon with item count */}
         <div className="cart-icon-wrapper">
           <Link to="/cart">
             <FaShoppingBag className="navbar-icon" />
@@ -137,7 +123,6 @@ function Navbar() {
           </Link>
         </div>
       </div>
-
     </nav>
   );
 }

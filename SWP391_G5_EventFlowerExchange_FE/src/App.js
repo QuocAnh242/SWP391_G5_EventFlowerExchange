@@ -15,6 +15,7 @@ import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
 import ScrollToTop from "./components/ScrollToTop"; 
 import BlogPage from "./pages/Blog";
+import Payment from "./pages/Payment";
 
 function App() {
   return (
@@ -25,7 +26,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
-          <Route path="/flower/:id" element={<FlowerBatchDetail />} /> {/* Trang chi tiết sản phẩm */}
+          <Route path="/flower/:id" element={<FlowerBatchDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
@@ -34,6 +35,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
           <Route path="/blog-page" element={<BlogPage />} />
+          <Route path="/payment" element={<Payment />} /> {/* Route trang thanh toán */}
         </Routes>
         {/* <Footer/> */}
       </Router>

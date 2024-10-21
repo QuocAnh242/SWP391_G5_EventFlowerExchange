@@ -57,7 +57,7 @@ const SignUp = () => {
 
     try {
       // API request to send signup data to the server
-      const response = await api.post('http://localhost:8080/identity/users/create ', {
+      const response = await api.post('http://localhost:8080/identity/users/create', {
         username,
         email,
         password,

@@ -1,9 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +14,7 @@ import java.util.Optional;
 @Service
 public class OrderService implements IOrderService {
     @Autowired
-    private IOrderRepository orderRepository;
-
-    @Autowired
-    private IOrderDetailRepository orderDetailRepository;
+    private OrderRepository orderRepository;
 
     @Override
     public Order insertOrder(Order order) {
@@ -52,22 +48,4 @@ public class OrderService implements IOrderService {
     public void deleteOrder(int orderId) {
         orderRepository.deleteById(orderId);
     }
-
-
-
-
-    @Transactional
-    public Order saveOrder(Order order, List<OrderDetail> orderDetails) {
-        // Lưu Order
-        Order savedOrder = orderRepository.save(order);
-
-        // Lưu OrderDetails với thông tin về Order
-        for (OrderDetail orderDetail : orderDetails) {
-            orderDetail.setOrder(savedOrder); // Thiết lập mối quan hệ với Order đã lưu
-            orderDetailRepository.save(orderDetail);
-        }
-
-        return savedOrder;
-    }
-
 }

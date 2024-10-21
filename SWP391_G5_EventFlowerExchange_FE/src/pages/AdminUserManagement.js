@@ -28,7 +28,8 @@ const AdminUserManagement = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/users');
-      const usersData = response.data;
+      console.log(response)
+      const usersData = response.data.result;
       setUsers(usersData);
       setTotalUsers(usersData.length);
       setActiveUsers(usersData.filter((user) => !user.isBlocked).length);
@@ -42,7 +43,7 @@ const AdminUserManagement = () => {
 //Hiển thị post
   const fetchPosts = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/identity/post/');
+      const response = await axios.get('http://localhost:8080/identity/posts/');
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
@@ -51,7 +52,7 @@ const AdminUserManagement = () => {
 //Xóa post
   const handleDeletePost = async (postID) => {
     try {
-      await axios.delete(`http://localhost:8080/identity/post/${postID}`);
+      await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       fetchPosts();
     } catch (error) {
       console.error('Error deleting post:', error);

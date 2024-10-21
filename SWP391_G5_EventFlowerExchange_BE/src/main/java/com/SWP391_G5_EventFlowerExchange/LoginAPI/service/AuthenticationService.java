@@ -80,7 +80,7 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
 
         JWTClaimsSet jwtClaimSet= new JWTClaimsSet.Builder()
-                .subject(user.getEmail())
+                .subject(user.getUsername())
                 .issuer("EventFlowerExchange")
                 .issueTime(new Date())
                 .expirationTime(new Date(
