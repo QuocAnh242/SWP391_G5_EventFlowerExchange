@@ -9,6 +9,8 @@ import f4 from '../assets/flower-detail/f4.jpg';
 import FeedbackList from '../components/flowdetailcomponents/FeedbackList.js';
 import RelatedPosts from '../components/flowdetailcomponents/RelatedPosts.js';
 import Footer from '../components/Footer';
+import '../styles/popup.css';
+
 
 function FlowerBatchDetail() {
   const { id } = useParams(); // Get the ID from the URL
@@ -21,6 +23,9 @@ function FlowerBatchDetail() {
   const [selectedCategory, setSelectedCategory] = useState(''); // Store the selected category
   const [cartMessage, setCartMessage] = useState(""); // Message for cart action feedback
   const thumbnails = [f1, f2, f3, f4]; // Array of small images
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
+
 
   useEffect(() => {
     if (id) {
@@ -72,59 +77,40 @@ function FlowerBatchDetail() {
   };
 
   // Handle category selection change
-  const handleCategoryChange = (e) => {
-    setSelectedCategory(e.target.value); // Update selected category
-  };
+  // const handleCategoryChange = (e) => {
+  //   setSelectedCategory(e.target.value); // Update selected category
+  // };
 
-  const handleAddToCart = async (flowerID) => {
-    try {
-      const currentBatch = post.flowerBatches?.[currentBatchIndex];
-  
-      if (!currentBatch) {
-        setCartMessage("Không có thông tin lô hoa để thêm vào giỏ hàng.");
-        return;
-      }
-  
-      const cartData = {
-        total: currentBatch.price,
-        products: [
-          {
-            quantity: 1,
-            price: currentBatch.price,
-            imageUrl: "http://example.com/image/roses.jpg",
-            flowerName: currentBatch.flowerName,
-            flowerID: currentBatch.flowerID,
-          },
-        ],
-      };
-  
-      // Log the data you're sending
-      console.log("Sending cart data:", cartData);
-  
-      const response = await axios.post(
-        `http://localhost:8080/identity/cart/shoppingCart/addProduct/${flowerID}`, 
-        cartData
-      );
-  
-      // Log the server's response
-      console.log("Server response:", response);
-  
-      setCartMessage("Sản phẩm đã được thêm vào giỏ hàng thành công!");
-    } catch (error) {
-      // Log the error details
-      console.error("Error adding to cart:", error);
-  
-      if (error.response) {
-        // Log the specific error response from the server
-        console.error("Server responded with:", error.response.data);
-      }
-  
-      setCartMessage("Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.");
+  const handleAddToCart = (product) => {
+    if (!post) return; // Đảm bảo post đã có
+    const currentBatch = post.flowerBatches[currentBatchIndex]; // Lấy chi tiết lô hàng hiện tại
+
+    // Lấy giỏ hàng hiện tại từ localStorage
+    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    const existingItem = cartItems.find(item => item.flowerID === currentBatch.flowerID);
+
+    if (existingItem) {
+      // Nếu có, tăng số lượng sản phẩm
+      existingItem.quantity += 1;
+    } else {
+      // Nếu chưa có, thêm sản phẩm vào giỏ hàng
+      cartItems.push({
+        flowerID: currentBatch.flowerID,
+        flowerName: currentBatch.flowerName,
+        price: currentBatch.price,
+        quantity: 1
+      });
     }
+
+    // Lưu giỏ hàng mới vào localStorage
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+    // Hiển thị thông báo cho người dùng trong pop-up
+    setPopupMessage("Sản phẩm đã được thêm vào giỏ hàng!");
+    setShowPopup(true); // Hiển thị pop-up
   };
-  
-
-
 
 
   if (loading) {
@@ -186,7 +172,7 @@ function FlowerBatchDetail() {
           </div>
 
           {/* Flower Type Selection */}
-          <div className="flower-type-selection">
+          {/* <div className="flower-type-selection">
             <label htmlFor="flowerType">Loại hoa:</label>
             <select id="flowerType" value={selectedCategory} onChange={handleCategoryChange}>
               <option value="">Chọn loại hoa</option>
@@ -196,7 +182,7 @@ function FlowerBatchDetail() {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Pagination controls for navigating between flower batches */}
           <div className="pagination-controls">
@@ -237,6 +223,24 @@ function FlowerBatchDetail() {
 
       {/* Footer */}
       <Footer />
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+                window.location.reload(); // Reload the page
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

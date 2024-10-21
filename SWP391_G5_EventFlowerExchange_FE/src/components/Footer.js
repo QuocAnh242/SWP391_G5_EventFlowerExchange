@@ -6,18 +6,14 @@ import LinkedInIcon from "@material-ui/icons/LinkedIn";
 import "../styles/Footer.css";
 
 function Footer() {
- 
-
-
-
   return (
     <div className="footer">
       <div className="footer-container">
         <div className="footer-section">
-          <h2>FLOWER PARADISE</h2>
+          <h2>Event Flower Exchange Website</h2>
           <p>
-            Customers can contact us through the channels below. Thank you and
-            we are honored to have you as our customer.
+            Khách hàng có thể liên hệ với chúng tôi qua các kênh dưới đây. Cảm ơn bạn và
+            chúng tôi rất vinh dự khi có bạn là khách hàng của chúng tôi.
           </p>
           <div className="socialMedia">
             <TwitterIcon /> <FacebookIcon /> <LinkedInIcon /> <InstagramIcon />
@@ -25,38 +21,39 @@ function Footer() {
         </div>
 
         <div className="footer-section">
-          <h3>SUPPORT</h3>
+          <h3>HỖ TRỢ</h3>
           <ul>
-            <li>Product</li>
-            <li>Help & Support</li>
-            <li>Return Policy</li>
-            <li>Terms of Use</li>
-            <li>FAQ</li>
+            <li>Sản phẩm</li>
+            <li>Trợ giúp & Hỗ trợ</li>
+            <li>Chính sách hoàn trả</li>
+            <li>Điều khoản sử dụng</li>
+            <li>Câu hỏi thường gặp</li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h3>OUR BRANCHES</h3>
+          <h3>CÁC CHI NHÁNH CỦA CHÚNG TÔI</h3>
           <ul>
             <li>Laos</li>
-            <li>Thailand</li>
-            <li>Japan</li>
+            <li>Thái Lan</li>
+            <li>Nhật Bản</li>
             <li>Canada</li>
-            <li>United States</li>
+            <li>Hoa Kỳ</li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h3>PAYMENT METHOD</h3>
-          <img src="visa.png" alt="Visa" />
+          <h3>PHƯƠNG THỨC THANH TOÁN</h3>
+          <img src="../assets/payment-img/visa.png" alt="Visa" />
           <img src="mastercard.png" alt="MasterCard" />
-          <img src="paypal.png" alt="Paypal" />
+          <img src="paypal.png" alt="VNPAY" />
+          <img src="paypal.png" alt="Momo" />
         </div>
 
         <div className="footer-section contact-us">
-          <h3>CONTACT US</h3>
-          <p>Thu Duc City , Ho Chi Minh City, Vietnam</p>
-          <p>Phone: +865 20 96863648</p>
+          <h3>LIÊN HỆ VỚI CHÚNG TÔI</h3>
+          <p>TP. Thủ Đức, Thành phố Hồ Chí Minh, Việt Nam</p>
+          <p>Điện thoại: +865 20 96863648</p>
           <p>Email: flowerparadise@gmail.com</p>
         </div>
       </div>

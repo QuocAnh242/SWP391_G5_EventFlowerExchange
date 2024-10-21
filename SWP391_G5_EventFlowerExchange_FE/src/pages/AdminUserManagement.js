@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTachometerAlt, FaUsers, FaClipboardList } from 'react-icons/fa'; // Import các icon từ react-icons
 import '../styles/AdminUserManagement.css';
-
+import '../styles/popup.css';
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,6 +12,10 @@ const AdminUserManagement = () => {
   const [blockedUsers, setBlockedUsers] = useState(0);
   const [posts, setPosts] = useState([]); 
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
+
+
   // const [loading, setLoading] = useState(true); // Thêm trạng thái loading
   
    //hiện thông tin khách hàng và bài post
@@ -54,6 +58,8 @@ const AdminUserManagement = () => {
     try {
       await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       fetchPosts();
+      setPopupMessage("Bài viết đã xóa thành công");
+      setShowPopup(true); // Hiển thị pop-up
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -73,6 +79,8 @@ const AdminUserManagement = () => {
     try {
       await axios.delete(`http://localhost:8080/identity/users/${userID}`);
       fetchUsers();
+      setPopupMessage("Đã xóa tài khoản khách hàng thành công !");
+      setShowPopup(true); // Hiển thị pop-up
     } catch (error) {
       console.error('Error deleting user:', error);
     }
@@ -222,6 +230,27 @@ const AdminUserManagement = () => {
       <div className="main-content">
         {renderContent()}
       </div>
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+                // window.location.reload(); 
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
+
+
     </div>
   );
 };

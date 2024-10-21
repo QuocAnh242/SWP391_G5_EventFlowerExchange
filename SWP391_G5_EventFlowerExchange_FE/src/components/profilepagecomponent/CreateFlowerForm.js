@@ -156,7 +156,7 @@ const CreateFlowerForm = ({ postID }) => {
               />
             </label>
 
-            {/* <label>
+            <label>
               Chọn loại hoa:
               <select
                 name="categoryID"
@@ -171,7 +171,7 @@ const CreateFlowerForm = ({ postID }) => {
                   </option>
                 ))}
               </select>
-            </label> */}
+            </label>
 
             {flowers.length > 1 && (
               <button type="button" onClick={() => removeFlower(index)}>

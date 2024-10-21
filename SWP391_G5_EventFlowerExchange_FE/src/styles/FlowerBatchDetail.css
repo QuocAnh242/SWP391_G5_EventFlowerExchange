@@ -168,42 +168,7 @@
 
 
 
-/* Loading Spinner */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 300px;
-  background-color: #f9f9f9;
-}
 
-.spinner {
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3b82f6;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  margin-left: 15px;
-  font-size: 18px;
-  color: #333;
-}
-
-/* Error message */
-.error-message {
-  color: #e63946;
-  text-align: center;
-  font-size: 18px;
-  margin-top: 20px;
-}
 
 /* Feedback Section */
 .feedback-section {

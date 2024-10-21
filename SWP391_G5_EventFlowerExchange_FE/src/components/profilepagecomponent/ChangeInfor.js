@@ -52,7 +52,17 @@ const ChangeInfoPage = () => {
     if (userID) {
       axios.put(`http://localhost:8080/identity/users/${userID}`, formData)
         .then(response => {
-          setSuccessMessage('Update user successfully');
+          setSuccessMessage('Cập nhật thông tin thành công');
+
+          // Cập nhật localStorage sau khi thay đổi thông tin thành công
+          const updatedUser = {
+            ...JSON.parse(localStorage.getItem('user')),
+            username: formData.username,
+            address: formData.address,
+            phoneNumber: formData.phoneNumber,
+          };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+
           setErrorMessage('');
         })
         .catch(error => {
@@ -75,7 +85,7 @@ const ChangeInfoPage = () => {
 
       <form onSubmit={handleSubmit} className="change-info-form">
         <div>
-          <label>Tên người dùng : </label>
+          <label>Tên người dùng: </label>
           <input
             type="text"
             name="username"
@@ -85,7 +95,7 @@ const ChangeInfoPage = () => {
           />
         </div>
         <div>
-          <label>Mật khẩu : </label>
+          <label>Mật khẩu: </label>
           <input
             type="text"
             name="password"
@@ -95,7 +105,7 @@ const ChangeInfoPage = () => {
           />
         </div>
         <div>
-          <label>Địa chỉ : </label>
+          <label>Địa chỉ: </label>
           <input
             type="text"
             name="address"
@@ -105,7 +115,7 @@ const ChangeInfoPage = () => {
           />
         </div>
         <div>
-          <label>Số điện thoại : </label>
+          <label>Số điện thoại: </label>
           <input
             type="tel"
             name="phoneNumber"

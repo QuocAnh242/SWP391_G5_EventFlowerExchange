@@ -3,64 +3,64 @@ import { NavLink, Link, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
 import Logo from '../assets/Flower_preview_rev_1.png';
 import { FaUser, FaShoppingBag, FaSignOutAlt } from 'react-icons/fa';
+import axios from 'axios';
 
-const products = [
-  { id: 1, name: "Rose", description: "Beautiful red roses" },
-  { id: 2, name: "Tulip", description: "Bright yellow tulips" },
-  { id: 3, name: "Lily", description: "Pure white lilies" },
-  { id: 4, name: "Orchid", description: "Delicate purple orchids" },
-  { id: 5, name: "Sunflower", description: "Bright and cheerful sunflowers" }
-];
-
-function Navbar() {
-  const [searchTerm, setSearchTerm] = useState(''); // Store search input
-  const [searchResults, setSearchResults] = useState([]); // Store search results
-  const [user, setUser] = useState(null); // Store user info
-  const [cartCount, setCartCount] = useState(0); // Store cart items count
+function Navbar({ cartCount }) { // Nhận cartCount từ App.js qua props
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [posts, setPosts] = useState([]); 
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch user and cart data from localStorage after login
+  // Fetch user data from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedCart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart data
-
     if (storedUser) {
       try {
-        const parsedUser = JSON.parse(storedUser); // Parse user data from localStorage
-        setUser(parsedUser); // Set the parsed user data in state
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
       } catch (error) {
         console.error("Error parsing user data:", error);
-        localStorage.removeItem('user'); // Remove corrupted data
+        localStorage.removeItem('user');
       }
     }
-
-    // Update cart count if cart items exist
-    setCartCount(storedCart.length);
   }, []);
 
-  // Handle search input changes and filter products
+  // Fetch posts from the backend/API
+  useEffect(() => {
+    axios.get('http://localhost:8080/identity/posts/')
+      .then((response) => {
+        setPosts(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching posts:', error);
+      });
+  }, []);
+
+  // Handle search input
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
 
     if (value) {
-      const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(value) ||
-        product.description.toLowerCase().includes(value)
+      const filteredPosts = posts.filter(post =>
+        post.title.toLowerCase().includes(value) ||
+        post.content?.toLowerCase().includes(value) // Safeguard against undefined content
       );
-      setSearchResults(filteredProducts);
+      setSearchResults(filteredPosts);
     } else {
-      setSearchResults([]); // Clear results if search is empty
+      setSearchResults([]);
     }
   };
 
-  // Handle user logout
+  // Handle logout
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('cart');
-    setUser(null); // Clear user from state
-    navigate("/login"); // Redirect to login page
+    localStorage.removeItem('userRole');
+    setUser(null);
+    // window.location.reload();
+    navigate("/login");
   };
 
   return (
@@ -70,41 +70,39 @@ function Navbar() {
       </div>
 
       <div className="navbar-center">
-        <NavLink exact to="/" className="nav-link" activeClassName="activeLink">Trang chủ</NavLink>
-        <NavLink to="/about" className="nav-link" activeClassName="activeLink">Giới thiệu</NavLink>
-        <NavLink to="/menu" className="nav-link" activeClassName="activeLink">Bài viết</NavLink>
-        <NavLink to="/contact" className="nav-link" activeClassName="activeLink">Liên hệ</NavLink>
-        <NavLink to="/blog-page" className="nav-link" activeClassName="activeLink">Blog</NavLink>
-        <NavLink to="/payment" className="nav-link" activeClassName="activeLink">Test</NavLink>
+        <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Trang chủ</NavLink>
+        <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Giới thiệu</NavLink>
+        <NavLink to="/menu" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Bài viết</NavLink>
+        <NavLink to="/contact" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Liên hệ</NavLink>
+        <NavLink to="/blog-page" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Blog</NavLink>
+        <NavLink to="/success-page" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Test</NavLink>
       </div>
 
       <div className="navbar-right">
-        {/* Search bar */}
         <div className="search-bar-wrapper">
           <input
             type="text"
             className="search-bar-nav"
-            placeholder="Tìm kiếm..."
+            placeholder="Tìm kiếm bài viết..."
             value={searchTerm}
             onChange={handleSearchChange}
           />
           {searchResults.length > 0 && (
             <div className="search-results">
-              {searchResults.map((product) => (
-                <div key={product.id} className="search-result-item">
-                  <h4>{product.name}</h4>
-                  <p>{product.description}</p>
-                </div>
+              {searchResults.map((post) => (
+                <Link to={'/menu'} key={post.id} className="search-result-item">
+                  <h4>{post.title}</h4>
+                  <p>{post.content ? post.content.substring(0, 100) : 'No content available'}...</p>
+                </Link>
               ))}
             </div>
           )}
         </div>
 
-        {/* User and cart icons */}
         {user ? (
           <>
             <span className="navbar-user">Xin chào , {user.username || 'User'}</span>
-            <Link to={user.roles && user.roles.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
+            <Link to={user?.roles?.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
               <FaUser className="navbar-icon" />
             </Link>
             <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
@@ -115,11 +113,10 @@ function Navbar() {
           </Link>
         )}
 
-        {/* Cart icon with item count */}
         <div className="cart-icon-wrapper">
           <Link to="/cart">
             <FaShoppingBag className="navbar-icon" />
-            <span className="cart-count">{cartCount}</span>
+            {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
           </Link>
         </div>
       </div>
