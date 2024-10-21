@@ -72,7 +72,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     @Override
     public void deleteEventFlowerPosting(int postID) {
         imageRepository.deleteByEventFlowerPosting_PostID(postID);
-//        iEventFlowerPostingRepository.deleteById(postID);
+        iEventFlowerPostingRepository.deleteById(postID);
     }
 
     @Override

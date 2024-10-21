@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -40,9 +41,14 @@ public class Order {
     @JoinColumn(name = "userID", nullable = false)
     private User user;
 
+//    @ManyToOne
+//    @JoinColumn(name = "deliveryID", nullable = true)
+//    @JsonBackReference
+//    private Delivery delivery; // Relationship with Delivery
     @ManyToOne
-    @JoinColumn(name = "deliveryID", nullable = false)
-    private Delivery delivery; // Relationship with Delivery
+    @JoinColumn(name = "paymentID", nullable = true)
+    @JsonBackReference
+    private Payment payment; // Relationship with Payment
 
     // Constructor with required fields
     public Order(LocalDateTime orderDate, double totalPrice, String shippingAddress, User user, Delivery delivery) {
@@ -50,7 +56,7 @@ public class Order {
         this.totalPrice = totalPrice;
         this.shippingAddress = shippingAddress;
         this.user = user;
-        this.delivery = delivery;
+//        this.delivery = delivery;
     }
 
     @PrePersist

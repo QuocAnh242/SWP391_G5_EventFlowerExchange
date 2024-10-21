@@ -35,9 +35,9 @@ public class DeliveryService implements IDeliveryService{
             if(deli.getRating()!=0){
                 deli.setRating(deli.getRating());
             }
-            if(deli.getOrders()!=null){
-                deli.setOrders(deli.getOrders());
-            }
+//            if(deli.getOrders()!=null){
+//                deli.setOrders(deli.getOrders());
+//            }
 
         }
         return deliveryRepository.save(deli);
