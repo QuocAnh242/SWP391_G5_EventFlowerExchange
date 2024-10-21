@@ -14,4 +14,3 @@ public class UserUpdateRequest {
     String address;
     String phoneNumber;
 }
-

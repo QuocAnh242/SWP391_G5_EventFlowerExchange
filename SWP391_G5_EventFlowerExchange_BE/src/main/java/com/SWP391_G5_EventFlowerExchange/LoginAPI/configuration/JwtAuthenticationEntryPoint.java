@@ -33,4 +33,3 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.flushBuffer();
     }
 }
-

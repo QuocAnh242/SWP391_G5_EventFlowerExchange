@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,7 +15,7 @@ public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int deliveryID;
+    private Integer  deliveryID;
 
     @Column(nullable = false)
     private LocalDateTime deliveryDate;
@@ -25,7 +26,11 @@ public class Delivery {
     @Column(nullable = false, length = 255)
     private String availableStatus = "available";
 
-    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
-
+//    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JsonManagedReference
+//    private List<Order> orders = new ArrayList<>();
+//    public void addOrder(Order order) {
+////        orders.add(order);
+////        order.setDelivery(this); // Thiết lập mối quan hệ hai chiều
+//    }
 }

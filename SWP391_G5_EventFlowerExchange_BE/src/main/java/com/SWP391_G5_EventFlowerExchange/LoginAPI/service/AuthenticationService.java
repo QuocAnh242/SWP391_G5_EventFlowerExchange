@@ -87,11 +87,13 @@ public class AuthenticationService {
                         Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()
                 ))
                 .claim("userID", user.getUserID())
+                .claim("username", user.getUsername())
                 .claim("email", user.getEmail())
                 .claim("address", user.getAddress())
                 .claim("phoneNumber", user.getPhoneNumber())
                 .claim("roles", user.getRoles())
                 .claim("scope", buildScope(user))
+
                 .build();
 
 
@@ -116,4 +118,3 @@ public class AuthenticationService {
             return stringJoiner.toString();
     }
 }
-

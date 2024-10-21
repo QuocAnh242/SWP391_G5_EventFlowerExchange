@@ -18,7 +18,7 @@ public class FlowerBatch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer flowerID;
+    private int flowerID;
 
     @Column(nullable = false)
     private String flowerName;
