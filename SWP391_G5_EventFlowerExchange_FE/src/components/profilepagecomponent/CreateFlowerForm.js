@@ -185,7 +185,7 @@ const CreateFlowerForm = ({ postID }) => {
           Thêm Loại Hoa Khác
         </button>
 
-        <button type="submit">Thêm Các Loại Hoa</button>
+        <button type="submit">Xác Nhận</button>
         {error && <p className="error-message-post">{error}</p>}
         {successMessage && <p className="success-message-post">{successMessage}</p>}
       </form>

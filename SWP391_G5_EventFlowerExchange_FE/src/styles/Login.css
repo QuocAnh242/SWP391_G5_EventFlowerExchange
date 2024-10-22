@@ -8,7 +8,7 @@
   background-image: url('../assets/backgroundlogin.jpg');
   background-size: cover;
   background-position: center;
-  padding-top: 10px; /* Push down by 100px to avoid sticking to the navbar */
+  padding-top: 10px;
 }
 
 /* Centered card with white background */

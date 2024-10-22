@@ -25,8 +25,12 @@ function FlowerBatchDetail() {
   const thumbnails = [f1, f2, f3, f4]; // Array of small images
   const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
   const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
+  
+  
 
 
+
+  
   useEffect(() => {
     if (id) {
       fetchPost(id); // Fetch post data based on the ID
@@ -111,16 +115,9 @@ function FlowerBatchDetail() {
     setPopupMessage("Sản phẩm đã được thêm vào giỏ hàng!");
     setShowPopup(true); // Hiển thị pop-up
   };
+  
 
 
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div> {/* Ensure spinner CSS is correctly defined */}
-        <p className="loading-text">Đang tải dữ liệu...</p>
-      </div>
-    );
-  }
 
   if (error) {
     return <div className="error-message">{error}</div>;

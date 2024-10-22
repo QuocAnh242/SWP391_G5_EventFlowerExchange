@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios'; // Import Axios để gọi API
 import '../styles/Checkout.css'; // Importing CSS styles
@@ -6,9 +6,9 @@ import Footer from '../components/Footer';
 
 const Checkout = () => {
   const location = useLocation();
-  const { cartItems, totalPrice } = location.state || { cartItems: [], totalPrice: 0 };
+  const { cartItems,setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems:[], totalPrice: 0 };
   const user = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
-
+  
   // State để lưu phương thức thanh toán đã chọn
   const [paymentMethod, setPaymentMethod] = useState('cod');
 
@@ -23,36 +23,60 @@ const Checkout = () => {
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
-
-    // Tạo đối tượng đơn hàng
+  
     const order = {
-      orderDate: new Date().toISOString(), // Ngày hiện tại theo định dạng ISO
+      orderDate: new Date().toISOString(),
       totalPrice: totalPrice,
       shippingAddress: user?.address || 'Địa chỉ mặc định',
       user: {
-        userID: user?.userID, // ID người dùng
+        userID: user?.userID,
       },
       payment: {
-        paymentID: paymentMethod === 'vnpay' ? 1 : 2, // 1 cho VNPay, 2 cho COD (Giả định)
+        paymentID: paymentMethod === 'vnpay' ? 1 : 2,
       },
     };
+    
+    console.log(order); // Log order to see the structure
 
     try {
-      // Gửi yêu cầu tạo đơn hàng
-      const response = await axios.post('http://localhost:8080/orders/', order);
-
-      if (response.status === 201 && paymentMethod === 'vnpay') {
-        // Điều hướng người dùng đến VNPay URL nếu là thanh toán VNPay
-        window.location.href = response.data; // VNPay URL từ response
-      } else {
-        alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
-        // Thực hiện các hành động tiếp theo sau khi tạo đơn hàng thành công (ví dụ: làm trống giỏ hàng)
+      const response = await axios.post('http://localhost:8080/identity/orders/', order);
+      console.log(order);
+      if (response.status === 201) {
+        if (paymentMethod === 'vnpay') {
+          window.location.href = response.data; // VNPay URL
+        } else {
+          alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
+          
+          // Xóa giỏ hàng sau khi thanh toán thành công
+          localStorage.removeItem('cartItems'); // Xóa giỏ hàng khỏi localStorage
+          setCartItems([]); // Cập nhật state để làm trống giỏ hàng trong UI
+        }
       }
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error);
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
     }
   };
+  
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  // Loading trang
+  useEffect(() => {
+    // Giả lập trạng thái tải dữ liệu
+    const timer = setTimeout(() => {
+      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p className="loading-text">Đang tải dữ liệu...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="checkout">

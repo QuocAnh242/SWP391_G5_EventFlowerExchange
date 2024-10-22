@@ -6,7 +6,8 @@ import './CreatePos.css'; // Import file CSS
 const CreatePostComponent = () => {
   // Lấy thông tin user từ localStorage
   const user = JSON.parse(localStorage.getItem('user'));
-
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
   // State cho bài đăng
   const [post, setPost] = useState({
     title: '',
@@ -35,7 +36,8 @@ const CreatePostComponent = () => {
       // Gửi request POST đến server với dữ liệu trong post
       const response = await axios.post('http://localhost:8080/identity/posts/', post);
       setPostID(response.data.postID); // Lưu lại postID
-      setSuccessMessage('Đã tạo bài đăng thành công!');
+      // setSuccessMessage('Đã tạo bài đăng thành công!');
+      
       setError('');
     } catch (error) {
       console.error('Error creating post:', error);

@@ -3,6 +3,7 @@ import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.js';
 import CreatePost from "../components/profilepagecomponent/CreatePost.js";
 import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.js";
 import ManagePosts from "../components/profilepagecomponent/ManagePosts.js";
+import OrderHistory from "../components/profilepagecomponent/OrderHistory.js";  // Import the OrderHistory component
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {
@@ -12,8 +13,8 @@ const ProfilePage = () => {
   const [userID, setUserID] = useState(null);  // State to store userID
 
   useEffect(() => {
-    // Giả sử bạn lấy userID từ localStorage hoặc từ API
-    const fetchedUserID = localStorage.getItem('userID'); // Tạm thời set là 1 nếu chưa có
+    // Fetch userID from localStorage or an API
+    const fetchedUserID = localStorage.getItem('userID');
     setUserID(fetchedUserID);
 
     const timer = setTimeout(() => {
@@ -26,15 +27,15 @@ const ProfilePage = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <ProfileInfo userID={userID}/>; // Truyền userID cho ProfileInfo nếu cần
+        return <ProfileInfo userID={userID}/>; 
       case 'change-infor':
-        return <ChangeInfor userID={userID}/>;  // Truyền userID cho ChangeInfor
+        return <ChangeInfor userID={userID}/>; 
       case 'orders':
-        return null; // Nội dung phần đơn hàng
+        return <OrderHistory userID={userID}/>;  // Add OrderHistory component
       case 'create-post':
         return <CreatePost/>;
-        case 'manage-posts':
-          return <ManagePosts userID={userID}/>; // Add the ManagePosts component
+      case 'manage-posts':
+        return <ManagePosts userID={userID}/>;
       default:
         return null;
     }
