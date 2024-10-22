@@ -57,7 +57,8 @@ function App() {
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
           <Route path="/blog-page" element={<BlogPage />} />
           <Route path="/payment" element={<Payment />} />
-          <Route path="/checkout" element={<Checkout cartItems={cartItems} />} /> {/* Truyền props giỏ hàng cho Checkout */}
+          <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
+
           <Route path="/success-page" element={<SuccessPage />} />
         </Routes>
 

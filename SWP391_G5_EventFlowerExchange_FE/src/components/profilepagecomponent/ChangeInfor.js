@@ -13,6 +13,8 @@ const ChangeInfoPage = () => {
   const [userID, setUserID] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -52,7 +54,10 @@ const ChangeInfoPage = () => {
     if (userID) {
       axios.put(`http://localhost:8080/identity/users/${userID}`, formData)
         .then(response => {
-          setSuccessMessage('Cập nhật thông tin thành công');
+          // setSuccessMessage('Cập nhật thông tin thành công');
+          setPopupMessage("Cập nhật thông tin thành công!");
+          setShowPopup(true); // Hiển thị pop-up
+
 
           // Cập nhật localStorage sau khi thay đổi thông tin thành công
           const updatedUser = {
@@ -126,6 +131,25 @@ const ChangeInfoPage = () => {
         </div>
         <button type="submit">Cập nhật</button>
       </form>
+
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

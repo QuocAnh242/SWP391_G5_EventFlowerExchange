@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaTachometerAlt, FaUsers, FaClipboardList } from 'react-icons/fa'; // Import các icon từ react-icons
+import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart } from 'react-icons/fa'; // Import các icon từ react-icons
 import '../styles/AdminUserManagement.css';
 import '../styles/popup.css';
 const AdminUserManagement = () => {
@@ -14,7 +14,7 @@ const AdminUserManagement = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
   const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
-
+  const [orders, setOrders] = useState([]);
 
   // const [loading, setLoading] = useState(true); // Thêm trạng thái loading
   
@@ -22,6 +22,7 @@ const AdminUserManagement = () => {
   useEffect(() => {
     fetchUsers();
     fetchPosts();
+    fetchOrders();
   }, []);
   
 
@@ -51,6 +52,16 @@ const AdminUserManagement = () => {
       setPosts(response.data);
     } catch (error) {
       console.error('Error fetching posts:', error);
+    }
+  };
+
+  // Fetch orders
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/identity/orders/');
+      setOrders(response.data);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
     }
   };
 //Xóa post
@@ -85,6 +96,20 @@ const AdminUserManagement = () => {
       console.error('Error deleting user:', error);
     }
   };
+
+// Handle delete order
+const handleDeleteOrder = async (orderID) => {
+  try {
+    await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
+    fetchOrders();
+    setPopupMessage("Đơn hàng đã xóa thành công");
+    setShowPopup(true);
+  } catch (error) {
+    console.error('Error deleting order:', error);
+  }
+};
+
+
 
   const filteredUsers = users.filter(
     (user) =>
@@ -204,6 +229,43 @@ const AdminUserManagement = () => {
             )}
           </div>
         );
+
+        case 'order-management':
+        return (
+          <div>
+            <h2 className='admin-title'>Quản lý đơn hàng</h2>
+            {orders.length > 0 ? (
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày</th>
+                    <th>Tổng (VNĐ)</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {orders.map((order) => (
+                    <tr key={order.orderID}>
+                      <td>{order.orderID}</td>
+                      <td>{order.user.username}</td>
+                      <td>{new Date(order.date).toLocaleDateString()}</td>
+                      <td>{order.totalPrice} VNĐ</td>
+                      <td>{order.status}</td>
+                      <td>
+                        <button className='button-delete' onClick={() => handleDeleteOrder(order.orderID)}>Xóa</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Không có đơn hàng nào.</p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
@@ -222,6 +284,9 @@ const AdminUserManagement = () => {
           </li>
           <li onClick={() => setActiveTab('post-setting')}>
             <FaClipboardList className="icon" /> Quản lý Post
+          </li>
+          <li onClick={() => setActiveTab('order-management')}>
+            <FaShoppingCart className="icon" /> Quản lý Đơn hàng
           </li>
         </ul>
       </div>

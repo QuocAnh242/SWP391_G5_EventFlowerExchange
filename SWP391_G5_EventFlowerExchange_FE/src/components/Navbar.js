@@ -73,9 +73,8 @@ function Navbar({ cartCount }) { // Nhận cartCount từ App.js qua props
         <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Trang chủ</NavLink>
         <NavLink to="/about" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Giới thiệu</NavLink>
         <NavLink to="/menu" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Bài viết</NavLink>
-        <NavLink to="/contact" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Liên hệ</NavLink>
+        <NavLink to="/contact" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Feedback</NavLink>
         <NavLink to="/blog-page" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Blog</NavLink>
-        <NavLink to="/success-page" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Test</NavLink>
       </div>
 
       <div className="navbar-right">

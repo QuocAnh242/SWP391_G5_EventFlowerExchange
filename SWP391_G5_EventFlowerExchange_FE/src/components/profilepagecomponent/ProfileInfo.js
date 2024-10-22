@@ -54,6 +54,7 @@ const ProfileInfo = () => {
             type="text"
             name="phoneNumber"
             value={user.phoneNumber}
+            readOnly
             
           />
         </label>
@@ -64,6 +65,7 @@ const ProfileInfo = () => {
             type="text"
             name="address"
             value={user.address}
+            readOnly
           />
         </label>
         
