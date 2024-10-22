@@ -11,6 +11,7 @@ public interface IFlowerBatchService {
     public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
     public void deleteFlowerBatch(int flowerID);
     public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
+    FlowerBatch createFlower(FlowerBatch flowerBatch, int postId);
 
 
 }

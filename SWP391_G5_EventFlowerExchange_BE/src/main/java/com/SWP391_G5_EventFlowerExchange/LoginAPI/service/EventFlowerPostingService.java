@@ -8,6 +8,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.ImageRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -26,6 +27,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     IUserRepository iUserRepository;
     IEventFlowerPostingRepository iEventFlowerPostingRepository;
+    ImageRepository imageRepository;
 
     @Override
     public List<EventFlowerPosting> getAllEventPostings() {
@@ -39,39 +41,38 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     @Override
     public EventFlowerPosting updateEventFlowerPosting(int postId, EventFlowerPosting eventFlowerPosting) {
-        EventFlowerPosting post= iEventFlowerPostingRepository.getById(postId);
-        if(post != null){
-            if (eventFlowerPosting.getTitle() != null) {
-                post.setTitle(eventFlowerPosting.getTitle());
-            }
-            if (eventFlowerPosting.getDescription() != null) {
-                post.setDescription(eventFlowerPosting.getDescription());
-            }
-            if (eventFlowerPosting.getPrice() != null) {
-                post.setPrice(eventFlowerPosting.getPrice());
-            }
-            if (eventFlowerPosting.getImageUrl() != null) {
-                post.setImageUrl(eventFlowerPosting.getImageUrl());
-            }
-            if (eventFlowerPosting.getStatus() != null) {
-                post.setStatus(eventFlowerPosting.getStatus());
-            }
-            if (eventFlowerPosting.getUpdatedAt() != null) {
-                post.setUpdatedAt(eventFlowerPosting.getUpdatedAt());
-            }
+        EventFlowerPosting post= iEventFlowerPostingRepository.findById(postId)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
 
-            if(eventFlowerPosting.getFlowerBatches()!= null) {
-                post.setFlowerBatches(eventFlowerPosting.getFlowerBatches());
-            }
-            iEventFlowerPostingRepository.save(post);
-
+        // Cập nhật các trường từ eventFlowerPosting nếu không null
+        if (eventFlowerPosting.getTitle() != null) {
+            post.setTitle(eventFlowerPosting.getTitle());
         }
+        if (eventFlowerPosting.getDescription() != null) {
+            post.setDescription(eventFlowerPosting.getDescription());
+        }
+        if (eventFlowerPosting.getPrice() != null) {
+            post.setPrice(eventFlowerPosting.getPrice());
+        }
+        if (eventFlowerPosting.getImageUrl() != null) {
+            post.setImageUrl(eventFlowerPosting.getImageUrl());
+        }
+        if (eventFlowerPosting.getStatus() != null) {
+            post.setStatus(eventFlowerPosting.getStatus());
+        }
+        if (eventFlowerPosting.getUpdatedAt() != null) {
+            post.setUpdatedAt(eventFlowerPosting.getUpdatedAt());
+        }
+        iEventFlowerPostingRepository.save(post);
+
+
         return post;
     }
 
     @Override
-    public void deleteEventFlowerPosting(int postId) {
-        iEventFlowerPostingRepository.deleteById(postId);
+    public void deleteEventFlowerPosting(int postID) {
+        imageRepository.deleteByEventFlowerPosting_PostID(postID);
+        iEventFlowerPostingRepository.deleteById(postID);
     }
 
     @Override

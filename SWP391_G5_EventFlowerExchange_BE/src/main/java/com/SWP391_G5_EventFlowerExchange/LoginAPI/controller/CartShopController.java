@@ -41,7 +41,7 @@ public class CartShopController {
      * @return Updated shopping cart
      */
 
-    @GetMapping("/shoppingCart/addProduct/{flowerID}")
+    @PostMapping("/shoppingCart/addProduct/{flowerID}")
     public ResponseEntity<Map<String, Object>> addProductToCart(@PathVariable("flowerID") int flowerID) {
         flowerBatchSerivice.getFlowerBatchById(flowerID).ifPresent(cartShopService::addPost);
 
@@ -71,15 +71,18 @@ public class CartShopController {
     public Map<String, Object> checkout() {
         Map<String, Object> response = new HashMap<>();
         try {
-            cartShopService.checkout();
+            cartShopService.checkout(); // Thực hiện checkout
             response.put("status", "success");
+            response.put("products", cartShopService.getFlowerBatchInCart()); // Lấy lại danh sách sản phẩm
+            response.put("total", cartShopService.getTotal().toString()); // Tính tổng
+            cartShopService.clearCart();
         } catch (NotEnoughProductsInStockException e) {
             response.put("status", "failed");
-            response.put("message", e.getMessage());
+            response.put("message", e.getMessage()); // Gửi thông báo lỗi nếu có
+            response.put("products", cartShopService.getFlowerBatchInCart()); // Lấy danh sách sản phẩm nếu cần
+            response.put("total", cartShopService.getTotal().toString()); // Cập nhật tổng giá trị
         }
-        response.put("products", cartShopService.getFlowerBatchInCart());
-        response.put("total", cartShopService.getTotal().toString());
-        return response;
+        return response; // Trả về phản hồi
     }
     @PostMapping("/shoppingCart/addProduct")
     public ResponseEntity<Map<String, Object>> addToCart(@RequestParam("flowerID") int flowerID,

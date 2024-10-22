@@ -34,6 +34,7 @@ public class CartShopService implements ICartShopService{
 
     @Override
     public void addPost(FlowerBatch flowerBatch) {
+        System.out.println("Thêm sản phẩm vào giỏ hàng: " + flowerBatch.getFlowerName()); // Log để kiểm tra
         if (flower.containsKey(flowerBatch)) {
             flower.replace(flowerBatch, flower.get(flowerBatch) + 1);
         } else {
@@ -63,6 +64,8 @@ public class CartShopService implements ICartShopService{
     @Override
     public List<Map<String, Object>> getFlowerBatchInCart() {
         List<Map<String, Object>> products = new ArrayList<>();
+        System.out.println("Số lượng sản phẩm trong giỏ hàng: " + flower.size()); // Kiểm tra số lượng sản phẩm
+
         for (Map.Entry<FlowerBatch, Integer> entry : flower.entrySet()) {
             Map<String, Object> productDetails = new HashMap<>();
             productDetails.put("flowerID", entry.getKey().getFlowerID());
@@ -70,7 +73,6 @@ public class CartShopService implements ICartShopService{
             productDetails.put("quantity", entry.getValue());
             productDetails.put("price", entry.getKey().getPrice());
             productDetails.put("imageUrl", entry.getKey().getImageUrl());
-
             products.add(productDetails);
         }
         return products;
@@ -82,17 +84,25 @@ public class CartShopService implements ICartShopService{
      */
     @Override
     public void checkout() throws NotEnoughProductsInStockException {
+        if (flower.isEmpty()) {
+            throw new NotEnoughProductsInStockException(new FlowerBatch()); // Gọi hàm khởi tạo với một đối tượng FlowerBatch mặc định
+        }
+
         FlowerBatch flowerBatch;
-        for(Map.Entry<FlowerBatch,Integer> entry : flower.entrySet()){
-            // Refresh quantity for every product before checking
-            flowerBatch= flowerBatchRepository.findById(entry.getKey().getFlowerID()).orElseThrow(NotEnoughProductsInStockException::new);
-            if(flowerBatch.getQuantity()< entry.getValue())
-                throw new NotEnoughProductsInStockException();
+        for (Map.Entry<FlowerBatch, Integer> entry : flower.entrySet()) {
+            flowerBatch = flowerBatchRepository.findById(entry.getKey().getFlowerID())
+                    .orElseThrow(() -> new NotEnoughProductsInStockException(entry.getKey()));
+
+            if (flowerBatch.getQuantity() < entry.getValue()) {
+                throw new NotEnoughProductsInStockException(entry.getKey()); // Ném ngoại lệ với thông tin flowerBatch
+            }
+
             entry.getKey().setQuantity(flowerBatch.getQuantity() - entry.getValue());
         }
+
         flowerBatchRepository.saveAll(flower.keySet());
         flowerBatchRepository.flush();
-        flower.clear();
+//        flower.clear();
     }
 
     @Override

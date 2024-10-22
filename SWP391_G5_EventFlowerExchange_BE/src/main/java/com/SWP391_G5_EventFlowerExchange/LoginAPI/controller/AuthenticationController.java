@@ -37,4 +37,3 @@ public class AuthenticationController {
                 .build();
     }
 }
-
