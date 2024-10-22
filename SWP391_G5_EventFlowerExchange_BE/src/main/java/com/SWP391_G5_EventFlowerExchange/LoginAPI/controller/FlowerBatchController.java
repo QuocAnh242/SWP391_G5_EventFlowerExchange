@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -41,6 +42,21 @@ public class FlowerBatchController {
     public ResponseEntity<Optional<FlowerBatch>> getFbyId(@PathVariable int id) {
         Optional<FlowerBatch> fb= flowerBatchSerivice.getFlowerBatchById(id);
         return ResponseEntity.ok(fb);
+    }
+    @PostMapping("/{postID}/flowers")
+    public ResponseEntity<FlowerBatch> createFlower(
+            @PathVariable int postID, // Nhận postID từ URL
+            @RequestBody Map<String, Integer> requestBody) { // Nhận flowerID từ body
+
+        Integer flowerID = requestBody.get("flowerID");
+
+        // Tạo một đối tượng FlowerBatch
+        FlowerBatch flowerBatch = new FlowerBatch();
+        flowerBatch.setFlowerID(flowerID); // Giả sử bạn có phương thức setFlowerID trong FlowerBatch
+
+        // Gọi phương thức createFlower với đối tượng FlowerBatch
+        FlowerBatch createdFlower = flowerBatchSerivice.createFlower(flowerBatch, postID);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFlower);
     }
 
 }

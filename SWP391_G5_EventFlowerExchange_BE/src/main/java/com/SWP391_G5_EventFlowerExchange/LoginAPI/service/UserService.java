@@ -86,8 +86,6 @@ public class UserService implements IUserService {
     public User updateUser(int userID, UserUpdateRequest request) {
         log.info("Attempting to update user with ID: {}", userID);
         log.info("Request data: {}", request);
-
-        // Tìm người dùng theo ID
         User user = userRepository.findById(userID)
                 .orElseThrow(() -> {
                     log.error("User with ID {} not found", userID);
@@ -95,21 +93,13 @@ public class UserService implements IUserService {
                 });
         log.info("Current user details before update: {}", user);
 
-        // Cập nhật các thuộc tính
         user.setUsername(request.getUsername());
-
-        // Chỉ cập nhật mật khẩu nếu nó không rỗng
-        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-        }
-
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
-
-        // Lưu người dùng đã cập nhật
+        // Save the updated user
         User updatedUser = userRepository.save(user);
-
-        // Ghi log thông tin người dùng đã cập nhật
+        // Log the updated user details
         log.info("User updated successfully: {}", updatedUser);
         return updatedUser;
     }
@@ -143,4 +133,3 @@ public class UserService implements IUserService {
     }
 
 }
-
