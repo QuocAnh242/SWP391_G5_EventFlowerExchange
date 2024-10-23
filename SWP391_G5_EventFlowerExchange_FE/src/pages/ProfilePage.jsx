@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.js'; 
-import CreatePost from "../components/profilepagecomponent/CreatePost.js";
-import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.js";
-import ManagePosts from "../components/profilepagecomponent/ManagePosts.js";
-import OrderHistory from "../components/profilepagecomponent/OrderHistory.js";  // Import the OrderHistory component
+import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.jsx'; 
+import CreatePost from "../components/profilepagecomponent/CreatePost.jsx";
+import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.jsx";
+import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
+import OrderHistory from "../components/profilepagecomponent/OrderHistory.jsx";  // Import the OrderHistory component
 import "../styles/ProfilePage.css";
 
 const ProfilePage = () => {

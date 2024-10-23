@@ -6,9 +6,9 @@ import f1 from '../assets/flower-detail/f1.jpg';
 import f2 from '../assets/flower-detail/f2.jpg';
 import f3 from '../assets/flower-detail/f3.jpg';
 import f4 from '../assets/flower-detail/f4.jpg';
-import FeedbackList from '../components/flowdetailcomponents/FeedbackList.js';
-import RelatedPosts from '../components/flowdetailcomponents/RelatedPosts.js';
-import Footer from '../components/Footer';
+import FeedbackList from '../components/flowdetailcomponents/FeedbackList.jsx';
+import RelatedPosts from '../components/flowdetailcomponents/RelatedPosts.jsx';
+import Footer from '../components/Footer.jsx';
 import '../styles/popup.css';
 
 

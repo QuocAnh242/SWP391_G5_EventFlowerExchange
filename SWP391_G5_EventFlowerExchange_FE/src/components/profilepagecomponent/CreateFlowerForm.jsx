@@ -167,7 +167,7 @@ const CreateFlowerForm = ({ postID }) => {
                 <option value="">Chọn loại hoa</option>
                 {categories.map((category) => (
                   <option key={category.categoryID} value={category.categoryID}>
-                    {category.flowerType}
+                    {category.categoryName}
                   </option>
                 ))}
               </select>
