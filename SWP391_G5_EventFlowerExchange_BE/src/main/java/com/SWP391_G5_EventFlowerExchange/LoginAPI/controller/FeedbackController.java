@@ -3,10 +3,10 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
-
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,10 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/feedback")
 @CrossOrigin("http://localhost:3000")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FeedbackController {
 
-    @Autowired
-    private FeedbackService feedbackService;
+    FeedbackService feedbackService;
 
     // Tạo mới feedback với ApiResponse
     @PostMapping("/")

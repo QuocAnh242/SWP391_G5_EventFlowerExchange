@@ -54,6 +54,16 @@ public class UserController {
                     .build();
     }
 
+    @PutMapping("/seller/{userID}")
+    public ApiResponse<User> UpdateSeller(@PathVariable int userID) {
+        User userUpdate= userService.UpdateUserIntoSeller(userID);
+        return ApiResponse.<User>builder()
+                .result(userUpdate)
+                .code(1000) // Set success code
+                .message("Update user successfully") // Set success message
+                .build();
+    }
+
     // ADMIN METHODS
     // List Users
     @GetMapping

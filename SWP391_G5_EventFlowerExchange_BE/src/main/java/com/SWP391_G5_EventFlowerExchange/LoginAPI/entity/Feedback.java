@@ -25,13 +25,11 @@ public class Feedback {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @ManyToOne
-    @MapsId("userID")
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "userID", nullable = false, insertable = false, updatable = false)
     private User user;
 
     @ManyToOne
-    @MapsId("sellerID")
-    @JoinColumn(name = "sellerID", nullable = false)
+    @JoinColumn(name = "sellerID", nullable = false, insertable = false, updatable = false)
     private User seller;
 
 }
