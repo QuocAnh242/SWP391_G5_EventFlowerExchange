@@ -1,21 +1,24 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Delivery")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer  deliveryID;
+    private Long deliveryID;
 
     @Column(nullable = false)
     private LocalDateTime deliveryDate;
@@ -23,14 +26,6 @@ public class Delivery {
     @Column(nullable = false)
     private int rating = 0;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false)
     private String availableStatus = "available";
-
-//    @OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JsonManagedReference
-//    private List<Order> orders = new ArrayList<>();
-//    public void addOrder(Order order) {
-////        orders.add(order);
-////        order.setDelivery(this); // Thiết lập mối quan hệ hai chiều
-//    }
 }
