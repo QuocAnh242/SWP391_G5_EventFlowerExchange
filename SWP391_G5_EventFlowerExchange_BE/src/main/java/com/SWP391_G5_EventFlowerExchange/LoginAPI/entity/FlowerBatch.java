@@ -44,6 +44,7 @@ public class FlowerBatch {
     @ManyToOne
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
+
     @Override
     public String toString() {
         return "FlowerBatch{" +

@@ -26,23 +26,14 @@ public class Payment {
     @Enumerated(EnumType.STRING)
     private PaymentEnums method;
 
-//    @Column(nullable = false, length = 255)
-//    private String status = "pending";
+    @Column(nullable = false, length = 255)
+    private String status = "pending";
 
-//    private LocalDateTime date = LocalDateTime.now();
+    private LocalDateTime date = LocalDateTime.now();
 
-    @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    private List<Order> orders = new ArrayList<>();
-
-    public void addOrder(Order order) {
-        this.orders.add(order);
-        order.setPayment(this); // Thiết lập liên kết ngược
+    @PrePersist
+    protected void onCreate() {
+        date = LocalDateTime.now();
     }
-
-//    @PrePersist
-//    protected void onCreate() {
-//        date = LocalDateTime.now();
-//    }
 
 }

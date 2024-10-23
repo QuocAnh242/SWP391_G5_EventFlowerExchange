@@ -11,5 +11,7 @@ public interface IOrderService {
     Optional<Order> getOrderById(int orderId);
     Order updateOrder(int orderId, Order order);
     void deleteOrder(int orderId);
+    String createVNPayUrl(Order order) throws Exception; // Declare the exception if needed
+    void cancelPayment(int orderId);
+    void updateOrderStatus(int orderId, String status);
 }
-
