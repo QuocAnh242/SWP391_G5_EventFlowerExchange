@@ -38,8 +38,8 @@ const BlogPage = () => {
       <div className="blog-list">
         {blogs.slice(0, visibleBlogs).map((blog) => ( // Chỉ hiển thị số lượng bài viết cần thiết
           <div key={blog.blogID} className="blog">
-            <h2>{blog.blogName}</h2>
-            <p>{blog.description}</p>
+            <h2 className='blog-name'>{blog.blogName}</h2>
+            <p className='blog-des'>{blog.description}</p>
           </div>
         ))}
       </div>

@@ -1,33 +1,33 @@
-body {
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #ffe6eb; /* Light pink background */
-  transition: background-color 0.5s ease;
-}
+
 
 .blog-header {
   text-align: center;
+  font-size: 48px;
+  font-weight: 600;
+  letter-spacing: 1px;
   padding: 50px 0;
   background-color: #ffc0cb; /* Pink */
   color: white;
   animation: fadeInDown 1s ease;
 }
 
-.blog-header {
-  font-size: 48px;
-  font-weight: 600;
-  letter-spacing: 1px;
-}
 
 .blog-page {
   max-width: 1200px;
   margin: 40px auto;
   padding: 40px;
-  background-color: #ffffff;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  /* background-color: #ffffff; */
+
   border-radius: 12px;
   animation: fadeInUp 1.2s ease;
+  font-family: 'Arial', sans-serif;
+  /* margin: 0;
+  padding: 0; */
+  /* background-image: url('../assets/image.png'); Đường dẫn đến ảnh nền */
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -37,11 +37,12 @@ h1 {
   position: relative;
 }
 
-h1::after {
+.blog-header:after {
   content: '';
   width: 60px;
   height: 4px;
   background-color: #ffc0cb; /* Pink */
+  color: #ffffff;
   position: absolute;
   bottom: -15px;
   left: 0;
@@ -106,18 +107,14 @@ h1::after {
 }
 
 .blog h2 {
-  font-size: 22px;
+  font-size: 25px;
   color: #333;
   margin-bottom: 10px;
   transition: color 0.3s ease;
 }
 
-.blog:hover h2 {
-  color: #ff99aa; /* Darker pink on hover */
-}
-
 .blog p {
-  font-size: 16px;
+  font-size: 20px;
   color: #666;
   line-height: 1.6;
 }
