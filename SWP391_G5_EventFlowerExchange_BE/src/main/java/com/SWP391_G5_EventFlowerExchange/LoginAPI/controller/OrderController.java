@@ -1,7 +1,12 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderDetailRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +25,8 @@ import java.util.Map;
 public class OrderController {
 
     IOrderService orderService;
+    IOrderDetailService orderDetailService;
+    IFlowerBatchService flowerBatchService;
 
     // Create a new order
     @PostMapping("/")
@@ -49,6 +56,41 @@ public class OrderController {
             return ResponseEntity.status(500).body("An error occurred: " + e.getMessage()); // Return 500 Internal Server Error
         }
     }
+
+    @PostMapping("/create")
+    public ApiResponse<Order> createNewOrder(@RequestBody OrderCreationRequest request) {
+        Order order = orderService.createOrder(request); // Create the order first
+
+        // Create order details based on the request
+        for (OrderDetailRequest detailRequest : request.getOrderDetails()) {
+            OrderDetail orderDetail = new OrderDetail();
+            OrderDetailKey orderDetailKey = new OrderDetailKey();
+
+            orderDetailKey.setOrderID(order.getOrderID());
+            orderDetailKey.setFlowerID(detailRequest.getFlowerID());
+
+            orderDetail.setId(orderDetailKey);
+            orderDetail.setOrder(order); // Associate with the created order
+            orderDetail.setFlowerBatch(flowerBatchService.findById(detailRequest.getFlowerID())); // Fetch FlowerBatch by ID
+            orderDetail.setQuantity(detailRequest.getQuantity());
+            orderDetail.setPrice(detailRequest.getPrice());
+
+            // Update flower quantity after order detail is created
+            flowerBatchService.updateFlowerQuantity(detailRequest.getFlowerID(),
+                    orderDetail.getFlowerBatch().getQuantity() - detailRequest.getQuantity());
+
+            orderDetailService.createOrderDetail(orderDetail); // Save order detail
+        }
+
+        return ApiResponse.<Order>builder()
+                .result(order)
+                .code(1000) // Set success code
+                .message("Create Order Successfully") // Set success message
+                .build();
+    }
+
+
+
 
     // Handle payment success
     @PostMapping("/payments/success")

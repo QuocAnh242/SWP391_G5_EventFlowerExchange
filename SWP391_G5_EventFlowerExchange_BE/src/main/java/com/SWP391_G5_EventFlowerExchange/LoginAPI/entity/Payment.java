@@ -28,12 +28,4 @@ public class Payment {
 
     @Column(nullable = false, length = 255)
     private String status = "pending";
-
-    private LocalDateTime date = LocalDateTime.now();
-
-    @PrePersist
-    protected void onCreate() {
-        date = LocalDateTime.now();
-    }
-
 }

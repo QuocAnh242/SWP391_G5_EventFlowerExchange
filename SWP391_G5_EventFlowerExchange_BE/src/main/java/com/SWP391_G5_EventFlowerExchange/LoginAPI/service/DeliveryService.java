@@ -24,6 +24,7 @@ public class DeliveryService implements IDeliveryService{
         return deliveryRepository.findAll();
     }
 
+
     @Override
     public DeliveryCreationResponse insertDelivery(DeliveryCreationRequest request) {
         // Set the current timestamp for deliveryDate
@@ -74,5 +75,10 @@ public class DeliveryService implements IDeliveryService{
     @Override
     public Optional<Delivery> getDeliveryById(int deliveryID) {
         return deliveryRepository.findById(deliveryID);
+    }
+
+    @Override
+    public Delivery addDelivery(Delivery delivery) {
+        return deliveryRepository.save(delivery);
     }
 }
