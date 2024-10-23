@@ -18,7 +18,7 @@ public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long deliveryID;
+    private int deliveryID;
 
     @Column(nullable = false)
     private LocalDateTime deliveryDate;
