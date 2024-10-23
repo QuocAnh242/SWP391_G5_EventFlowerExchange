@@ -1,25 +1,52 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.DeliveryCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.DeliveryCreationResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Delivery;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IDeliveryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DeliveryService implements IDeliveryService{
-    @Autowired
-    private IDeliveryRepository deliveryRepository;
+    IDeliveryRepository deliveryRepository;
+
     @Override
     public List<Delivery> getAllDeliveries() {
         return deliveryRepository.findAll();
     }
 
     @Override
-    public Delivery insertDelivery(Delivery delivery) {
-        return deliveryRepository.save(delivery);
+    public DeliveryCreationResponse insertDelivery(DeliveryCreationRequest request) {
+        // Set the current timestamp for deliveryDate
+        request.setDeliveryDate(LocalDateTime.now());
+
+        // Convert the request to the Delivery entity
+        Delivery delivery = Delivery.builder()
+                .deliveryDate(request.getDeliveryDate())
+                .rating(request.getRating())
+                .availableStatus(request.getAvailableStatus())
+                .build();
+
+        // Save the Delivery entity to the database using repository
+        Delivery savedDelivery = deliveryRepository.save(delivery);
+
+        // Create and return a DeliveryCreationResponse object with relevant details
+        return DeliveryCreationResponse.builder()
+                .deliveryDate(savedDelivery.getDeliveryDate())
+                .rating(savedDelivery.getRating())
+                .availableStatus(savedDelivery.getAvailableStatus())
+                .build();
     }
+
 
     @Override
     public Delivery updateDelivery(int deliveryID, Delivery delivery) {
@@ -35,10 +62,6 @@ public class DeliveryService implements IDeliveryService{
             if(deli.getRating()!=0){
                 deli.setRating(deli.getRating());
             }
-//            if(deli.getOrders()!=null){
-//                deli.setOrders(deli.getOrders());
-//            }
-
         }
         return deliveryRepository.save(deli);
     }

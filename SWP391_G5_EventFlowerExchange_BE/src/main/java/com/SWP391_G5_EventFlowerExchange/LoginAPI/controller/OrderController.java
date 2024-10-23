@@ -1,19 +1,15 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.RefundRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -23,7 +19,7 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private OrderRepository orderRepository;
+    private IOrderRepository IOrderRepository;
 
     // Tạo đơn hàng
     @PostMapping("/")

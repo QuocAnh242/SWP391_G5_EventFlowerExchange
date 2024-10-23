@@ -2,14 +2,10 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.PaymentEnums;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IDeliveryRepository;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IPaymentRepository;
-import com.nimbusds.jose.shaded.gson.JsonObject;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +16,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -28,7 +23,7 @@ import java.util.*;
 @Service
 public class OrderService implements IOrderService {
     @Autowired
-    private OrderRepository orderRepository;
+    private com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderRepository IOrderRepository;
     @Autowired
     private IOrderDetailRepository orderDetailRepository;
     @Autowired
@@ -39,22 +34,22 @@ public class OrderService implements IOrderService {
     public Order insertOrder(Order order) {
 
         // Lưu order vào cơ sở dữ liệu
-        return orderRepository.save(order);
+        return IOrderRepository.save(order);
     }
 
     @Override
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+        return IOrderRepository.findAll();
     }
 
     @Override
     public Optional<Order> getOrderById(int orderId) {
-        return orderRepository.findById(orderId);
+        return IOrderRepository.findById(orderId);
     }
 
     @Override
     public Order updateOrder(int orderId, Order order) {
-        Order existingOrder = orderRepository.findById(orderId)
+        Order existingOrder = IOrderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         // Chỉ cập nhật các trường không null
         if (order.getTotalPrice() != 0) {
@@ -71,18 +66,18 @@ public class OrderService implements IOrderService {
 
         existingOrder.setUpdatedAt(LocalDateTime.now());
 
-        return orderRepository.save(existingOrder);
+        return IOrderRepository.save(existingOrder);
     }
 
     @Override
     @Transactional
     public void deleteOrder(int orderId) {
-        orderRepository.deleteById(orderId);
+        IOrderRepository.deleteById(orderId);
     }
     @Transactional
     public Order saveOrder(Order order, List<OrderDetail> orderDetails) {
         // Lưu Order
-        Order savedOrder = orderRepository.save(order);
+        Order savedOrder = IOrderRepository.save(order);
 
         // Lưu OrderDetails với thông tin về Order
         for (OrderDetail orderDetail : orderDetails) {
@@ -216,22 +211,22 @@ public class OrderService implements IOrderService {
 
     @Transactional
 public void cancelPayment(int orderId) {
-    Order order = orderRepository.findById(orderId)
+    Order order = IOrderRepository.findById(orderId)
             .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
     // Cập nhật trạng thái đơn hàng
     order.setStatus("Canceled");
     order.setUpdatedAt(LocalDateTime.now());
 
-    orderRepository.save(order);
+    IOrderRepository.save(order);
 
 
 }
     public void updateOrderStatus(int orderId, String status) {
-        Order order = orderRepository.findById(orderId)
+        Order order = IOrderRepository.findById(orderId)
                 .orElseThrow(() -> new EntityNotFoundException("Order not found!"));
         order.setStatus(status); // Cập nhật trạng thái
         order.setUpdatedAt(LocalDateTime.now()); // Cập nhật thời gian
-        orderRepository.save(order); // Lưu thay đổi
+        IOrderRepository.save(order); // Lưu thay đổi
     }
 }

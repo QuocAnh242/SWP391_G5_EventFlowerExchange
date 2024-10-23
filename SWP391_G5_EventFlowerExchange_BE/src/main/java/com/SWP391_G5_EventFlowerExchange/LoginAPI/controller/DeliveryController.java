@@ -1,9 +1,14 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Category;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.DeliveryCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.DeliveryCreationResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Delivery;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.DeliveryService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,31 +19,46 @@ import java.util.Optional;
 @RestController
 @CrossOrigin("http://localhost:3000")
 @RequestMapping("/delivery")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DeliveryController {
-    @Autowired
-    private DeliveryService deliveryService;
+    DeliveryService deliveryService;
+
+    // Get All Delivery Company
     @GetMapping("/")
-    public ResponseEntity<List<Delivery>> fetchAll(){
+    public ResponseEntity<List<Delivery>> getAllDeliveries(){
         return ResponseEntity.ok(deliveryService.getAllDeliveries());
     }
+
+    // Create Delivery Company
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Delivery saveDeli(@RequestBody Delivery delivery) {
-        return deliveryService.insertDelivery(delivery);//201 CREATED
+    public ApiResponse<DeliveryCreationResponse> createDelivery(@RequestBody DeliveryCreationRequest request) {
+        return ApiResponse.<DeliveryCreationResponse>builder()
+                .result(deliveryService.insertDelivery(request))
+                .code(201) // Set success code
+                .message("Delivery Company created successfully") // Set success message
+                .build();
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Delivery> updateDeliId(@PathVariable int id, @RequestBody Delivery delivery) {
-        Delivery updateDeli = deliveryService.updateDelivery(id, delivery);
+
+    // Update Delivery Company
+    @PutMapping("/{deliID}")
+    public ResponseEntity<Delivery> updateDelivery(@PathVariable int deliID, @RequestBody Delivery delivery) {
+        Delivery updateDeli = deliveryService.updateDelivery(deliID, delivery);
         return ResponseEntity.ok(updateDeli);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDeli(@PathVariable int id) {
-        deliveryService.deleteDelivery(id);
+
+    // Delete Delivery Company
+    @DeleteMapping("/{deliID}")
+    public ResponseEntity<String> deleteDelivery(@PathVariable int deliID) {
+        deliveryService.deleteDelivery(deliID);
         return ResponseEntity.ok("Deleted!");
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Delivery>> getDeliById(@PathVariable int id) {
-        Optional<Delivery> deli= deliveryService.getDeliveryById(id);
+
+    // Get Delivery Company by their ID
+    @GetMapping("/{deliID}")
+    public ResponseEntity<Optional<Delivery>> getDeliveryById(@PathVariable int deliID) {
+        Optional<Delivery> deli= deliveryService.getDeliveryById(deliID);
         return ResponseEntity.ok(deli);
     }
 }

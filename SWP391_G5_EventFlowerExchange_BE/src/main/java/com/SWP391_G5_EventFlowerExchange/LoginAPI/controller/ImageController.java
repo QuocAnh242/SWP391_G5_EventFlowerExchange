@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/img")
@@ -27,4 +28,25 @@ public class ImageController {
         byte[] imageData = imageService.downloadImageByPostID(postID);
         return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
-    }}
+    }
+    // Update image
+    @PutMapping("/{postID}")
+    public ResponseEntity<?> updateImage(@RequestParam("image") MultipartFile file, @PathVariable("postID") int postID)
+            throws IOException {
+        String updateMessage = imageService.updateImage(file, postID);
+        return ResponseEntity.status(HttpStatus.OK).body(updateMessage);
+    }
+
+    // Delete image
+    @DeleteMapping("/{postID}")
+    public ResponseEntity<?> deleteImage(@PathVariable("postID") int postID) {
+        String deleteMessage = imageService.deleteImage(postID);
+        return ResponseEntity.status(HttpStatus.OK).body(deleteMessage);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllImages() {
+        List<byte[]> images = imageService.getAllImages();
+        return ResponseEntity.status(HttpStatus.OK).body(images);
+    }
+
+}

@@ -18,4 +18,8 @@ public class Category {
     private String description = "Available";
 
     private String imageUrl;
+
+    private String eventType;
+
+    private String categoryName;
 }

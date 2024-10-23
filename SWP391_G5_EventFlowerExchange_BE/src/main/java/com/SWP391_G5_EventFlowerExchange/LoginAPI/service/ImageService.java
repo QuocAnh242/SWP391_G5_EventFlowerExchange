@@ -11,7 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ImageService {
@@ -53,4 +56,53 @@ public class ImageService {
         return image.map(img -> ImageUtils.decompressImage(img.getImageData()))
                 .orElseThrow(() -> new RuntimeException("No images found for post ID: " + postID));
     }
+    // Hàm cập nhật ảnh
+    public String updateImage(MultipartFile file, int postID) throws IOException {
+        // Tìm bài đăng theo ID
+        EventFlowerPosting eventFlowerPosting = eventFlowerPostingRepository.findById(postID)
+                .orElseThrow(() -> new FileNotFoundException("Post with ID " + postID + " not found"));
+
+        // Tìm hình ảnh hiện tại liên quan đến bài đăng
+        Optional<Image> existingImage = imageRepository.findByEventFlowerPosting(eventFlowerPosting).stream().findFirst();
+
+        // Nếu tìm thấy ảnh, cập nhật dữ liệu ảnh
+        if (existingImage.isPresent()) {
+            Image image = existingImage.get();
+            image.setName(file.getOriginalFilename());
+            image.setType(file.getContentType());
+            image.setImageData(ImageUtils.compressImage(file.getBytes()));  // Nén và cập nhật dữ liệu ảnh mới
+
+            // Lưu lại ảnh đã cập nhật vào cơ sở dữ liệu
+            imageRepository.save(image);
+
+            return "Image updated successfully for postID: " + postID;
+        } else {
+            // Nếu không tìm thấy ảnh, ném ngoại lệ hoặc xử lý phù hợp
+            throw new RuntimeException("Image not found for postID: " + postID);
+        }
+    }
+    public String deleteImage(int postID) {
+        // Tìm bài đăng theo ID
+        EventFlowerPosting eventFlowerPosting = eventFlowerPostingRepository.findById(postID)
+                .orElseThrow(() -> new RuntimeException("Post with ID " + postID + " not found"));
+
+        // Tìm ảnh liên quan đến bài đăng
+        Optional<Image> image = imageRepository.findByEventFlowerPosting(eventFlowerPosting).stream().findFirst();
+
+        if (image.isPresent()) {
+            // Chuyển đổi id từ int sang Long để xóa
+            imageRepository.deleteById(Long.valueOf(image.get().getId()));
+            return "Image deleted successfully for postID: " + postID;
+        } else {
+            throw new RuntimeException("Image not found for postID: " + postID);
+        }
+    }
+    public List<byte[]> getAllImages() {
+        // Lấy tất cả các ảnh từ cơ sở dữ liệu và giải nén dữ liệu ảnh
+        List<Image> images = imageRepository.findAll();
+        return images.stream()
+                .map(image -> ImageUtils.decompressImage(image.getImageData()))
+                .collect(Collectors.toList());
+    }
+
 }
