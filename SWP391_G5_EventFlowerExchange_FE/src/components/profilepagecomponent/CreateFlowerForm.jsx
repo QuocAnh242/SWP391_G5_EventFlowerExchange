@@ -11,6 +11,8 @@ const CreateFlowerForm = ({ postID }) => {
       description: '',
       price: '',
       imageUrl: '',
+      saleType: 'batch', // Thêm state để lưu hình thức bán
+      eventName: '', // Thêm state để lưu tên sự kiện
       eventFlowerPosting: {
         postID: postID, // Gán postID từ bài đăng đã tạo
       },
@@ -28,7 +30,7 @@ const CreateFlowerForm = ({ postID }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/identity/catetory/');
+        const response = await axios.get('http://localhost:8080/identity/category/');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -41,7 +43,9 @@ const CreateFlowerForm = ({ postID }) => {
   const handleFlowerChange = (index, e) => {
     const { name, value } = e.target;
     const newFlowers = [...flowers];
+
     if (name === 'categoryID') {
+      // Cập nhật categoryID
       newFlowers[index] = {
         ...newFlowers[index],
         category: {
@@ -49,11 +53,23 @@ const CreateFlowerForm = ({ postID }) => {
           categoryID: value,
         },
       };
+    } else if (name === 'eventName') {
+      // Cập nhật eventName nếu tồn tại
+      newFlowers[index] = { 
+        ...newFlowers[index], 
+        eventName: value 
+      };
     } else {
-      newFlowers[index] = { ...newFlowers[index], [name]: value };
+      // Cập nhật các trường khác
+      newFlowers[index] = { 
+        ...newFlowers[index], 
+        [name]: value 
+      };
     }
+
     setFlowers(newFlowers);
-  };
+};
+
 
   // Xử lý thêm loại hoa mới
   const addFlower = () => {
@@ -66,11 +82,14 @@ const CreateFlowerForm = ({ postID }) => {
         description: '',
         price: '',
         imageUrl: '',
+        saleType: 'batch', // Mặc định là "batch"
+        eventName: '',
         eventFlowerPosting: {
           postID: postID,
         },
         category: {
           categoryID: '',
+          
         },
       },
     ]);
@@ -172,6 +191,34 @@ const CreateFlowerForm = ({ postID }) => {
                 ))}
               </select>
             </label>
+
+            {/* Thêm trường chọn hình thức bán */}
+            <label>
+              Bán theo:
+              <select
+                name="saleType"
+                value={flower.saleType}
+                onChange={(e) => handleFlowerChange(index, e)}
+                required
+              >
+                <option value="batch">Theo batch</option>
+                <option value="event">Theo sự kiện</option>
+              </select>
+            </label>
+
+            {/* Hiển thị phần nhập tên sự kiện nếu chọn theo sự kiện */}
+            {flower.saleType === 'event' && (
+              <label>
+                Nhập tên sự kiện:
+                <input
+                  type="text"
+                  name="eventName"
+                  value={flower.eventName || ''}
+                  onChange={(e) => handleFlowerChange(index, e)}
+                  required
+                />
+              </label>
+            )}
 
             {flowers.length > 1 && (
               <button type="button" onClick={() => removeFlower(index)}>
