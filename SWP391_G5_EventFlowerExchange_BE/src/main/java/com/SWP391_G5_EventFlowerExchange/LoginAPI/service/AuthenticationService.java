@@ -61,6 +61,10 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var user= IUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
+        // Kiểm tra trạng thái của user (chỉ cho phép đăng nhập nếu status là "available")
+        if (!"available".equals(user.getStatus())) {
+            throw new AppException(ErrorCode.USER_NOT_AVAILABLE);
+        }
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated= passwordEncoder.matches(request.getPassword(), user.getPassword());

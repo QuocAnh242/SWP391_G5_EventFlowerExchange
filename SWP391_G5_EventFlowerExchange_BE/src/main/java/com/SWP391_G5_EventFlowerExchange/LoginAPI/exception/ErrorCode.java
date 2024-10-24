@@ -17,7 +17,8 @@ public enum ErrorCode {
     USER_NOT_EXISTED(1005, "User is not existed!", HttpStatus.NOT_FOUND),
     USERID_NOT_FOUND(1006, "UserID is not found!", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
-    UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN);
+    UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
+    USER_NOT_AVAILABLE(1009, "User is not available for login", HttpStatus.FORBIDDEN);
     private final int code;
     private final String message;
     private HttpStatusCode statusCode;
