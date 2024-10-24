@@ -30,13 +30,17 @@ function Menu() {
   const fetchFlowerList = async () => {
     try {
       const response = await axios.get("http://localhost:8080/identity/posts/");
-      console.log(response.data)
-      setFlowerList(response.data); // Lưu dữ liệu hoa vào state
-      setFilteredFlowers(response.data); // Khởi tạo danh sách đã lọc
+      const flowersWithImages = response.data.map(flower => ({
+        ...flower,
+        imageURL: `http://localhost:8080/identity/img/${flower.postID}` // Tạo URL ảnh từ postID
+      }));
+      setFlowerList(flowersWithImages); // Lưu danh sách hoa kèm URL ảnh
+      setFilteredFlowers(flowersWithImages); // Khởi tạo danh sách đã lọc
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
+  
 
   const fetchCategoryList = async () => {
     try {
@@ -48,35 +52,35 @@ function Menu() {
   };
 
   // Lọc bài post theo danh mục sự kiện hoặc tên hoa
-const filterByCategory = (eventName) => {
-  if (eventName === "Tất cả bài post") {
-    setFilteredFlowers(flowerList);  // Hiển thị tất cả bài post
-  } else {
-    // Lọc bài post chứa loại hoa được chọn
+  const filterByCategory = (eventName) => {
+    if (eventName === "Tất cả bài post") {
+      setFilteredFlowers(flowerList);  // Hiển thị tất cả bài post
+    } else {
+      // Lọc bài post chứa loại hoa được chọn
+      const filtered = flowerList.filter(flower =>
+        flower.flowerBatches.some(batch => batch.category?.eventName === eventName)
+      );
+      setFilteredFlowers(filtered);  // Lọc bài post theo sự kiện hoặc hoa
+    }
+    setCategory(eventName);  // Để hiển thị event đang chọn
+  };
+
+  // Lọc bài post theo tên hoa (khi nhấn vào tên hoa)
+  const filterByFlowerName = (flowerName) => {
     const filtered = flowerList.filter(flower =>
-      flower.flowerBatches.some(batch => batch.category?.eventName === eventName)
+      flower.flowerBatches.some(batch => batch.flowerName === flowerName)
     );
-    setFilteredFlowers(filtered);  // Lọc bài post theo sự kiện hoặc hoa
-  }
-  setCategory(eventName);  // Để hiển thị event đang chọn
-};
+    setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
+  };
 
-// Lọc bài post theo tên hoa (khi nhấn vào tên hoa)
-const filterByFlowerName = (flowerName) => {
-  const filtered = flowerList.filter(flower =>
-    flower.flowerBatches.some(batch => batch.flowerName === flowerName)
-  );
-  setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
-};
 
-  
-  
+
 
   // Xử lý khi nhấn vào bài viết
   const handlePostClick = (id) => {
     navigate(`/flower/${id}`);
   };
-  
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -191,46 +195,48 @@ const filterByFlowerName = (flowerName) => {
   return (
     <div className="shop-container">
       <div className="sidebar-post-exchange">
-  <h3 className="sidebar-title">Danh mục hoa</h3>
-  <hr className="sidebar-divider" />
-  <ul className="category-list">
-    {/* Mục hiển thị tất cả bài post */}
-<li onClick={() => filterByCategory("Tất cả bài post")}>
-  <span>Tất cả bài post</span>
-</li>
+        <h3 className="sidebar-title">Danh mục hoa</h3>
+        <hr className="sidebar-divider" />
+        <ul className="category-list">
+          {/* Mục hiển thị tất cả bài post */}
+          <li onClick={() => filterByCategory("Tất cả bài post")}>
+            <span>Tất cả bài post</span>
+          </li>
 
-{categoryList
-  .filter((category) => category.eventName) // Lọc các danh mục có eventName
-  .map((category, index) => (
-    <li key={index} onClick={() => filterByCategory(category.eventName)}>
-      <span>{category.eventName}</span>
-    </li>
-))}
+          {categoryList
+            .filter((category) => category.eventName) // Lọc các danh mục có eventName
+            .map((category, index) => (
+              <li key={index} onClick={() => filterByCategory(category.eventName)}>
+                <span>{category.eventName}</span>
+              </li>
+            ))}
 
-{/* Hiển thị danh sách tên các loài hoa duy nhất */}
-<h3 className="sidebar-title">Tên hoa</h3>
-<hr className="sidebar-divider" />
-<ul className="flower-list">
-  {[...new Set(flowerList.map(flower => flower.flowerBatches[0]?.flowerName))]  
-    .filter(flowerName => flowerName)  // Bỏ qua tên hoa rỗng hoặc không xác định
-    .map((flowerName, index) => (
-      <li key={index} onClick={() => filterByFlowerName(flowerName)}>
-        <span>{flowerName}</span>
-      </li>
-  ))}
-</ul>
+          {/* Hiển thị danh sách tên các loài hoa duy nhất */}
+          <h3 className="sidebar-title">Tên hoa</h3>
+          <hr className="sidebar-divider" />
+          <ul className="flower-list">
+            {[...new Set(flowerList
+              .flatMap(flower => flower.flowerBatches.map(batch => batch.flowerName)))] // Lấy tất cả tên hoa từ các flowerBatches
+              .filter(flowerName => flowerName)  // Bỏ qua tên hoa rỗng hoặc không xác định
+              .map((flowerName, index) => (
+                <li key={index} onClick={() => filterByFlowerName(flowerName)}>
+                  <span>{flowerName}</span>
+                </li>
+              ))}
+          </ul>
 
 
 
-    {categoryList
-      .filter((category) => category.eventName) // Lọc các danh mục có eventName
-      .map((category, index) => (
-        <li key={index} onClick={() => filterByCategory(category.eventName)}>
-          <span>{category.eventName}</span>
-        </li>
-      ))}
-  </ul>
-</div>
+
+          {/* {categoryList
+            .filter((category) => category.eventName) 
+            .map((category, index) => (
+              <li key={index} onClick={() => filterByCategory(category.eventName)}>
+                <span>{category.eventName}</span>
+              </li>
+            ))} */}
+        </ul>
+      </div>
 
       {/* Nội dung chính */}
       <div className="main-content">
@@ -266,24 +272,24 @@ const filterByFlowerName = (flowerName) => {
         </div>
 
         <div className="post-grid">
-        {currentFlowers.map((flower, index) => (
-    <div
-      className="post-card scroll-appear"
-      key={index}
-      ref={(el) => postCardRef.current[index] = el}
-      onClick={() => handlePostClick(flower.postID)}
-    >
-      <img src={a2} alt={flower.title} className="post-card-image" />
-      <h3>{flower.title}</h3>
-      <p className="discount-price">Giá dự kiến : {flower.price}VNĐ</p>
-      <p className="">{flower.flowerBatches[0]?.category?.eventName ? flower.flowerBatches[0].category.eventName : "Bán theo lô"}</p>
-
-      <p className="feature-content">{flower.description}</p>
-      <button className="feature-detail-button">Xem chi tiết</button>
-    </div>
-))}
-
+          {currentFlowers.map((flower, index) => (
+            <div
+  className="post-card scroll-appear"
+  key={index}
+  ref={(el) => postCardRef.current[index] = el}
+  onClick={() => handlePostClick(flower.postID)}
+>
+  <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
+  <h3>{flower.title}</h3>
+  <p className="discount-price">Giá dự kiến: {flower.price}VNĐ</p>
+  <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
+  <p className="feature-content">{flower.description}</p>
+  <button className="feature-detail-button">Xem chi tiết</button>
 </div>
+
+          ))}
+
+        </div>
 
 
         {/* Phân trang */}
@@ -293,7 +299,7 @@ const filterByFlowerName = (flowerName) => {
             disabled={currentPage === 1}
             className="pagination-arrow"
           >
-            &laquo; 
+            &laquo;
           </button>
 
           {pageNumbers.map((number) => (
@@ -311,7 +317,7 @@ const filterByFlowerName = (flowerName) => {
             disabled={currentPage === Math.ceil(filteredFlowers.length / flowersPerPage)}
             className="pagination-arrow"
           >
-             &raquo;
+            &raquo;
           </button>
         </div>
       </div>

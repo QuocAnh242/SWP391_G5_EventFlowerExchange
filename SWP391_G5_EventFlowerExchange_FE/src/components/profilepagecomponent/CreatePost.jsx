@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import CreateFlowerForm from './CreateFlowerForm'; // Import the CreateFlowerForm component
 import './CreatePos.css'; // Import file CSS
 
 const CreatePostComponent = () => {
-  // Lấy thông tin user từ localStorage
   const user = JSON.parse(localStorage.getItem('user'));
-  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
-  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
-  // State cho bài đăng
   const [post, setPost] = useState({
     title: '',
     description: '',
-    imageUrl: '',
+    price: '',
     user: {
       userID: user ? user.userID : '',
     },
   });
 
-  // State cho thông báo và postID
   const [postID, setPostID] = useState(null);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
 
   // Xử lý khi có thay đổi trong form
   const handleChange = (e) => {
@@ -29,19 +25,36 @@ const CreatePostComponent = () => {
     setPost({ ...post, [name]: value });
   };
 
+  // Xử lý khi chọn file ảnh
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
   // Xử lý khi submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Gửi request POST đến server với dữ liệu trong post
+      // Tạo bài đăng
       const response = await axios.post('http://localhost:8080/identity/posts/', post);
-      setPostID(response.data.postID); // Lưu lại postID
-      // setSuccessMessage('Đã tạo bài đăng thành công!');
-      
+      const createdPostID = response.data.postID;
+      setPostID(createdPostID);
+
+      // Nếu có file ảnh, upload file
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile); // Đảm bảo tên trường 'file' đúng với yêu cầu API
+
+        // Upload file ảnh
+        await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
+        setSuccessMessage('Đã tạo bài đăng và upload ảnh thành công!');
+      } else {
+        setSuccessMessage('Đã tạo bài đăng thành công!');
+      }
+
       setError('');
     } catch (error) {
-      console.error('Error creating post:', error);
-      setError('Không thể tạo bài đăng. Vui lòng thử lại.');
+      console.error('Error creating post or uploading image:', error);
+      setError('Không thể tạo bài đăng hoặc upload ảnh. Vui lòng thử lại.');
       setSuccessMessage('');
     }
   };
@@ -71,26 +84,25 @@ const CreatePostComponent = () => {
             required
           />
         </label>
-        
+
         <label>
-          Giá dự kiến
+          Giá dự kiến:
           <input
             type="number"
             name="price"
             value={post.price}
             onChange={handleChange}
-            // required
+            required
           />
         </label>
 
         <label>
-          URL hình ảnh:
+          Chọn ảnh:
           <input
-            type="text"
-            name="imageUrl"
-            value={post.imageUrl}
-            onChange={handleChange}
-            // required
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            required
           />
         </label>
 
