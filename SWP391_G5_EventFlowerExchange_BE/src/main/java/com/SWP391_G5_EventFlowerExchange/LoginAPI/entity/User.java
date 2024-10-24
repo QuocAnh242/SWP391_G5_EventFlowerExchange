@@ -34,6 +34,8 @@ public class User {
 
     String phoneNumber;
 
+    String Status="available";
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
     Set<String> roles;

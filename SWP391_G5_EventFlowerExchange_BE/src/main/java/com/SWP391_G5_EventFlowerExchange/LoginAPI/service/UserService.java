@@ -146,5 +146,13 @@ public class UserService implements IUserService {
             throw new AppException(ErrorCode.DELETE_USER_ERROR, e);  // Pass the original exception
         }
     }
+    public User setStatus(int userID, String status) {
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setStatus(status); // Cập nhật trạng thái người dùng
+        return userRepository.save(user); // Lưu và trả về đối tượng User đã cập nhật
+    }
+
 
 }

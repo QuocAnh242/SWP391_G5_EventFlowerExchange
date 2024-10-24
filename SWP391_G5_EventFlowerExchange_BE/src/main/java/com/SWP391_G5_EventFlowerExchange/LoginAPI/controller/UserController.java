@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -83,6 +84,17 @@ public class UserController {
                 .result("User has been deleted")
                 .code(1000) // Set success code
                 .build();
+    }
+    @PutMapping("/{userID}/status")
+    public ResponseEntity<User> setStatus(
+            @PathVariable int userID,
+            @RequestParam String status) {
+
+        // Cập nhật trạng thái người dùng và nhận lại đối tượng User đã cập nhật
+        User updatedUser = userService.setStatus(userID, status);
+
+        // Trả về người dùng đã cập nhật
+        return ResponseEntity.ok(updatedUser);
     }
 
 }
