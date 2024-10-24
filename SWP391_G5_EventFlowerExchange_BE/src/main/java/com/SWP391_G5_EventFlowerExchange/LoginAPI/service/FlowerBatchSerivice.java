@@ -45,9 +45,9 @@ public class FlowerBatchSerivice implements IFlowerBatchService{
             if (flowerBatch.getPrice() != null) {
                 fb.setPrice(flowerBatch.getPrice());
             }
-            if (flowerBatch.getImageUrl() != null) {
-                fb.setImageUrl(flowerBatch.getImageUrl());
-            }
+//            if (flowerBatch.getImageUrl() != null) {
+//                fb.setImageUrl(flowerBatch.getImageUrl());
+//            }
             if (flowerBatch.getCategory() != null) {
                 fb.setCategory(flowerBatch.getCategory());
             }

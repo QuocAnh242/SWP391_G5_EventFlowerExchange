@@ -72,7 +72,7 @@ public class CartShopService implements ICartShopService{
             productDetails.put("flowerName", entry.getKey().getFlowerName());
             productDetails.put("quantity", entry.getValue());
             productDetails.put("price", entry.getKey().getPrice());
-            productDetails.put("imageUrl", entry.getKey().getImageUrl());
+//            productDetails.put("imageUrl", entry.getKey().getImageUrl());
             products.add(productDetails);
         }
         return products;

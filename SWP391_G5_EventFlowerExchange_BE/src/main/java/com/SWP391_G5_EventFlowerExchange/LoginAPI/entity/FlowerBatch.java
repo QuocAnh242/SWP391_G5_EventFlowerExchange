@@ -34,8 +34,6 @@ public class FlowerBatch {
     @Column(nullable = false)
     private BigDecimal price;
 
-    private String imageUrl;
-
     @ManyToOne
     @JoinColumn(name = "postID", nullable = false)
     @JsonBackReference

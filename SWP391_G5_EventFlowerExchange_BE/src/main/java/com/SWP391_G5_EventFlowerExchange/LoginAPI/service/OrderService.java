@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -19,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,7 @@ public class OrderService implements IOrderService {
     IOrderDetailRepository iOrderDetailRepository;
     IDeliveryRepository iDeliveryRepository;
     IPaymentRepository iPaymentRepository;
+    IUserRepository userRepository;
 
     @Override
     public Order insertOrder(Order order) {
@@ -160,7 +164,7 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
         // Update order status to canceled
-        order.setStatus("Canceled");
+        order.setStatus("Đã Hủy");
         order.setUpdatedAt(LocalDateTime.now());
 
         iOrderRepository.save(order);
@@ -173,4 +177,32 @@ public class OrderService implements IOrderService {
         order.setUpdatedAt(LocalDateTime.now()); // Update timestamp
         iOrderRepository.save(order); // Save changes
     }
+
+    @Override
+    // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
+    public List<MonthlyRevenueResponse> calculateMonthlyRevenue(){
+        // Lấy danh sách các đơn hàng đã hoàn thành
+        List<Order> completedOrders= iOrderRepository.findByStatus("Đã Nhận Hàng");
+        // Tạo một bản đồ để lưu trữ doanh thu theo từng tháng
+        Map<String,Double> monthlyRevenueMap=new HashMap<>();
+        // Định dạng tháng
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        // Tính doanh thu theo tháng
+        for (Order order : completedOrders) {
+            String month = order.getOrderDate().format(monthFormatter);
+            monthlyRevenueMap.merge(month, order.getTotalPrice(), Double::sum);
+        }
+        // Chuyển đổithành danh sách MonthlyRevenueResponse
+        return monthlyRevenueMap.entrySet().stream()
+                .map(entry -> new MonthlyRevenueResponse(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(MonthlyRevenueResponse::getMonth)) // Sắp xếp theo tháng
+                .collect(Collectors.toList());
+    }
+    public List<Order> getOrdersByUserID(int userID) {
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userID));
+        return iOrderRepository.findByUser(user);
+    }
+
+
 }

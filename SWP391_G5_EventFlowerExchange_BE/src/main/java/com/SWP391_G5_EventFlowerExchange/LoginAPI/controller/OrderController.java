@@ -1,11 +1,14 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +22,7 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderController {
 
-    IOrderService orderService;
+    OrderService orderService;
 
     // Create a new order
     @PostMapping("/")
@@ -60,10 +63,10 @@ public class OrderController {
 
             // Update order status based on payment response
             if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
-                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Paid");
+                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Đã Thanh Toán");
                 return ResponseEntity.ok("Payment success. Order status updated.");
             } else if ("24".equals(responseCode) && "02".equals(transactionStatus)) {
-                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Canceled");
+                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Chưa Thanh Toán");
                 return ResponseEntity.ok("Payment was canceled. Order status updated.");
             }
 
@@ -134,4 +137,16 @@ public class OrderController {
             return ResponseEntity.status(500).body("An error occurred while canceling the payment.");
         }
     }
+    @GetMapping("/monthly-revenue")
+    public ResponseEntity<List<MonthlyRevenueResponse>> getMonthlyRevenue() {
+        List<MonthlyRevenueResponse> monthlyRevenue = orderService.calculateMonthlyRevenue();
+        return ResponseEntity.status(HttpStatus.OK).body(monthlyRevenue);
+    }
+    @GetMapping("/user/{userID}")
+    public ResponseEntity<List<Order>> getOrdersByUserID(@PathVariable int userID) {
+        List<Order> orders = orderService.getOrdersByUserID(userID);
+        return ResponseEntity.ok(orders);
+    }
+
+
 }

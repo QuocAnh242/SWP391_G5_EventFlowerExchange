@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 
 import java.util.List;
@@ -14,4 +15,5 @@ public interface IOrderService {
     String createVNPayUrl(Order order) throws Exception; // Declare the exception if needed
     void cancelPayment(int orderId);
     void updateOrderStatus(int orderId, String status);
+    public List<MonthlyRevenueResponse> calculateMonthlyRevenue();
 }
