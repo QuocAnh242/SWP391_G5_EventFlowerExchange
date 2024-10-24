@@ -62,10 +62,12 @@ public class OrderController {
     }
 
     @PostMapping("/create")
-    public ApiResponse<Order> createNewOrder(@RequestBody OrderCreationRequest request) {
-        Order order = orderService.createOrder(request); // Create the order first
 
-        // Create order details based on the request
+    public ApiResponse<Order> createNewOrder(@RequestBody OrderCreationRequest request) throws Exception {
+        // Step 1: Create the order first
+        Order order = orderService.createOrder(request);
+
+        // Step 2: Create order details based on the request
         for (OrderDetailRequest detailRequest : request.getOrderDetails()) {
             OrderDetail orderDetail = new OrderDetail();
             OrderDetailKey orderDetailKey = new OrderDetailKey();
@@ -86,10 +88,18 @@ public class OrderController {
             orderDetailService.createOrderDetail(orderDetail); // Save order detail
         }
 
+        // Step 3: Check if payment method is VNPay (paymentID == 1)
+        String vnPayURL = "";
+        if (request.getPayment().getPaymentID() == 1) {
+            vnPayURL = orderService.createVNPayUrl(order); // Generate VNPay URL
+            // Optionally, you can set the VNPay URL in the order or return it in the response
+        }
+
+        // Step 4: Return the response with VNPay URL (if applicable)
         return ApiResponse.<Order>builder()
                 .result(order)
                 .code(1000) // Set success code
-                .message("Create Order Successfully") // Set success message
+                .message(vnPayURL.isEmpty() ? "Create Order Successfully" : "Create Order Successfully. VNPay URL: " + vnPayURL) // Include VNPay URL in the message if available
                 .build();
     }
 
