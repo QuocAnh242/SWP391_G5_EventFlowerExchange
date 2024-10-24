@@ -21,5 +21,7 @@ public class Category {
 
     private String eventType;
 
+    private String eventName;
+
     private String categoryName;
 }

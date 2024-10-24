@@ -8,9 +8,10 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import java.util.List;
 
 public interface IUserService {
-    public User createUser(UserCreationRequest request);
-    public UserResponse getUser(int userID);
-    public User updateUser(int userID, UserUpdateRequest request);
-    public List<User> getUsers();
-    public void deleteUser(int userID);
+    User createUser(UserCreationRequest request);
+    UserResponse getUser(int userID);
+    User updateUser(int userID, UserUpdateRequest request);
+    User UpdateUserIntoSeller(int userID);
+    List<User> getUsers();
+    void deleteUser(int userID);
 }

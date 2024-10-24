@@ -34,30 +34,23 @@ public class Order {
     @Column(nullable = false, length = 255)
     private String shippingAddress;
 
-    @Column(nullable = false, length = 50) // Limit length for status
+    @Column(nullable = false, length = 50)
     private String status = "Chưa Thanh Toán";
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
     private User user;
 
-//    @ManyToOne
-//    @JoinColumn(name = "deliveryID", nullable = true)
-//    @JsonBackReference
-//    private Delivery delivery; // Relationship with Delivery
+    @ManyToOne
+    @JoinColumn(name = "deliveryID", nullable = true)
+    @JsonBackReference
+    private Delivery delivery;
+
     @ManyToOne
     @JoinColumn(name = "paymentID", nullable = true)
     @JsonBackReference
-    private Payment payment; // Relationship with Payment
+    private Payment payment;
 
-    // Constructor with required fields
-    public Order(LocalDateTime orderDate, double totalPrice, String shippingAddress, User user, Delivery delivery) {
-        this.orderDate = orderDate;
-        this.totalPrice = totalPrice;
-        this.shippingAddress = shippingAddress;
-        this.user = user;
-//        this.delivery = delivery;
-    }
 
     @PrePersist
     protected void onCreate() {

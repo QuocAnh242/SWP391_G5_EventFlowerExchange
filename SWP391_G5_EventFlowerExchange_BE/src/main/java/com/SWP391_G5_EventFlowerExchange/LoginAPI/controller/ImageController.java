@@ -48,5 +48,4 @@ public class ImageController {
         List<byte[]> images = imageService.getAllImages();
         return ResponseEntity.status(HttpStatus.OK).body(images);
     }
-
 }

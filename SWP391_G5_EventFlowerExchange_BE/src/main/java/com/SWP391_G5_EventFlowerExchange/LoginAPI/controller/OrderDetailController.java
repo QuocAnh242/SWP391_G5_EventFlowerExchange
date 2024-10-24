@@ -4,6 +4,9 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderDetailService;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/order-details")
 @CrossOrigin("http://localhost:3000")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderDetailController {
 
-    @Autowired
-    private IOrderDetailService orderDetailService;
+    IOrderDetailService orderDetailService;
 
     @PostMapping("/")
     public ResponseEntity<OrderDetail> createOrderDetail(@RequestBody OrderDetail orderDetail) {
