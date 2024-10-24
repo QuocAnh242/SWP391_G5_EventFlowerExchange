@@ -2,7 +2,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.NotEnoughProductsInStockException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.CartShopService;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FlowerBatchSerivice;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FlowerBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +15,12 @@ import java.util.Map;
 @RequestMapping("/cart")
 public class CartShopController {
     private final CartShopService cartShopService;
-    private final FlowerBatchSerivice flowerBatchSerivice;
+    private final FlowerBatchService flowerBatchService;
 
     @Autowired
-    public CartShopController(CartShopService cartShopService, FlowerBatchSerivice flowerBatchSerivice) {
+    public CartShopController(CartShopService cartShopService, FlowerBatchService flowerBatchService) {
         this.cartShopService = cartShopService;
-        this.flowerBatchSerivice = flowerBatchSerivice;
+        this.flowerBatchService = flowerBatchService;
     }
 
     @GetMapping("/shoppingCart")
@@ -33,7 +33,7 @@ public class CartShopController {
 
     @PostMapping("/shoppingCart/addProduct/{flowerID}")
     public ResponseEntity<Map<String, Object>> addProductToCart(@PathVariable("flowerID") int flowerID) {
-        flowerBatchSerivice.getFlowerBatchById(flowerID).ifPresent(cartShopService::addPost);
+        flowerBatchService.getFlowerBatchById(flowerID).ifPresent(cartShopService::addPost);
 
         Map<String, Object> response = new HashMap<>();
         response.put("products", cartShopService.getFlowerBatchInCart());
@@ -44,7 +44,7 @@ public class CartShopController {
 
     @GetMapping("/shoppingCart/removeProduct/{flowerID}")
     public Map<String, Object> removeProductFromCart(@PathVariable("flowerID") int flowerID) {
-        flowerBatchSerivice.getFlowerBatchById(flowerID).ifPresent(cartShopService::removeFlowerBatch);
+        flowerBatchService.getFlowerBatchById(flowerID).ifPresent(cartShopService::removeFlowerBatch);
         return getShoppingCart();
     }
 

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderID;
@@ -50,7 +49,6 @@ public class Order {
     @JoinColumn(name = "paymentID", nullable = true)
     @JsonBackReference
     private Payment payment;
-
 
     @PrePersist
     protected void onCreate() {
