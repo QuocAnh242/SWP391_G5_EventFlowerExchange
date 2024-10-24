@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface IDeliveryService {
     List<Delivery> getAllDeliveries();
+    Delivery addDelivery(Delivery delivery);
     DeliveryCreationResponse insertDelivery(DeliveryCreationRequest request);
     Delivery updateDelivery(int deliveryID,Delivery delivery);
     void deleteDelivery(int deliveryID);

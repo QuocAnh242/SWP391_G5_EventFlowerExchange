@@ -2,6 +2,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderCreationRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,6 +30,46 @@ import java.util.stream.Collectors;
 public class OrderService implements IOrderService {
     IOrderRepository iOrderRepository;
     IOrderDetailRepository iOrderDetailRepository;
+    IDeliveryService iDeliveryService;
+
+    @Override
+    public Order createOrder(OrderCreationRequest request) {
+        Order order = new Order();
+
+        // Create the Delivery in the backend
+        Delivery newDelivery = new Delivery();
+        newDelivery.setDeliveryDate(request.getDelivery().getDeliveryDate());
+        newDelivery.setRating(request.getDelivery().getRating());
+        newDelivery.setAvailableStatus(request.getDelivery().getAvailableStatus());
+        Delivery savedDelivery = iDeliveryService.addDelivery(newDelivery);
+
+        // Associate the created delivery with the order
+        order.setDelivery(savedDelivery);
+
+        // Set common fields for the order
+        order.setOrderDate(request.getOrderDate());
+        order.setTotalPrice(request.getTotalPrice());
+        order.setShippingAddress(request.getShippingAddress());
+        order.setUser(request.getUser());
+        order.setPayment(request.getPayment());
+
+        // Set status based on payment method
+        switch (request.getPayment().getPaymentID()) {
+            case 1:
+                order.setStatus("Checkout VNPay Successfully!");
+                break;
+            case 2:
+                order.setStatus("Checkout MOMO Successfully!");
+                break;
+            case 3:
+            default:
+                order.setStatus("Create Order Successfully!");
+                break;
+        }
+
+        // Step 5: Save and return the order
+        return iOrderRepository.save(order);
+    }
     IDeliveryRepository iDeliveryRepository;
     IPaymentRepository iPaymentRepository;
     IUserRepository userRepository;
@@ -164,7 +205,7 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
 
         // Update order status to canceled
-        order.setStatus("Đã Hủy");
+        order.setStatus("Canceled");
         order.setUpdatedAt(LocalDateTime.now());
 
         iOrderRepository.save(order);

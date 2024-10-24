@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IFlowerBatchService {
-    public List<FlowerBatch> getAllFlowerBatch();
-    public List<FlowerBatch> insertFlowerBatch(List<FlowerBatch> flowerBatchList);
-    public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
-    public void deleteFlowerBatch(int flowerID);
-    public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
+    FlowerBatch updateFlowerQuantity(int flowerID, int newQuantity);
+    List<FlowerBatch> getAllFlowerBatch();
+    List<FlowerBatch> insertFlowerBatch(List<FlowerBatch> flowerBatchList);
+    FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
+    void deleteFlowerBatch(int flowerID);
+    Optional<FlowerBatch> getFlowerBatchById(int flowerID);
     FlowerBatch createFlower(FlowerBatch flowerBatch, int postId);
-
-
+    FlowerBatch findById(int flowerID);
 }

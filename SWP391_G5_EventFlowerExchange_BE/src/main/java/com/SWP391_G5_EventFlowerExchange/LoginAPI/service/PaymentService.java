@@ -20,7 +20,6 @@ public class PaymentService implements IPaymentService {
     @Override
     public Payment createPayment(Payment payment) {
         payment.setMethod(payment.getMethod());
-        payment.setDate(LocalDateTime.now());
         return iPaymentRepository.save(payment);
     }
 
@@ -39,7 +38,6 @@ public class PaymentService implements IPaymentService {
     public Payment updatePayment(int paymentID, Payment payment) {
         Payment existingPayment = getPayment(paymentID);
         existingPayment.setMethod(payment.getMethod());
-//        existingPayment.setStatus(payment.getStatus());
         return iPaymentRepository.save(existingPayment);
     }
 
