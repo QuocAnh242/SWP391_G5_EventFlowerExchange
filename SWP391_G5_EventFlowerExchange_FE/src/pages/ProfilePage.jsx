@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from "react";
 import ProfileInfo from '../components/profilepagecomponent/ProfileInfo.jsx'; 
-import CreatePost from "../components/profilepagecomponent/CreatePost.jsx";
 import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.jsx";
-import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
-import OrderHistory from "../components/profilepagecomponent/OrderHistory.jsx";  // Import the OrderHistory component
+import OrderHistory from "../components/profilepagecomponent/OrderHistory.jsx";
+import BecomeSeller from "../components/profilepagecomponent/BecomeSeller.jsx";  
 import "../styles/ProfilePage.css";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const ProfilePage = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
-  const [userID, setUserID] = useState(null);  // State to store userID
+  const [userID, setUserID] = useState(null);
+  const [userRole, setUserRole] = useState(null); // State to hold user's role
+  const navigate = useNavigate(); // Use useNavigate for redirection
 
   useEffect(() => {
-    // Fetch userID from localStorage or an API
-    const fetchedUserID = localStorage.getItem('userID');
-    setUserID(fetchedUserID);
+    const fetchedUser = JSON.parse(localStorage.getItem('user'));
+
+    if (fetchedUser && fetchedUser.userID) {
+      setUserID(fetchedUser.userID);
+      setUserRole(fetchedUser.role); // Set user role
+      console.log(fetchedUser.role);  // Log user's role for debugging
+    }
 
     const timer = setTimeout(() => {
       setLoading(false);
@@ -27,17 +33,25 @@ const ProfilePage = () => {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'profile':
-        return <ProfileInfo userID={userID}/>; 
+        return <ProfileInfo userID={userID} />;
       case 'change-infor':
-        return <ChangeInfor userID={userID}/>; 
+        return <ChangeInfor userID={userID} />;
       case 'orders':
-        return <OrderHistory userID={userID}/>;  // Add OrderHistory component
-      case 'create-post':
-        return <CreatePost/>;
-      case 'manage-posts':
-        return <ManagePosts userID={userID}/>;
+        return <OrderHistory userID={userID} />;
+      case 'become-seller':
+        return <BecomeSeller userID={userID} setError={setError} />;
       default:
         return null;
+    }
+  };
+
+  const handleSellerAccess = () => {
+    // Check if the user has the SELLER role
+    if (userRole === 'SELLER') {
+      navigate('/seller-dashboard'); // Navigate to Seller Dashboard page
+    } else {
+      // If not a seller, show error message
+      setError("Bạn chưa đăng kí trở thành người bán.");
     }
   };
 
@@ -62,11 +76,12 @@ const ProfilePage = () => {
               <li className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`}>
                 <a href="#orders" onClick={() => setActiveTab('orders')}>Đơn hàng của tôi</a>
               </li>
-              <li className={`menu-item ${activeTab === 'create-post' ? 'active' : ''}`}>
-                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo Post</a>
+              <li className={`menu-item ${activeTab === 'become-seller' ? 'active' : ''}`}>
+                <a href="#become-seller" onClick={() => setActiveTab('become-seller')}>Trở thành người bán hàng</a>
               </li>
-              <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
-                <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lí bài post của tôi</a>
+              {/* Conditionally render the Seller Dashboard link */}
+              <li className={`menu-item ${activeTab === 'seller-dashboard' ? 'active' : ''}`}>
+                <a href="#seller-dashboard" onClick={handleSellerAccess}>Trang quản lý người bán</a>
               </li>
             </ul>
           </aside>

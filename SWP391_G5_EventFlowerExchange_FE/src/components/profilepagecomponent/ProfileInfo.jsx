@@ -69,6 +69,16 @@ const ProfileInfo = () => {
           />
         </label>
         
+        {/* <label>
+          vai trò:
+          <input className='roles'
+            type="text"
+            name="roles"
+            value={user.roles}
+            readOnly
+          />
+        </label> */}
+        
       
     </div>
   );

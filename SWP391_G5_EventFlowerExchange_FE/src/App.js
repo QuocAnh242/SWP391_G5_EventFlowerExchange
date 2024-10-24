@@ -13,6 +13,7 @@ import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import SignUp from './pages/SignUp';
 import ProfilePage from './pages/ProfilePage';
+import SellerDashboard from './pages/SellerDashboard.jsx';
 import Cart from './pages/Cart';
 import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
@@ -58,7 +59,7 @@ function App() {
           <Route path="/blog-page" element={<BlogPage />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
-
+          <Route path="/seller-dashboard" element={<SellerDashboard />} /> {/* Fix: Add this route */}
           <Route path="/success-page" element={<SuccessPage />} />
         </Routes>
 

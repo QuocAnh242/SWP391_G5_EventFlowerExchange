@@ -35,7 +35,7 @@ const Cart = ({ cartItems, setCartItems }) => {
       setPopupMessage("Bạn cần đăng nhập để tiếp tục!");
       setShowPopup(true);
     } else if (cartItems.length === 0) {
-      setSuccessMessage("Giỏ hàng trống, vui lòng thêm sản phẩm !");
+      setSuccessMessage("Giỏ hàng trống, vui lòng thêm sản phẩm!");
     } else {
       navigate('/checkout', { state: { cartItems, totalPrice } });
       setCartItems([]);
@@ -60,16 +60,16 @@ const Cart = ({ cartItems, setCartItems }) => {
   }
 
   return (
-    <div className="cart">
+    <div className="cart-page">
       <div className="cart-header">
         <h2>Giỏ Hàng</h2>
       </div>
 
-      <div className="cart-table">
+      <div className="cart-content">
         {cartItems.length === 0 ? (
-          <p>Giỏ hàng của bạn trống</p>
+          <p className="empty-cart-message">Giỏ hàng của bạn trống</p>
         ) : (
-          <table>
+          <table className="cart-table">
             <thead>
               <tr>
                 <th>Sản phẩm</th>
@@ -89,9 +89,9 @@ const Cart = ({ cartItems, setCartItems }) => {
                   </td>
                   <td>{item.price} VNĐ</td>
                   <td>
-                    <button onClick={() => handleQuantityChange(item.flowerID, -1)}>-</button>
-                    <input type="number" value={item.quantity} readOnly />
-                    <button onClick={() => handleQuantityChange(item.flowerID, 1)}>+</button>
+                    <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, -1)}>-</button>
+                    <input type="number" value={item.quantity} readOnly className="quantity-input" />
+                    <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, 1)}>+</button>
                   </td>
                   <td>{item.price * item.quantity} VNĐ</td>
                   <td>
@@ -107,14 +107,12 @@ const Cart = ({ cartItems, setCartItems }) => {
       </div>
 
       <div className="cart-footer">
-        <p className='cart-title'>
-          Tổng thanh toán ({cartItems.length} Sản phẩm): {totalPrice}₫
+        <p className="total-price">
+          Tổng thanh toán ({cartItems.length} sản phẩm): {totalPrice}₫
         </p>
-        <button onClick={handlePurchase}>Mua Hàng</button>
+        <button className="purchase-button" onClick={handlePurchase}>Mua Hàng</button>
         {successMessage && <p className="cart-message">{successMessage}</p>}
       </div>
-
-      <Footer />
 
       {showPopup && (
         <div className="popup-overlay">
@@ -134,6 +132,8 @@ const Cart = ({ cartItems, setCartItems }) => {
           </div>
         </div>
       )}
+      
+      <Footer />
     </div>
   );
 };

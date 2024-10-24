@@ -1,0 +1,50 @@
+.cart-page {
+    background-image: url('../assets/cartback.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+/* Header */
+.cart-content {
+    flex-grow: 1; /* Ensures the content grows and pushes the footer down */
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* On hover, add a subtle shadow and scale the content slightly */
+.cart-content:hover {
+    transform: scale(1.02); /* Slightly enlarges content on hover */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+}
+
+/* Purchase Button Styling */
+.purchase-button {
+    padding: 15px 30px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 100px 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Initial subtle shadow */
+}
+
+/* Hover effect for the button */
+.purchase-button:hover {
+    background-color: #218838; /* Darker green on hover */
+    transform: translateY(-5px); /* Move button up slightly */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow depth */
+}
+
+/* Button click effect */
+.purchase-button:active {
+    background-color: #1e7e34; /* Darker shade on click */
+    transform: translateY(0); /* Reset button position */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow */
+}
+
