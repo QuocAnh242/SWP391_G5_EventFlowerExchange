@@ -42,7 +42,7 @@ const CreatePostComponent = () => {
       // Nếu có file ảnh, upload file
       if (selectedFile) {
         const formData = new FormData();
-        formData.append('file', selectedFile); // Đảm bảo tên trường 'file' đúng với yêu cầu API
+        formData.append('image', selectedFile);// Đảm bảo tên trường 'file' đúng với yêu cầu API
 
         // Upload file ảnh
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
