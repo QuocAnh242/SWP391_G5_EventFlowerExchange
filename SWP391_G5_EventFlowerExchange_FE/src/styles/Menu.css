@@ -8,23 +8,24 @@
 }
 /* Container chung cho sidebar */
 .sidebar-post-exchange {
-  width: 250px; 
-  height: 100vh; 
-  position: fixed; 
-  left: 0; 
-  top: 0; 
-  background-color: #f7f7f7; 
+  width: 250px;
+  height: 100vh; /* Full viewport height */
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: #f7f7f7;
   padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); 
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   padding-top: 100px;
+  overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
 
-/* Tiêu đề của sidebar */
 .sidebar-title {
   font-size: 1.5em;
   margin-bottom: 20px;
   color: #333;
 }
+
 
 
 /* Danh sách các loại hoa */

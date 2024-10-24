@@ -69,8 +69,8 @@ const AdminUserManagement = () => {
     try {
       await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       fetchPosts();
-      setPopupMessage("Bài viết đã xóa thành công");
-      setShowPopup(true); // Hiển thị pop-up
+      // setPopupMessage("Bài viết đã xóa thành công");
+      // setShowPopup(true); 
     } catch (error) {
       console.error('Error deleting post:', error);
     }

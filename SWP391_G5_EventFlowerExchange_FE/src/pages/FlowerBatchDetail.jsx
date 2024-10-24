@@ -155,7 +155,7 @@ function FlowerBatchDetail() {
               <h2>{currentBatch.flowerName}</h2>
               <p className="flower-description">{currentBatch.description}</p>
               <p>Giá: <span className="price">{currentBatch.price}₫</span></p>
-              <p>Số lượng còn lại: <span className="quantity">{currentBatch.quantity}</span></p>
+              <p>Số lượng còn lại: <span className="quantity">{currentBatch.quantity} bó</span></p>
               <div className="stock-availability">
                 <p>Tình trạng: <span className="in-stock">{currentBatch.status}</span></p>
               </div>

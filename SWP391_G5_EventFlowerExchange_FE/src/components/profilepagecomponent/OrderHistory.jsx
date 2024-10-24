@@ -12,8 +12,8 @@ const OrderHistory = () => {
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/identity/orders/user/:userID`);
-        setOrders(response.data.result);
+        const response = await axios.get(`http://localhost:8080/identity/orders/user/${user.userID}`);
+        setOrders(response.data);
         console.log(response.data.result)
       } catch (error) {
         console.error('Lỗi khi tải lịch sử đơn hàng:', error);
@@ -84,14 +84,14 @@ const OrderHistory = () => {
                 <p>Địa chỉ giao hàng: {order.shippingAddress}</p>
                 <p>Trạng thái: {order.status}</p>
                 <p>Người dùng: {order.user.username} - {order.user.email}</p> {/* Displaying user details */}
-                <div className="order-details">
+                {/* <div className="order-details">
                   {order.items.map(item => (
                     <div key={item.flowerID} className="order-item-details">
                       <span>{item.flowerName}</span>
                       <span>{item.quantity} x {item.price}₫</span>
                     </div>
                   ))}
-                </div>
+                </div> */}
                 <button onClick={() => handleEditOrder(order)}>Chỉnh sửa</button>
               </div>
             )}

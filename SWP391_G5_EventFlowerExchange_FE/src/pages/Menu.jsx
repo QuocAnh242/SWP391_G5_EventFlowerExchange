@@ -10,6 +10,7 @@ import b1 from '../assets/banner-post.png';
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
   const [category, setCategory] = useState("Tất cả hoa"); // Danh mục hiện tại
+  const [categoryList, setCategoryList] = useState([]);
   const navigate = useNavigate(); // Để điều hướng
   const [loading, setLoading] = useState(true); // Trạng thái đang tải
   const [filteredFlowers, setFilteredFlowers] = useState([]); // Danh sách hoa đã lọc
@@ -22,6 +23,7 @@ function Menu() {
   // Lấy danh sách hoa khi component được tải
   useEffect(() => {
     fetchFlowerList();
+    fetchCategoryList();
   }, []);
 
   // Lấy dữ liệu từ API Spring Boot
@@ -35,6 +37,40 @@ function Menu() {
       console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
+
+  const fetchCategoryList = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/identity/category/");
+      setCategoryList(response.data); // Lưu dữ liệu danh mục
+    } catch (error) {
+      console.error("Lỗi khi lấy dữ liệu danh mục: ", error);
+    }
+  };
+
+  // Lọc bài post theo danh mục sự kiện hoặc tên hoa
+const filterByCategory = (eventName) => {
+  if (eventName === "Tất cả bài post") {
+    setFilteredFlowers(flowerList);  // Hiển thị tất cả bài post
+  } else {
+    // Lọc bài post chứa loại hoa được chọn
+    const filtered = flowerList.filter(flower =>
+      flower.flowerBatches.some(batch => batch.category?.eventName === eventName)
+    );
+    setFilteredFlowers(filtered);  // Lọc bài post theo sự kiện hoặc hoa
+  }
+  setCategory(eventName);  // Để hiển thị event đang chọn
+};
+
+// Lọc bài post theo tên hoa (khi nhấn vào tên hoa)
+const filterByFlowerName = (flowerName) => {
+  const filtered = flowerList.filter(flower =>
+    flower.flowerBatches.some(batch => batch.flowerName === flowerName)
+  );
+  setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
+};
+
+  
+  
 
   // Xử lý khi nhấn vào bài viết
   const handlePostClick = (id) => {
@@ -155,16 +191,46 @@ function Menu() {
   return (
     <div className="shop-container">
       <div className="sidebar-post-exchange">
-        <h3 className="sidebar-title">Danh mục hoa</h3>
-        <hr className="sidebar-divider" />
-        <ul className="category-list">
-          <li onClick={() => setCategory("Tất cả hoa")}>Tất cả hoa</li>
-          <li onClick={() => setCategory("Hoa cưới")}>Hoa cưới</li>
-          <li onClick={() => setCategory("Hoa sinh nhật")}>Hoa sinh nhật</li>
-          <li onClick={() => setCategory("Hoa chúc mừng")}>Hoa chúc mừng</li>
-          <li onClick={() => setCategory("Hoa khô")}>Hoa khô</li>
-        </ul>
-      </div>
+  <h3 className="sidebar-title">Danh mục hoa</h3>
+  <hr className="sidebar-divider" />
+  <ul className="category-list">
+    {/* Mục hiển thị tất cả bài post */}
+<li onClick={() => filterByCategory("Tất cả bài post")}>
+  <span>Tất cả bài post</span>
+</li>
+
+{categoryList
+  .filter((category) => category.eventName) // Lọc các danh mục có eventName
+  .map((category, index) => (
+    <li key={index} onClick={() => filterByCategory(category.eventName)}>
+      <span>{category.eventName}</span>
+    </li>
+))}
+
+{/* Hiển thị danh sách tên các loài hoa duy nhất */}
+<h3 className="sidebar-title">Tên hoa</h3>
+<hr className="sidebar-divider" />
+<ul className="flower-list">
+  {[...new Set(flowerList.map(flower => flower.flowerBatches[0]?.flowerName))]  
+    .filter(flowerName => flowerName)  // Bỏ qua tên hoa rỗng hoặc không xác định
+    .map((flowerName, index) => (
+      <li key={index} onClick={() => filterByFlowerName(flowerName)}>
+        <span>{flowerName}</span>
+      </li>
+  ))}
+</ul>
+
+
+
+    {categoryList
+      .filter((category) => category.eventName) // Lọc các danh mục có eventName
+      .map((category, index) => (
+        <li key={index} onClick={() => filterByCategory(category.eventName)}>
+          <span>{category.eventName}</span>
+        </li>
+      ))}
+  </ul>
+</div>
 
       {/* Nội dung chính */}
       <div className="main-content">
@@ -200,21 +266,25 @@ function Menu() {
         </div>
 
         <div className="post-grid">
-          {currentFlowers.map((flower, index) => (
-            <div
-              className="post-card scroll-appear" // Áp dụng hiệu ứng cuộn
-              key={index}
-              ref={(el) => postCardRef.current[index] = el} // Thêm ref để quan sát thẻ này
-              onClick={() => handlePostClick(flower.postID)}
-            >
-              <img src={a2} alt={flower.title} className="post-card-image" />
-              <h3>{flower.title}</h3>
-              <p className="discount-price">Giá dự kiến : {flower.price}VNĐ</p>
-              <p className="feature-content">{flower.description}</p>
-              <button className="feature-detail-button">Xem chi tiết</button>
-            </div>
-          ))}
-        </div>
+        {currentFlowers.map((flower, index) => (
+    <div
+      className="post-card scroll-appear"
+      key={index}
+      ref={(el) => postCardRef.current[index] = el}
+      onClick={() => handlePostClick(flower.postID)}
+    >
+      <img src={a2} alt={flower.title} className="post-card-image" />
+      <h3>{flower.title}</h3>
+      <p className="discount-price">Giá dự kiến : {flower.price}VNĐ</p>
+      <p className="">{flower.flowerBatches[0]?.category?.eventName ? flower.flowerBatches[0].category.eventName : "Bán theo lô"}</p>
+
+      <p className="feature-content">{flower.description}</p>
+      <button className="feature-detail-button">Xem chi tiết</button>
+    </div>
+))}
+
+</div>
+
 
         {/* Phân trang */}
         <div className="pagination">
