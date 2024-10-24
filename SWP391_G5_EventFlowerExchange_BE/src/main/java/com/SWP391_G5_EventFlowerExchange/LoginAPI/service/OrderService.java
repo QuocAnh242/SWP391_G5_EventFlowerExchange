@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +20,7 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -172,5 +174,26 @@ public class OrderService implements IOrderService {
         order.setStatus(status); // Update status
         order.setUpdatedAt(LocalDateTime.now()); // Update timestamp
         iOrderRepository.save(order); // Save changes
+    }
+
+    @Override
+    // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
+    public List<MonthlyRevenueResponse> calculateMonthlyRevenue(){
+        // Lấy danh sách các đơn hàng đã hoàn thành
+        List<Order> completedOrders= iOrderRepository.findByStatus("Đã Thanh Toán");
+        // Tạo một bản đồ để lưu trữ doanh thu theo từng tháng
+        Map<String,Double> monthlyRevenueMap=new HashMap<>();
+        // Định dạng tháng
+        DateTimeFormatter monthFormatter = DateTimeFormatter.ofPattern("yyyy-MM");
+        // Tính doanh thu theo tháng
+        for (Order order : completedOrders) {
+            String month = order.getOrderDate().format(monthFormatter);
+            monthlyRevenueMap.merge(month, order.getTotalPrice(), Double::sum);
+        }
+        // Chuyển đổithành danh sách MonthlyRevenueResponse
+        return monthlyRevenueMap.entrySet().stream()
+                .map(entry -> new MonthlyRevenueResponse(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(MonthlyRevenueResponse::getMonth)) // Sắp xếp theo tháng
+                .collect(Collectors.toList());
     }
 }

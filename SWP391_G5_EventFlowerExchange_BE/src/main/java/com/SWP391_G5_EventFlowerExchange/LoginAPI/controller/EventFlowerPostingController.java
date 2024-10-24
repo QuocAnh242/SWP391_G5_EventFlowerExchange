@@ -24,7 +24,7 @@
         EventFlowerPostingService eventFlowerPostingService;
         @GetMapping("/")
         public ResponseEntity<List<EventFlowerPosting>> fetchAll(){
-            return ResponseEntity.ok(eventFlowerPostingService.getAllEventPostings());
+            return ResponseEntity.ok(eventFlowerPostingService.getAllPostsSortedByCreatedAt());
         }
         @PostMapping("/")
         @ResponseStatus(HttpStatus.CREATED)

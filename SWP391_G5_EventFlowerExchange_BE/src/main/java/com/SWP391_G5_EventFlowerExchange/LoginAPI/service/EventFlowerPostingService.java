@@ -30,10 +30,9 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     ImageRepository imageRepository;
 
     @Override
-    public List<EventFlowerPosting> getAllEventPostings() {
-        return iEventFlowerPostingRepository.findAll();
+    public List<EventFlowerPosting> getAllPostsSortedByCreatedAt() {
+        return iEventFlowerPostingRepository.findAllByOrderByCreatedAtDesc();
     }
-
     @Override
     public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting) {
         return iEventFlowerPostingRepository.save(eventFlowerPosting);

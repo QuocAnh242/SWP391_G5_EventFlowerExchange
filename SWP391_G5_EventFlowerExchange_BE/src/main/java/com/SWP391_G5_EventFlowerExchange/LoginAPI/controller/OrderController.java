@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.OrderService;
@@ -7,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -134,5 +136,10 @@ public class OrderController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("An error occurred while canceling the payment.");
         }
+    }
+    @GetMapping("/monthly-revenue")
+    public ResponseEntity<List<MonthlyRevenueResponse>> getMonthlyRevenue() {
+        List<MonthlyRevenueResponse> monthlyRevenue = orderService.calculateMonthlyRevenue();
+        return ResponseEntity.status(HttpStatus.OK).body(monthlyRevenue);
     }
 }

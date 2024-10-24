@@ -14,7 +14,7 @@ public interface IEventFlowerPostingService {
 //    public FlowerBatch updateFlowerBatch(int flowerID, FlowerBatch flowerBatch);
 //    public void deleteFlowerBatch(int flowerID);
 //    public Optional<FlowerBatch> getFlowerBatchById(int flowerID);
-public List<EventFlowerPosting> getAllEventPostings();
+public List<EventFlowerPosting> getAllPostsSortedByCreatedAt();
 public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting);
 public EventFlowerPosting updateEventFlowerPosting(int postId,EventFlowerPosting eventFlowerPosting);
 public void deleteEventFlowerPosting(int postId);
