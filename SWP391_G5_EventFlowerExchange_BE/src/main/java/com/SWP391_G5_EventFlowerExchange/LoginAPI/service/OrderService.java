@@ -10,7 +10,6 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -28,9 +27,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderService implements IOrderService {
+
     IOrderRepository iOrderRepository;
     IOrderDetailRepository iOrderDetailRepository;
     IDeliveryService iDeliveryService;
+    IUserRepository userRepository;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
@@ -70,9 +71,6 @@ public class OrderService implements IOrderService {
         // Step 5: Save and return the order
         return iOrderRepository.save(order);
     }
-    IDeliveryRepository iDeliveryRepository;
-    IPaymentRepository iPaymentRepository;
-    IUserRepository userRepository;
 
     @Override
     public Order insertOrder(Order order) {
@@ -244,6 +242,5 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userID));
         return iOrderRepository.findByUser(user);
     }
-
 
 }

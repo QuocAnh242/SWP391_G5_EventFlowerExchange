@@ -18,5 +18,6 @@ public interface IOrderService {
     String createVNPayUrl(Order order) throws Exception; // Declare the exception if needed
     void cancelPayment(int orderId);
     void updateOrderStatus(int orderId, String status);
-    public List<MonthlyRevenueResponse> calculateMonthlyRevenue();
+    List<MonthlyRevenueResponse> calculateMonthlyRevenue();
+    List<Order> getOrdersByUserID(int userID);
 }
