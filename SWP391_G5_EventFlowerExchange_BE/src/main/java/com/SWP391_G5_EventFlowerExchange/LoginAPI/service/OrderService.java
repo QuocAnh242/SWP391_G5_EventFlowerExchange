@@ -57,14 +57,14 @@ public class OrderService implements IOrderService {
         // Set status based on payment method
         switch (request.getPayment().getPaymentID()) {
             case 1:
-                order.setStatus("Checkout VNPay Successfully!");
+                order.setStatus("Chưa Thanh Toán");
                 break;
             case 2:
-                order.setStatus("Checkout MOMO Successfully!");
+                order.setStatus("Chưa Thanh Toán");
                 break;
             case 3:
             default:
-                order.setStatus("Create Order Successfully!");
+                order.setStatus("Đã Đặt Hàng");
                 break;
         }
 
