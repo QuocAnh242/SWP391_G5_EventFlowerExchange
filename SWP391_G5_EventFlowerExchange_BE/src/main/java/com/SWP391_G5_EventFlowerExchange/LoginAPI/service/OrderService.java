@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -30,6 +31,7 @@ public class OrderService implements IOrderService {
     IOrderDetailRepository iOrderDetailRepository;
     IDeliveryRepository iDeliveryRepository;
     IPaymentRepository iPaymentRepository;
+    IUserRepository userRepository;
 
     @Override
     public Order insertOrder(Order order) {
@@ -180,7 +182,7 @@ public class OrderService implements IOrderService {
     // Tính tổng doanh thu từ các đơn hàng đã hoàn thành
     public List<MonthlyRevenueResponse> calculateMonthlyRevenue(){
         // Lấy danh sách các đơn hàng đã hoàn thành
-        List<Order> completedOrders= iOrderRepository.findByStatus("Đã Thanh Toán");
+        List<Order> completedOrders= iOrderRepository.findByStatus("Đã Nhận Hàng");
         // Tạo một bản đồ để lưu trữ doanh thu theo từng tháng
         Map<String,Double> monthlyRevenueMap=new HashMap<>();
         // Định dạng tháng
@@ -196,4 +198,11 @@ public class OrderService implements IOrderService {
                 .sorted(Comparator.comparing(MonthlyRevenueResponse::getMonth)) // Sắp xếp theo tháng
                 .collect(Collectors.toList());
     }
+    public List<Order> getOrdersByUserID(int userID) {
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userID));
+        return iOrderRepository.findByUser(user);
+    }
+
+
 }

@@ -142,4 +142,11 @@ public class OrderController {
         List<MonthlyRevenueResponse> monthlyRevenue = orderService.calculateMonthlyRevenue();
         return ResponseEntity.status(HttpStatus.OK).body(monthlyRevenue);
     }
+    @GetMapping("/user/{userID}")
+    public ResponseEntity<List<Order>> getOrdersByUserID(@PathVariable int userID) {
+        List<Order> orders = orderService.getOrdersByUserID(userID);
+        return ResponseEntity.ok(orders);
+    }
+
+
 }
