@@ -47,5 +47,12 @@ public class OrderDetailController {
         orderDetailService.deleteOrderDetail(id);
         return ResponseEntity.ok("OrderDetail deleted!");
     }
+
+    // New method to fetch Order Details by Order ID
+    @GetMapping("/by-order/{orderID}")
+    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderID(@PathVariable Long orderID) {
+        List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderID(orderID);
+        return ResponseEntity.ok(orderDetails);
+    }
 }
 

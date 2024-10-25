@@ -11,4 +11,5 @@ public interface IOrderDetailService {
     OrderDetail getOrderDetail(OrderDetailKey id);
     OrderDetail updateOrderDetail(OrderDetailKey id, OrderDetail orderDetail);
     void deleteOrderDetail(OrderDetailKey id);
+    List<OrderDetail> getOrderDetailsByOrderID(Long orderID);
 }
