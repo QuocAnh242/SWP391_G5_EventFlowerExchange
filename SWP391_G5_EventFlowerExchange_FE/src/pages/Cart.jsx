@@ -62,7 +62,7 @@ const Cart = ({ cartItems, setCartItems }) => {
   return (
     <div className="cart-page">
       <div className="cart-header">
-        <h2>Giỏ Hàng</h2>
+        <h2 className='cart-title'>Giỏ Hàng</h2>
       </div>
 
       <div className="cart-content">

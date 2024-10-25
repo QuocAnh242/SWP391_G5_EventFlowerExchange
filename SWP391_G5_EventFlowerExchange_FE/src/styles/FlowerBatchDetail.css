@@ -152,6 +152,16 @@
   transform: translateY(-4px); /* Hiệu ứng nâng nút khi hover */
 }
 
+.buy-all-event-flowers-button {
+  background-color: #e04848; /* Màu xanh lá tươi sáng */
+  color: #fff;
+}
+.buy-all-event-flowers-button {
+  background-color: #e04848; /* Màu xanh đậm hơn khi hover */
+  transform: translateY(-4px); /* Hiệu ứng nâng nút khi hover */
+}
+
+
 /* Responsive design: Adjust button sizes on smaller screens */
 @media (max-width: 768px) {
   .buy-now-button-detail, .add-cart-button-detail {

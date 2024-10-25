@@ -23,27 +23,41 @@ const Checkout = () => {
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
-  
-    const order = {
-      orderDate: new Date().toISOString(),
-      totalPrice: totalPrice,
-      shippingAddress: user?.address || 'Địa chỉ mặc định',
-      user: {
-        userID: user?.userID,
-      },
-      payment: {
-        paymentID: paymentMethod === 'vnpay' ? 1 : 2,
-      },
-    };
-    
-    console.log(order); // Log order to see the structure
+  // Tạo orderDetails từ cartItems
+  const orderDetails = cartItems.map(item => ({
+    flowerID: item.flowerID,  // Flower ID
+    quantity: item.quantity,
+    price: item.price,
+  }));
+  const order = {
+    orderDate: new Date().toISOString(),
+    totalPrice: totalPrice,
+    shippingAddress: user?.address || 'Địa chỉ mặc định',
+    user: {
+      userID: user?.userID,
+    },
+    delivery: {
+      deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 ngày sau
+      rating: 4, // Có thể thay đổi theo logic của bạn
+      availableStatus: 'available',
+    },
+    payment: {
+      paymentID: paymentMethod === 'vnpay' ? 1 : 2,
+    },
+    orderDetails: orderDetails,
+  };
+
+  console.log(order); // Log order để kiểm tra cấu trúc
 
     try {
-      const response = await axios.post('http://localhost:8080/identity/orders/', order);
-      console.log(order);
-      if (response.status === 201) {
+      const response = await axios.post('http://localhost:8080/identity/orders/create', order);
+      console.log(response.data); // Log toàn bộ phản hồi từ backend
+      if (response.status === 200 || response.status === 201) {
+        const { code, message, result } = response.data; // Lấy mã và thông báo từ phản hồi
+  
         if (paymentMethod === 'vnpay') {
-          window.location.href = response.data; // VNPay URL
+          const vnpUrl = message.split('VNPay URL: ')[1]; // Lấy URL VNPay từ message
+          window.location.href = vnpUrl; // Chuyển hướng đến VNPay URL
         } else {
           alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
           
