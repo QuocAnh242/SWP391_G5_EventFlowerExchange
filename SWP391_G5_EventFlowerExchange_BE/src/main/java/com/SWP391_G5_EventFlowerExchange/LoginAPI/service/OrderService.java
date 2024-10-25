@@ -1,10 +1,12 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.MoMoConfig;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderCreationRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -14,6 +16,11 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -130,6 +137,61 @@ public class OrderService implements IOrderService {
 
         return savedOrder;
     }
+    // This method will create the URL for MoMo payment
+    public String createMoMoUrl(Order order) throws Exception {
+        double totalAmount = order.getTotalPrice() * 100;
+        String amount = String.valueOf(Math.round(totalAmount));
+
+        Map<String, String> momoParams = new HashMap<>();
+        momoParams.put("partnerCode", MoMoConfig.PARTNER_CODE);
+        momoParams.put("accessKey", MoMoConfig.ACCESS_KEY);
+        momoParams.put("requestId", UUID.randomUUID().toString());
+        momoParams.put("amount", amount);
+        momoParams.put("orderId", String.valueOf(order.getOrderID()));
+        momoParams.put("orderInfo", "Order #" + order.getOrderID());
+        momoParams.put("returnUrl", MoMoConfig.RETURN_URL);
+        momoParams.put("notifyUrl", MoMoConfig.NOTIFY_URL);
+        momoParams.put("extraData", "");
+
+        String rawData = String.format(
+                "accessKey=%s&amount=%s&extraData=%s&notifyUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&returnUrl=%s&requestId=%s",
+                MoMoConfig.ACCESS_KEY, amount, momoParams.get("extraData"), MoMoConfig.NOTIFY_URL,
+                momoParams.get("orderId"), momoParams.get("orderInfo"), MoMoConfig.PARTNER_CODE, MoMoConfig.RETURN_URL,
+                momoParams.get("requestId")
+        );
+
+        String signature = generateHMAC(MoMoConfig.SECRET_KEY, rawData);
+        momoParams.put("signature", signature);
+
+        return sendMoMoRequest(momoParams); // Helper method is called here
+    }
+
+    // Private helper method to send the request to MoMo
+    private String sendMoMoRequest(Map<String, String> params) throws Exception {
+        String jsonPayload = new ObjectMapper().writeValueAsString(params);
+
+        HttpURLConnection connection = (HttpURLConnection) new URL(MoMoConfig.MOMO_URL).openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setDoOutput(true);
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
+            os.write(input, 0, input.length);
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+
+            Map<String, Object> responseMap = new ObjectMapper().readValue(response.toString(), Map.class);
+            return responseMap.get("payUrl").toString(); // Parse and return the payment URL
+        }
+    }
+
 
     // Create VNPay payment URL
     public String createVNPayUrl(Order order) throws Exception {
