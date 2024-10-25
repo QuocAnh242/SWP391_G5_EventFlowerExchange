@@ -9,13 +9,16 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.ImageRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -31,7 +34,27 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     @Override
     public List<EventFlowerPosting> getAllPostsSortedByCreatedAt() {
+        updateExpiredStatus();
         return iEventFlowerPostingRepository.findAllByOrderByCreatedAtDesc();
+    }
+    @Scheduled(cron = "0 0 * * * *") // Chạy mỗi giờ
+    public void scheduledUpdateExpiredStatus() {
+        updateExpiredStatus();
+    }
+    @Transactional
+    public void updateExpiredStatus() {
+        List<EventFlowerPosting> posts = iEventFlowerPostingRepository.findAll();
+        for (EventFlowerPosting post : posts) {
+            if (post.getExpiryDate() != null && post.getExpiryDate().isBefore(LocalDateTime.now())) {
+                post.setStatus("Hết Hạn");
+                try {
+                    iEventFlowerPostingRepository.save(post);
+                    System.out.println("Updated post ID: " + post.getPostID());
+                } catch (Exception e) {
+                    System.err.println("Error updating post ID: " + post.getPostID() + " - " + e.getMessage());
+                }
+            }
+        }
     }
     @Override
     public EventFlowerPosting insertEventFlowerPosting(EventFlowerPosting eventFlowerPosting) {
@@ -76,6 +99,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
 
     @Override
     public Optional<EventFlowerPosting> getEventFlowerPostingById(int postId) {
+        updateExpiredStatus();
         return iEventFlowerPostingRepository.findById(postId);
     }
 
@@ -130,6 +154,7 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
         return iEventFlowerPostingRepository.save(post);
     }
     public List<EventFlowerPosting> getPostsByUserId(int userID) {
+
         User user = iUserRepository.findById(userID).orElse(null);
         if (user != null) {
             return iEventFlowerPostingRepository.findByUser(user);
