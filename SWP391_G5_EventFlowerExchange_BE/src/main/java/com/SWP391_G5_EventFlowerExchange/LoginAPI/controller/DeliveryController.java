@@ -1,10 +1,10 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.DeliveryCreationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.DeliveryUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.DeliveryCreationResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Delivery;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.DeliveryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -60,5 +60,12 @@ public class DeliveryController {
     public ResponseEntity<Optional<Delivery>> getDeliveryById(@PathVariable int deliID) {
         Optional<Delivery> deli= deliveryService.getDeliveryById(deliID);
         return ResponseEntity.ok(deli);
+    }
+
+    @PatchMapping("/status/{deliID}")
+    public ResponseEntity<Delivery> updateDeliveryStatus(@PathVariable int deliID, @RequestBody DeliveryUpdateRequest request) {
+
+        Delivery updatedDelivery = deliveryService.updateDeliveryStatus(deliID, request.getAvailableStatus());
+        return ResponseEntity.ok(updatedDelivery);
     }
 }

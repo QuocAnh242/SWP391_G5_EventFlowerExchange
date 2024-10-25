@@ -14,4 +14,6 @@ public interface IDeliveryService {
     Delivery updateDelivery(int deliveryID,Delivery delivery);
     void deleteDelivery(int deliveryID);
     Optional<Delivery> getDeliveryById(int deliveryID);
+
+    Delivery updateDeliveryStatus(int deliID, String deliveryStatus);
 }

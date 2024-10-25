@@ -7,7 +7,6 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderDetailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +45,13 @@ public class OrderDetailController {
     public ResponseEntity<String> deleteOrderDetail(@PathVariable OrderDetailKey id) {
         orderDetailService.deleteOrderDetail(id);
         return ResponseEntity.ok("OrderDetail deleted!");
+    }
+
+    // New method to fetch Order Details by Order ID
+    @GetMapping("/by-order/{orderID}")
+    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderID(@PathVariable Long orderID) {
+        List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderID(orderID);
+        return ResponseEntity.ok(orderDetails);
     }
 }
 

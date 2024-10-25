@@ -24,7 +24,6 @@ public class DeliveryService implements IDeliveryService{
         return deliveryRepository.findAll();
     }
 
-
     @Override
     public DeliveryCreationResponse insertDelivery(DeliveryCreationRequest request) {
         // Set the current timestamp for deliveryDate
@@ -79,6 +78,15 @@ public class DeliveryService implements IDeliveryService{
 
     @Override
     public Delivery addDelivery(Delivery delivery) {
+        return deliveryRepository.save(delivery);
+    }
+
+    @Override
+    public Delivery updateDeliveryStatus(int deliID, String deliveryStatus) {
+        Delivery delivery = deliveryRepository.findById(deliID)
+                .orElseThrow(() -> new IllegalArgumentException("Delivery not found with ID: " + deliID));
+
+        delivery.setAvailableStatus(deliveryStatus);
         return deliveryRepository.save(delivery);
     }
 }
