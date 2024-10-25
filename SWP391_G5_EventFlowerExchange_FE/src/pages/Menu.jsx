@@ -40,7 +40,7 @@ function Menu() {
       console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
-  
+
 
   const fetchCategoryList = async () => {
     try {
@@ -224,17 +224,6 @@ function Menu() {
                 </li>
               ))}
           </ul>
-
-
-
-
-          {/* {categoryList
-            .filter((category) => category.eventName) 
-            .map((category, index) => (
-              <li key={index} onClick={() => filterByCategory(category.eventName)}>
-                <span>{category.eventName}</span>
-              </li>
-            ))} */}
         </ul>
       </div>
 
@@ -274,18 +263,18 @@ function Menu() {
         <div className="post-grid">
           {currentFlowers.map((flower, index) => (
             <div
-  className="post-card scroll-appear"
-  key={index}
-  ref={(el) => postCardRef.current[index] = el}
-  onClick={() => handlePostClick(flower.postID)}
->
-  <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
-  <h3>{flower.title}</h3>
-  <p className="discount-price">Giá dự kiến: {flower.price}VNĐ</p>
-  <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
-  <p className="feature-content">{flower.description}</p>
-  <button className="feature-detail-button">Xem chi tiết</button>
-</div>
+              className="post-card scroll-appear"
+              key={index}
+              ref={(el) => postCardRef.current[index] = el}
+              onClick={() => handlePostClick(flower.postID)}
+            >
+              <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
+              <h3>{flower.title}</h3>
+              <p className="discount-price">Giá dự kiến: {flower.price}VNĐ</p>
+              <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
+              <p className="feature-content">{flower.description}</p>
+              <button className="feature-detail-button">Xem chi tiết</button>
+            </div>
 
           ))}
 

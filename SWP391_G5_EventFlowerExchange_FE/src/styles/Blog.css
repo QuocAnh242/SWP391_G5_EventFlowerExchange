@@ -13,17 +13,13 @@
 
 
 .blog-page {
-  max-width: 1200px;
+  /* max-width: 1200px;
   margin: 40px auto;
   padding: 40px;
-  /* background-color: #ffffff; */
-
   border-radius: 12px;
   animation: fadeInUp 1.2s ease;
-  font-family: 'Arial', sans-serif;
-  /* margin: 0;
-  padding: 0; */
-  /* background-image: url('../assets/image.png'); Đường dẫn đến ảnh nền */
+  font-family: 'Arial', sans-serif; */
+  background-image: url('../assets/image.png'); 
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

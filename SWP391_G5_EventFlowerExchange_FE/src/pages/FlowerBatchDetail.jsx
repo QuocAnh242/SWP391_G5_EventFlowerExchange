@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import axios from "axios";
 import "../styles/FlowerBatchDetail.css";
 import f1 from '../assets/flower-detail/f1.jpg';
@@ -10,6 +11,7 @@ import FeedbackList from '../components/flowdetailcomponents/FeedbackList.jsx';
 import RelatedPosts from '../components/flowdetailcomponents/RelatedPosts.jsx';
 import Footer from '../components/Footer.jsx';
 import '../styles/popup.css';
+
 
 function FlowerBatchDetail() {
   const { id } = useParams();
@@ -57,7 +59,7 @@ function FlowerBatchDetail() {
 
   const handleAddToCart = (currentBatch) => {
     if (!currentBatch) return;
-    
+
     let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     const existingItem = cartItems.find(item => item.flowerID === currentBatch.flowerID);
 
@@ -80,13 +82,13 @@ function FlowerBatchDetail() {
 
   const handleAddAllEventFlowersToCart = () => {
     if (!post || !post.flowerBatches) return;
-    
+
     let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-  
+
     post.flowerBatches.forEach((batch) => {
       if (batch.category?.eventName) {
         const existingItem = cartItems.find(item => item.flowerID === batch.flowerID);
-  
+
         if (existingItem) {
           existingItem.quantity += batch.quantity; // Add the full quantity available
         } else {
@@ -99,13 +101,13 @@ function FlowerBatchDetail() {
         }
       }
     });
-  
+
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  
+
     setPopupMessage("Tất cả các hoa trong sự kiện và số lượng tối đa của chúng đã được thêm vào giỏ hàng!");
     setShowPopup(true);
   };
-  
+
 
   if (error) {
     return <div className="error-message">{error}</div>;
@@ -119,6 +121,13 @@ function FlowerBatchDetail() {
 
   return (
     <div>
+      <div className="breadcrumb-flower-detail">
+        <Link to="/" className="home-link-breadcrumb-flower">Trang chủ</Link>
+        <span> / </span>
+        <Link to="/menu" className="home-link-breadcrumb-flower">Bài viết</Link>
+        <span> / Chi tiết hoa trong bài post </span>
+      </div>
+
       <div className="flower-detail-container">
         <div className="left-detail-flowerbatch">
           <img src={currentImage} alt={currentBatch?.flowerName || 'Flower'} className="image" />
