@@ -1,20 +1,21 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-
-
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderDetailService implements IOrderDetailService {
 
-    @Autowired
-    private IOrderDetailRepository orderDetailRepository;
+    IOrderDetailRepository orderDetailRepository;
 
     @Override
     public OrderDetail createOrderDetail(OrderDetail orderDetail) {
@@ -44,5 +45,11 @@ public class OrderDetailService implements IOrderDetailService {
     @Override
     public void deleteOrderDetail(OrderDetailKey id) {
         orderDetailRepository.deleteById(id);
+    }
+
+    // New method implementation
+    @Override
+    public List<OrderDetail> getOrderDetailsByOrderID(Long orderID) {
+        return orderDetailRepository.findByOrder_OrderID(orderID);
     }
 }

@@ -3,16 +3,19 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFeedbackRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FeedbackService {
 
-    @Autowired
-    private IFeedbackRepository feedbackRepository;
+    IFeedbackRepository feedbackRepository;
 
     public Feedback saveFeedback(Feedback feedback) {
         return feedbackRepository.save(feedback);
