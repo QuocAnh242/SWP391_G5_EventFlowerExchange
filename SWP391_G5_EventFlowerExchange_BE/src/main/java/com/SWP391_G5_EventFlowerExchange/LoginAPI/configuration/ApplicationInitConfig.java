@@ -34,7 +34,7 @@ public class ApplicationInitConfig {
                       .email("admin@gmail.com")
                       .roles(roles)
                       .password(passwordEncoder.encode("12345"))
-                      .Status("available")
+                      .availableStatus("available")
                       .build();
 
               IUserRepository.save(user);
