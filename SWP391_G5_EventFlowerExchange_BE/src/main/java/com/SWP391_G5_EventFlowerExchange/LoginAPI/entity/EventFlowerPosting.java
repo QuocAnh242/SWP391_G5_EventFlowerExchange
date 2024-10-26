@@ -38,6 +38,11 @@ public class EventFlowerPosting {
 
     @Column(nullable = false)
     LocalDateTime updatedAt;
+    @Column(nullable = true )
+    LocalDateTime expiryDate; // Ngày hết hạn của bài đăng
+    @Transient // Không lưu trường này vào cơ sở dữ liệu
+    int expiryDays = 7; // Số ngày mặc định để hết hạn
+
 
     @OneToMany(mappedBy = "eventFlowerPosting", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -50,6 +55,9 @@ public class EventFlowerPosting {
     @PrePersist
     protected void onCreate() {
         createdAt = updatedAt = LocalDateTime.now();
+        if (expiryDate == null) {
+            expiryDate = createdAt.plusDays(expiryDays); // Sử dụng giá trị expiryDays
+        }
     }
 
     @PreUpdate
