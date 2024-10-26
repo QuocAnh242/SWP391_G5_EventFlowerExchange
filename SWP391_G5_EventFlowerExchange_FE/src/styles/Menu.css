@@ -4,6 +4,7 @@
   min-height: 100vh; /* Chiếm toàn bộ chiều cao của màn hình */
   flex-direction: column; /* Đảm bảo các phần tử bên trong theo cột */
   margin : 0 20px;
+  /* overflow-x: hidden; */
   
 }
 /* Container chung cho sidebar */
@@ -121,113 +122,98 @@
 
   
 
-/* Lưới bài post */
+/* Post grid layout */
 .post-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   margin-left: 200px;
-  
 }
 
+/* Post card styles */
 .post-card {
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* padding: 20px; */
-  /* padding-left: 30px; */
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   position: relative;
-  /* max-width: 5px; */
 }
 
 .post-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
-.feature-content {
-  text-align: justify;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  
- 
-}
-.post-card-title, .discount-price,.feature-detail-button {
-  text-align: center;
-}
-.feature-detail-button {
-  /* position: absolute; */
-  bottom: 15px;
-  margin-right: 10px;
-  /* margin-right: 100px; */
-  /* width: 100%; */
-  background-color: #FFC0CB;
-}
+/* Post image with hover effect */
 .post-card-image {
   width: 100%;
-  height: 500px;
+  height: 300px;
   object-fit: cover;
-  border-radius: 8px;
-  
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover .post-card-image {
+  transform: scale(1.05);
+}
+
+/* Post title, price, and description styles */
+.post-card h3 {
+  font-size: 20px;
+  color: #333;
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 .discount-price {
   color: #e60000;
   font-weight: bold;
+  font-size: 18px;
   margin-top: 10px;
 }
 
-/* Chi tiết bài post */
-.post-detail-container {
-  padding: 20px 300px;
+.feature-content {
+  font-size: 15px;
+  color: #555;
+  margin-top: 12px;
+  line-height: 1.8;
+  text-align: justify; /* Align text evenly on both sides */
+  overflow: hidden;
+  transition: color 0.3s ease, transform 0.3s ease;
+  transform-origin: left;
+  opacity: 0.9;
+  max-height: 70px; /* Limit the height for a cleaner look */
+  position: relative;
 }
 
-.post-detail {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.post-detail-image {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.back-button {
-  background-color: #ff5733;
-  color: white;
-  padding: 10px 15px;
+/* Detail button styling */
+.feature-detail-button {
+  background-color: #ffc0cb;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 8px 12px;
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
+  transition: background-color 0.3s, transform 0.3s;
   cursor: pointer;
-  margin-bottom: 20px;
+  margin-top: 15px;
 }
 
-.buy-now-button {
-  background-color: #e60000;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 20px;
-  display: block;
+.feature-detail-button:hover {
+  background-color: #ff9aa2;
+  transform: scale(1.05);
 }
 
-/* Bài viết đã xem gần đây */
-.recently-viewed {
-  margin-top: 40px;
-}
 
-.recently-viewed h3 {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
+
 
 .footer {
   position: relative;  

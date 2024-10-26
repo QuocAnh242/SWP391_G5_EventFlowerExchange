@@ -75,6 +75,7 @@ public class UserService implements IUserService {
         userResponse.setAddress(user.getAddress());
         userResponse.setPhoneNumber(user.getPhoneNumber());
         userResponse.setRoles(user.getRoles());
+        userResponse.setStatus(user.getStatus());
         userResponse.setCreatedAt(user.getCreatedAt());
 
         return userResponse;

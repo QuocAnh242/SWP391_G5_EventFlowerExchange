@@ -1,50 +1,168 @@
 .cart-page {
-    background-image: url('../assets/cartback.png');
-    background-size: cover;
-    background-position: center;
+    background-color: #f5f5f5;
+    background-image: url('../assets/cartback.png'); 
+    background-size: cover; 
+    background-position: center; 
     background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-/* Header */
-.cart-content {
-    flex-grow: 1; /* Ensures the content grows and pushes the footer down */
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+
 }
 
-/* On hover, add a subtle shadow and scale the content slightly */
-.cart-content:hover {
-    transform: scale(1.02); /* Slightly enlarges content on hover */
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2); /* Stronger shadow */
+.cart-title {
+    margin-top: 30px;
+    font-size: 3rem; /* Kích thước lớn để tiêu đề nổi bật */
+    color: black; /* Màu sắc đậm, phù hợp với giao diện sang trọng */
+    text-align: center; /* Canh giữa */
+    font-weight: bold; /* Chữ đậm để nhấn mạnh */
+    text-transform: uppercase; /* Chuyển đổi chữ thường thành in hoa */
+    letter-spacing: 2px; /* Tăng khoảng cách giữa các ký tự */
+    margin-bottom: 20px; /* Thêm khoảng cách dưới */
+    position: relative; /* Cần thiết cho việc sử dụng ::after */
 }
+
+
+/* Cart Content */
+.cart-content {
+    width: 100%;
+    max-width: 1500px; 
+    margin-right: 150px;
+    padding: 40px;
+    transition: all 0.3s ease;
+    margin-bottom: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Cart Table Styling */
+.cart-table {
+    width: 100%; /* Make sure the table takes the full width of the container */
+    border-collapse: collapse;
+    margin-top: 30px;
+}
+
+.cart-table th, .cart-table td {
+    padding: 20px;
+    text-align: left;
+    font-size: 1rem;
+    color: #333;
+}
+
+.cart-table th {
+    background-color: #f2f2f2;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cart-table td {
+    border-bottom: 1px solid #eaeaea;
+}
+
+.cart-table tr:hover {
+    background-color: #fafafa;
+}
+
+.cart-image {
+    width: 70px;
+    height: auto;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+/* Quantity Button Styling */
+.quantity-btn {
+    background-color: #fafafa;
+    padding: 8px 15px;
+    cursor: pointer;
+
+    color: #333;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.quantity-input {
+    width: 50px;
+    text-align: center;
+    padding: 5px;
+    margin: 0 10px;
+    font-size: 1rem;
+}
+
+/* Delete Button Styling */
+.delete-button {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.delete-button:hover {
+    background-color: #c0392b;
+}
+
+/* Footer Section */
+/* Footer Section Styling */
+.cart-footer {
+    margin-top: 50px; /* Tăng khoảng cách trên để footer thoáng hơn */
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777; /* Màu xám nhạt hơn để trông nhẹ nhàng */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-top: 2px solid #e0e0e0; 
+    width: 100%;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05); /* Thêm shadow mờ để tạo cảm giác nổi khối */
+}
+
+.total-price {
+    font-weight: 700; /* Tăng độ đậm của chữ để nổi bật hơn */
+    margin-bottom: 20px; /* Thêm khoảng cách dưới */
+    font-size: 1.6rem; /* Tăng kích thước để gây ấn tượng hơn */
+    color: #2c3e50; /* Đổi màu thành tông tối hơn để nhấn mạnh */
+    letter-spacing: 1px; /* Thêm khoảng cách giữa các ký tự để dễ đọc */
+    text-transform: uppercase; /* Chuyển thành chữ in hoa để tạo sự nổi bật */
+}
+
 
 /* Purchase Button Styling */
 .purchase-button {
-    padding: 15px 30px;
-    background-color: #28a745;
+    padding: 15px 40px;
+    background-color: #FFC0CB;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
+    border-radius: 12px;
+    font-size: 1.2rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-    margin: 100px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Initial subtle shadow */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
 }
 
-/* Hover effect for the button */
 .purchase-button:hover {
-    background-color: #218838; /* Darker green on hover */
-    transform: translateY(-5px); /* Move button up slightly */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Increase shadow depth */
+    background-color: #2980b9;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-/* Button click effect */
 .purchase-button:active {
-    background-color: #1e7e34; /* Darker shade on click */
-    transform: translateY(0); /* Reset button position */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Reset shadow */
+    background-color: #2573a6;
+    transform: translateY(0);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
+
 

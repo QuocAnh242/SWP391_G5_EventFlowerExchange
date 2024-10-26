@@ -10,7 +10,8 @@ const AdminUserManagement = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
-  const [posts, setPosts] = useState([]); 
+  const [posts, setPosts] = useState([]);
+  const [totalPosts, setTotalPosts] = useState(0); 
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
   const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
@@ -50,6 +51,7 @@ const AdminUserManagement = () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/posts/');
       setPosts(response.data);
+      setTotalPosts(response.data.length); 
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
@@ -69,22 +71,30 @@ const AdminUserManagement = () => {
     try {
       await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       fetchPosts();
-      // setPopupMessage("Bài viết đã xóa thành công");
-      // setShowPopup(true); 
+      setPopupMessage("Bài viết đã xóa thành công");
+      setShowPopup(true); 
     } catch (error) {
       console.error('Error deleting post:', error);
     }
   };
 
-  const handleBlockUser = async (userID, isBlocked) => {
+  const handleBlockUser = async (userID, status) => {
     try {
-      const action = isBlocked ? 'unblock' : 'block';
-      await axios.post(`http://localhost:8080/admin/users/${action}/${userID}`);
-      fetchUsers();
+      // Pass the status as a query parameter in the URL
+      await axios.put(`http://localhost:8080/identity/users/${userID}/status?status=${status}`);
+      fetchUsers(); // Refresh the user list to get updated status
+      setPopupMessage(`Người dùng đã được ${status === 'block' ? 'khóa' : 'mở khóa'}`);
+      setShowPopup(true); // Show success message in popup
     } catch (error) {
-      console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
+      console.error('Error toggling block status:', error);
+      setPopupMessage("Đã xảy ra lỗi khi thay đổi trạng thái người dùng.");
+      setShowPopup(true); // Show error message in popup
     }
   };
+  
+  
+  
+  
 
   const handleDeleteUser = async (userID) => {
     try {
@@ -145,6 +155,10 @@ const handleDeleteOrder = async (orderID) => {
                 <h3>Người dùng bị khóa</h3>
                 <p>{blockedUsers}</p>
               </div>
+              <div className="stat"> 
+                <h3>Tổng số bài viết</h3>
+                <p>{totalPosts}</p>
+              </div>
             </div>
           </div>
         );
@@ -181,11 +195,20 @@ const handleDeleteOrder = async (orderID) => {
                       <td>{user.role}</td>
                       <td>{user.isBlocked ? 'Bị khóa' : 'Hoạt động'}</td>
                       <td>
-                        <button className='button-block' onClick={() => handleBlockUser(user.userID, user.isBlocked)}>
-                          {user.isBlocked ? 'Bỏ khóa' : 'Khóa'}
-                        </button>
-                        <button className='button-delete' onClick={() => handleDeleteUser(user.userID)}>Xóa</button>
-                      </td>
+  <button 
+    className='button-block' 
+    onClick={() => handleBlockUser(user.userID, user.isBlocked ? 'available' : 'block')}
+  >
+    {user.isBlocked ? 'Bỏ khóa' : 'Khóa'}
+  </button>
+  <button 
+    className='button-delete' 
+    onClick={() => handleDeleteUser(user.userID)}
+  >
+    Xóa
+  </button>
+</td>
+
                     </tr>
                   ))}
                 </tbody>

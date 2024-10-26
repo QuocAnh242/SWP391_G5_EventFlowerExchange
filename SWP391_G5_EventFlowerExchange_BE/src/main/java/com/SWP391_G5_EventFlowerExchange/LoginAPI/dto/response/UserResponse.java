@@ -18,5 +18,6 @@ public class UserResponse {
     String address;
     String phoneNumber;
     Set<String> roles;
+    String Status;
     LocalDateTime createdAt;
 }

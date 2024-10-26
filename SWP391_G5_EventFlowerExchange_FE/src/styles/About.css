@@ -1,6 +1,6 @@
 /* About.css */
 .about {
-
+  overflow-x: hidden;
   margin: 0 auto;
   /* padding: 40px 20px; */
   background-color: white;
