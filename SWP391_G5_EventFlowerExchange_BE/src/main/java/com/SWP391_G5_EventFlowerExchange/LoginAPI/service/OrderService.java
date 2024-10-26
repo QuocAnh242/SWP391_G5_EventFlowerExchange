@@ -39,6 +39,7 @@ public class OrderService implements IOrderService {
     IOrderDetailRepository iOrderDetailRepository;
     IDeliveryService iDeliveryService;
     IUserRepository userRepository;
+    UserService userService;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
@@ -63,10 +64,7 @@ public class OrderService implements IOrderService {
 
         // Set status based on payment method
         switch (request.getPayment().getPaymentID()) {
-            case 1:
-                order.setStatus("Chưa Thanh Toán");
-                break;
-            case 2:
+            case 1, 2:
                 order.setStatus("Chưa Thanh Toán");
                 break;
             case 3:
@@ -74,7 +72,7 @@ public class OrderService implements IOrderService {
                 order.setStatus("Đã Đặt Hàng");
                 break;
         }
-
+        order.setUser(userService.findById(request.getUser().getUserID()));
         // Step 5: Save and return the order
         return iOrderRepository.save(order);
     }

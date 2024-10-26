@@ -35,6 +35,11 @@ public class UserService implements IUserService {
 
     // USER METHODS
     @Override
+    public User findById(int userId) {
+        return userRepository.findById(userId).orElse(null); // Return the user or null if not found
+    }
+
+    @Override
     public User createUser(UserCreationRequest request) {
         User user = new User();
 

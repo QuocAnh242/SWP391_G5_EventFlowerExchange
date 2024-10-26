@@ -2,6 +2,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 
 import java.util.List;
 
@@ -11,5 +12,6 @@ public interface IOrderDetailService {
     OrderDetail getOrderDetail(OrderDetailKey id);
     OrderDetail updateOrderDetail(OrderDetailKey id, OrderDetail orderDetail);
     void deleteOrderDetail(OrderDetailKey id);
-    List<OrderDetail> getOrderDetailsByOrderID(Long orderID);
+    List<OrderDetail> getOrderDetailsByOrderID(int orderID);
+    User getSellerByOrderID(int orderID);
 }

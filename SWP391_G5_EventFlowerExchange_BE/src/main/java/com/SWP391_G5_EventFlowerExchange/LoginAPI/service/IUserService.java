@@ -14,4 +14,5 @@ public interface IUserService {
     User UpdateUserIntoSeller(int userID);
     List<User> getUsers();
     void deleteUser(int userID);
+    User findById(int userID);
 }
