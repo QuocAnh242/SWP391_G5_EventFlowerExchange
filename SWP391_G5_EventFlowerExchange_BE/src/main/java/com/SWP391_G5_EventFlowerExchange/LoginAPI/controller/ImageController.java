@@ -26,7 +26,7 @@ public class ImageController {
     @GetMapping("/{postID}")
     public ResponseEntity<?> downloadImageByPostID(@PathVariable("postID") int postID) throws IOException {
         byte[] imageData = imageService.downloadImageByPostID(postID);
-        return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.valueOf("image/jpeg"))
+        return ResponseEntity.status(HttpStatus.OK).contentType(  MediaType.valueOf("image/jpeg"))
                 .body(imageData);
     }
 
