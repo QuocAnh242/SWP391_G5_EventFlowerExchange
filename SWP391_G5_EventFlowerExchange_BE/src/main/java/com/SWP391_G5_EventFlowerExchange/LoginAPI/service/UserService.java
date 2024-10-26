@@ -35,6 +35,11 @@ public class UserService implements IUserService {
 
     // USER METHODS
     @Override
+    public User findById(int userId) {
+        return userRepository.findById(userId).orElse(null); // Return the user or null if not found
+    }
+
+    @Override
     public User createUser(UserCreationRequest request) {
         User user = new User();
 
@@ -75,7 +80,7 @@ public class UserService implements IUserService {
         userResponse.setAddress(user.getAddress());
         userResponse.setPhoneNumber(user.getPhoneNumber());
         userResponse.setRoles(user.getRoles());
-        userResponse.setStatus(user.getStatus());
+        userResponse.setStatus(user.getAvailableStatus());
         userResponse.setCreatedAt(user.getCreatedAt());
 
         return userResponse;
@@ -152,7 +157,7 @@ public class UserService implements IUserService {
         User user = userRepository.findById(userID)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        user.setStatus(status); // Cập nhật trạng thái người dùng
+        user.setAvailableStatus(status); // Cập nhật trạng thái người dùng
         return userRepository.save(user); // Lưu và trả về đối tượng User đã cập nhật
     }
 

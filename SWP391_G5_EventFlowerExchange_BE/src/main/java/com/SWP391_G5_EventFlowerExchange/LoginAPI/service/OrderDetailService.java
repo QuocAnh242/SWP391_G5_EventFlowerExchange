@@ -1,7 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -49,7 +48,18 @@ public class OrderDetailService implements IOrderDetailService {
 
     // New method implementation
     @Override
-    public List<OrderDetail> getOrderDetailsByOrderID(Long orderID) {
+    public List<OrderDetail> getOrderDetailsByOrderID(int orderID) {
         return orderDetailRepository.findByOrder_OrderID(orderID);
+    }
+
+    @Override
+    public User getSellerByOrderID(int orderID) {
+        List<OrderDetail> orderDetails = orderDetailRepository.findByOrder_OrderID(orderID);
+        if (!orderDetails.isEmpty()) {
+            FlowerBatch flowerBatch = orderDetails.get(0).getFlowerBatch();
+            EventFlowerPosting posting = flowerBatch.getEventFlowerPosting();
+            return posting.getUser(); // Returns the seller (User) who created the post
+        }
+        throw new RuntimeException("No order details found for order ID: " + orderID);
     }
 }

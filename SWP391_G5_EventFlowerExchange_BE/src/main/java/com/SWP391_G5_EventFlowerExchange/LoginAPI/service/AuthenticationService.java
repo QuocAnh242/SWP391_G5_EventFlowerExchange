@@ -62,7 +62,7 @@ public class AuthenticationService {
         var user= IUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(()-> new AppException(ErrorCode.USER_NOT_EXISTED));
         // Kiểm tra trạng thái của user (chỉ cho phép đăng nhập nếu status là "available")
-        if (!"available".equals(user.getStatus())) {
+        if (!"available".equals(user.getAvailableStatus())) {
             throw new AppException(ErrorCode.USER_NOT_AVAILABLE);
         }
 
