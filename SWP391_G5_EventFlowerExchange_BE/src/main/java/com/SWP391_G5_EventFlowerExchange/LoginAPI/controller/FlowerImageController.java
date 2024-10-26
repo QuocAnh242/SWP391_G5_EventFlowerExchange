@@ -19,22 +19,25 @@ public class FlowerImageController {
     @Autowired
     private FlowerImageService flowerImageService;
 
-    // API to upload image for FlowerBatch
-    @PostMapping("/{batchID}")
-    public ResponseEntity<?> uploadImageForFlowerBatch(@RequestParam("image") MultipartFile file,
-                                                       @PathVariable("batchID") int batchID) throws IOException {
-        String uploadMessage = flowerImageService.uploadImageForFlowerBatch(file, batchID);
-        return ResponseEntity.status(HttpStatus.OK).body(uploadMessage);
+    // API upload nhiều hình ảnh cho flower batch
+    @PostMapping("/batch/{batchID}/upload")
+    public ResponseEntity<String> uploadImages(@PathVariable("batchID") int batchID,
+                                               @RequestParam("files") List<MultipartFile> files) {
+        try {
+            flowerImageService.uploadImages(batchID, files);
+            return ResponseEntity.status(HttpStatus.OK).body("Images uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images: " + e.getMessage());
+        }
     }
 
-    // API to download image by FlowerBatch ID
-    @GetMapping("/{batchID}")
-    public ResponseEntity<?> downloadImageByBatchID(@PathVariable("batchID") int batchID) throws IOException {
-        byte[] imageData = flowerImageService.downloadImageByBatchID(batchID);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
+    // API lấy tất cả hình ảnh theo batchID
+    @GetMapping("/batch/{batchID}/images")
+    public ResponseEntity<List<String>> downloadImagesByBatchID(@PathVariable("batchID") int batchID) throws IOException {
+        List<String> imagesBase64 = flowerImageService.downloadImagesByBatchID(batchID);
+        return ResponseEntity.ok(imagesBase64);
     }
+
     // API cập nhật ảnh cho FlowerBatch
     @PutMapping("/update/{batchID}")
     public ResponseEntity<String> updateImage(@RequestParam("image") MultipartFile file, @PathVariable("batchID") int batchID) throws IOException {

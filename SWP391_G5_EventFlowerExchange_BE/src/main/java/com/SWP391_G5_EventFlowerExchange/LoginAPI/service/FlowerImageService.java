@@ -11,8 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,40 +26,41 @@ public class FlowerImageService {
         this.flowerBatchRepository = flowerBatchRepository;
     }
 
-    // Upload image for FlowerBatch
-    public String uploadImageForFlowerBatch(MultipartFile file, int batchID) throws IOException {
-        // Tìm batch theo ID
-        FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
-                .orElseThrow(() -> new FileNotFoundException("Batch with ID " + batchID + " not found"));
-
-        // Lưu hình ảnh liên quan đến batch
-        FlowerImage imageData = flowerImageRepository.save(
-                FlowerImage.builder()
-                        .name(file.getOriginalFilename())
-                        .type(file.getContentType())
-                        .imageData(ImageUtils.compressImage(file.getBytes()))
-                        .flowerBatch(flowerBatch) // Liên kết hình ảnh với batch
-                        .build()
-        );
-
-        if (imageData != null) {
-            return "File ảnh upload thành công cho batch: " + file.getOriginalFilename();
-        }
-        return null;
-    }
-
-    // Download image by batchID
-    public byte[] downloadImageByBatchID(int batchID) throws IOException {
-        // Tìm batch theo ID
+    // Phương thức upload nhiều hình ảnh
+    public void uploadImages(int batchID, List<MultipartFile> files) throws IOException {
+        // Tìm FlowerBatch theo ID
         FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
                 .orElseThrow(() -> new RuntimeException("Batch with ID " + batchID + " not found"));
 
-        // Lấy hình ảnh liên quan đến batch
-        Optional<FlowerImage> image = flowerImageRepository.findByFlowerBatch(flowerBatch).stream().findFirst();
+        for (MultipartFile file : files) {
+            // Tạo đối tượng FlowerImage cho từng hình ảnh
+            FlowerImage flowerImage = FlowerImage.builder()
+                    .name(file.getOriginalFilename())
+                    .type(file.getContentType())
+                    .imageData(ImageUtils.compressImage(file.getBytes())) // Nén dữ liệu hình ảnh
+                    .flowerBatch(flowerBatch) // Gán FlowerBatch
+                    .build();
 
-        // Nếu không có hình ảnh nào được tìm thấy, ném ngoại lệ
-        return image.map(img -> ImageUtils.decompressImage(img.getImageData()))
-                .orElseThrow(() -> new RuntimeException("No images found for batch ID: " + batchID));
+            // Lưu hình ảnh vào cơ sở dữ liệu
+            flowerImageRepository.save(flowerImage);
+        }
+    }
+
+    // Phương thức download hình ảnh
+    public List<String> downloadImagesByBatchID(int batchID) throws IOException {
+        FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
+                .orElseThrow(() -> new RuntimeException("Batch with ID " + batchID + " not found"));
+
+        List<FlowerImage> images = flowerImageRepository.findByFlowerBatch(flowerBatch);
+        if (images.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return images.stream()
+                .map(img -> {
+                    byte[] decompressedImage = ImageUtils.decompressImage(img.getImageData());
+                    return Base64.getEncoder().encodeToString(decompressedImage); // Chuyển đổi thành base64
+                })
+                .toList();
     }
     // Hàm cập nhật ảnh
     public String updateImage(MultipartFile file, int batchID) throws IOException {

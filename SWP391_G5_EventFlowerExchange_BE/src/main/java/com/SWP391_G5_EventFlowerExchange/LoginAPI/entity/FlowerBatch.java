@@ -1,12 +1,14 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -42,6 +44,9 @@ public class FlowerBatch {
     @ManyToOne
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
+    @JsonIgnore
+    @OneToMany(mappedBy = "flowerBatch", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<FlowerImage> images;
 
     @Override
     public String toString() {

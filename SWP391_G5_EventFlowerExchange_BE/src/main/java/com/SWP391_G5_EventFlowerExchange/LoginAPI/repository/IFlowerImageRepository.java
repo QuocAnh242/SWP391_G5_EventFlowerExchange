@@ -17,4 +17,5 @@ public interface IFlowerImageRepository extends JpaRepository<FlowerImage, Long>
     @Modifying
     @Query("DELETE FROM FlowerImage fi WHERE fi.flowerBatch.flowerID = :flowerID")
     void deleteByFlowerBatchFlowerID(@Param("flowerID") int flowerID);
+
 }
