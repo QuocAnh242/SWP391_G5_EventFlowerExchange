@@ -31,21 +31,23 @@ const AdminUserManagement = () => {
  
 
 //Hiển thị người dùng
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('http://localhost:8080/identity/users');
-      console.log(response)
-      const usersData = response.data.result;
-      setUsers(usersData);
-      setTotalUsers(usersData.length);
-      setActiveUsers(usersData.filter((user) => !user.isBlocked).length);
-      setBlockedUsers(usersData.filter((user) => user.isBlocked).length);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-      setLoading(false);
-    }
-  };
+const fetchUsers = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/identity/users');
+    const usersData = response.data.result;
+    setUsers(usersData);
+    setTotalUsers(usersData.length);
+    setActiveUsers(usersData.filter((user) => user.status === 'available').length);
+    
+    // Đếm số lượng người dùng bị khóa
+    const blockedCount = usersData.filter((user) => user.status === 'blocked').length;
+    setBlockedUsers(blockedCount);
+    setLoading(false);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    setLoading(false);
+  }
+};
 //Hiển thị post
   const fetchPosts = async () => {
     try {
@@ -78,17 +80,13 @@ const AdminUserManagement = () => {
     }
   };
 
-  const handleBlockUser = async (userID, status) => {
+  const handleBlockUser = async (userID, isBlocked) => {
     try {
-      // Pass the status as a query parameter in the URL
+      const status = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
       await axios.put(`http://localhost:8080/identity/users/${userID}/status?status=${status}`);
-      fetchUsers(); // Refresh the user list to get updated status
-      setPopupMessage(`Người dùng đã được ${status === 'block' ? 'khóa' : 'mở khóa'}`);
-      setShowPopup(true); // Show success message in popup
+      fetchUsers(); // Gọi lại hàm fetchUsers để cập nhật danh sách người dùng
     } catch (error) {
-      console.error('Error toggling block status:', error);
-      setPopupMessage("Đã xảy ra lỗi khi thay đổi trạng thái người dùng.");
-      setShowPopup(true); // Show error message in popup
+      console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
     }
   };
   
@@ -192,14 +190,14 @@ const handleDeleteOrder = async (orderID) => {
                       <td>{user.userID}</td>
                       <td>{user.username}</td>
                       <td>{user.email}</td>
-                      <td>{user.role}</td>
-                      <td>{user.isBlocked ? 'Bị khóa' : 'Hoạt động'}</td>
+                      <td>{user.roles}</td>
+                      <td>{user.status}</td>
                       <td>
   <button 
     className='button-block' 
-    onClick={() => handleBlockUser(user.userID, user.isBlocked ? 'available' : 'block')}
+    onClick={() => handleBlockUser(user.userID, user.status === 'blocked')}
   >
-    {user.isBlocked ? 'Bỏ khóa' : 'Khóa'}
+    {user.status === 'available' ? 'Khóa' : 'Bỏ khóa'}
   </button>
   <button 
     className='button-delete' 
