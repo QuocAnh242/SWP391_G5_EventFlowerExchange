@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from "react";
 import CreatePost from "../components/profilepagecomponent/CreatePost.jsx";
 import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
-// Assuming you have a specific stylesheet
+import ManageOrders from "../components/profilepagecomponent/ManageOrders.jsx"; // Import the new component
 import "../styles/SellerDashboard.css";
-import { useNavigate } from 'react-router-dom'; // Assuming you are using React Router for navigation
+import { useNavigate } from 'react-router-dom';
 
 const SellerDashboard = () => {
   const [userID, setUserID] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('create-post'); // Default to 'create-post' tab
-  const navigate = useNavigate(); // Use for programmatic navigation
+  const [activeTab, setActiveTab] = useState('create-post');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchedUser = JSON.parse(localStorage.getItem("user"));
@@ -23,7 +23,7 @@ const SellerDashboard = () => {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Simulate loading
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -34,10 +34,13 @@ const SellerDashboard = () => {
         return <CreatePost userID={userID} />;
       case 'manage-posts':
         return <ManagePosts userID={userID} />;
+      case 'manage-orders':
+        return <ManageOrders userID={userID} />; // Add the Manage Orders tab content
       default:
         return null;
     }
   };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -46,6 +49,7 @@ const SellerDashboard = () => {
       </div>
     );
   }
+
   return (
     <div className="seller-dashboard">
       {loading ? (
@@ -58,7 +62,7 @@ const SellerDashboard = () => {
             <h2 className="sidebar-title">Bảng Điều Khiển Người Bán</h2>
             <button 
               className="back-to-profile-btn" 
-              onClick={() => navigate('/profile-page') /* Navigate to ProfilePage */}
+              onClick={() => navigate('/profile-page')}
             >
               Quay lại trang thông tin cá nhân
             </button>
@@ -68,6 +72,9 @@ const SellerDashboard = () => {
               </li>
               <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
                 <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lý bài post</a>
+              </li>
+              <li className={`menu-item ${activeTab === 'manage-orders' ? 'active' : ''}`}>
+                <a href="#manage-orders" onClick={() => setActiveTab('manage-orders')}>Quản lý đơn hàng</a>
               </li>
             </ul>
           </aside>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Thêm axios để gọi API
 import '../styles/Blog.css';
+import Footer from '../components/Footer';
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]); // Khởi tạo state cho danh sách blog
@@ -46,6 +47,7 @@ const BlogPage = () => {
       {visibleBlogs < blogs.length && ( // Hiển thị nút "Xem thêm" nếu còn bài viết để xem
         <button className="load-more" onClick={loadMoreBlogs}>Xem thêm</button>
       )}
+      <Footer />
     </div>
   );
 };

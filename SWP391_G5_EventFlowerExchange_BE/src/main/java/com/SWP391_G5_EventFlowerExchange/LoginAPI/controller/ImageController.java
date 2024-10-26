@@ -1,7 +1,9 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.ImageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,15 +16,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/img")
 @CrossOrigin("http://localhost:3000")
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ImageController {
-    @Autowired
-    private ImageService imageService;
+    ImageService imageService;
+
     @PostMapping("/{postID}")
     public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file, @PathVariable("postID") int postID)
     throws IOException {
         String uploadImage =imageService.uploadImage(file,postID);
         return ResponseEntity.status(HttpStatus.OK).body(uploadImage);
     }
+
     @GetMapping("/{postID}")
     public ResponseEntity<?> downloadImageByPostID(@PathVariable("postID") int postID) throws IOException {
         byte[] imageData = imageService.downloadImageByPostID(postID);
