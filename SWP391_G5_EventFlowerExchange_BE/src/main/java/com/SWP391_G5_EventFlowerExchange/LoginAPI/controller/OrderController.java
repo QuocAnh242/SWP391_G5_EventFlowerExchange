@@ -64,7 +64,6 @@ public class OrderController {
     public ApiResponse<Order> createNewOrder(@RequestBody OrderCreationRequest request) throws Exception {
         // Step 1: Create the order first
         Order order = orderService.createOrder(request);
-
         // Step 2: Create order details based on the request
         for (OrderDetailRequest detailRequest : request.getOrderDetails()) {
             OrderDetail orderDetail = new OrderDetail();

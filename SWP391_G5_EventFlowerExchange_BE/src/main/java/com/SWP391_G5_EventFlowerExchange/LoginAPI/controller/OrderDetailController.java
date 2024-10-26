@@ -1,8 +1,10 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderDetailRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FlowerBatchService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderDetailService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,11 +22,54 @@ import java.util.List;
 public class OrderDetailController {
 
     IOrderDetailService orderDetailService;
+    private final FlowerBatchService flowerBatchService;
 
-    @PostMapping("/")
-    public ResponseEntity<OrderDetail> createOrderDetail(@RequestBody OrderDetail orderDetail) {
-        return ResponseEntity.ok(orderDetailService.createOrderDetail(orderDetail));
+    private ApiResponse<OrderDetail> createOrderDetail(Order order, OrderDetailRequest detailRequest) {
+        FlowerBatch flowerBatch = flowerBatchService.findById(detailRequest.getFlowerID());
+
+        // Check if the flower batch exists
+        if (flowerBatch == null) {
+            return ApiResponse.<OrderDetail>builder()
+                    .code(404) // Not found
+                    .message("Flower not found for ID: " + detailRequest.getFlowerID())
+                    .build();
+        }
+
+        // Check if the requested quantity is available
+        if (detailRequest.getQuantity() > flowerBatch.getQuantity()) {
+            return ApiResponse.<OrderDetail>builder()
+                    .code(400) // Bad request
+                    .message("Insufficient quantity for flower ID: " + detailRequest.getFlowerID())
+                    .build();
+        }
+
+        // Create and set OrderDetail properties
+        OrderDetail orderDetail = new OrderDetail();
+        OrderDetailKey orderDetailKey = new OrderDetailKey();
+
+        orderDetailKey.setOrderID(order.getOrderID());
+        orderDetailKey.setFlowerID(detailRequest.getFlowerID());
+
+        orderDetail.setId(orderDetailKey);
+        orderDetail.setOrder(order); // Associate with the created order
+        orderDetail.setFlowerBatch(flowerBatch); // Reference the flower batch
+        orderDetail.setQuantity(detailRequest.getQuantity());
+        orderDetail.setPrice(detailRequest.getPrice()); // Price for the order detail
+
+        // Update flower quantity after order detail is created
+        flowerBatchService.updateFlowerQuantity(detailRequest.getFlowerID(),
+                flowerBatch.getQuantity() - detailRequest.getQuantity());
+
+        // Save the order detail
+        orderDetailService.createOrderDetail(orderDetail);
+
+        return ApiResponse.<OrderDetail>builder()
+                .result(orderDetail)
+                .code(1000) // Success code
+                .message("Order detail created successfully")
+                .build();
     }
+
 
     @GetMapping("/")
     public ResponseEntity<List<OrderDetail>> getAllOrderDetails() {
@@ -47,11 +92,18 @@ public class OrderDetailController {
         return ResponseEntity.ok("OrderDetail deleted!");
     }
 
-    // New method to fetch Order Details by Order ID
+    // Get Order Details by Order ID
     @GetMapping("/by-order/{orderID}")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderID(@PathVariable Long orderID) {
+    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderID(@PathVariable int orderID) {
         List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderID(orderID);
         return ResponseEntity.ok(orderDetails);
+    }
+
+    // Get Seller by Order ID
+    @GetMapping("/seller-by-order/{orderID}")
+    public ResponseEntity<User> getSellerByOrderID(@PathVariable int orderID) {
+        User seller = orderDetailService.getSellerByOrderID(orderID);
+        return ResponseEntity.ok(seller);
     }
 }
 
