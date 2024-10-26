@@ -65,7 +65,7 @@ function RelatedPosts({ currentProductId }) {
               className="related-post-image"
             />
             <h3 className="related-post-title">{item.title}</h3>
-            <p className="related-post-price">Giá: {item.price}₫</p>
+            <p className="related-post-price">Giá: {item.price.toLocaleString()} VNĐ</p>
             <p className="related-post-description">{item.description}</p>
             <p className="related-post-detail">Xem chi tiết</p>
           </div>

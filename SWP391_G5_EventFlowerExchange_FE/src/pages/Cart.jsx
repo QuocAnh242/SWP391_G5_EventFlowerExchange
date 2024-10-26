@@ -87,13 +87,13 @@ const Cart = ({ cartItems, setCartItems }) => {
                   <td>
                     <img src={item.imageUrl || 'default-image-url'} alt="Product" className="cart-image" />
                   </td>
-                  <td>{item.price} VNĐ</td>
+                  <td>{item.price.toLocaleString()} VNĐ</td>
                   <td>
                     <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, -1)}>-</button>
                     <input type="number" value={item.quantity} readOnly className="quantity-input" />
                     <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, 1)}>+</button>
                   </td>
-                  <td>{item.price * item.quantity} VNĐ</td>
+                  <td>{new Intl.NumberFormat('vi-VN').format(item.price * item.quantity)} VNĐ</td>
                   <td>
                     <button className="delete-button" onClick={() => handleDelete(item.flowerID)}>
                       Xóa
@@ -108,7 +108,7 @@ const Cart = ({ cartItems, setCartItems }) => {
 
       <div className="cart-footer">
         <p className="total-price">
-          Tổng thanh toán ({cartItems.length} sản phẩm): {totalPrice}₫
+          Tổng thanh toán ({cartItems.length} sản phẩm): {totalPrice.toLocaleString()} VNĐ
         </p>
         <button className="purchase-button" onClick={handlePurchase}>Mua Hàng</button>
         {successMessage && <p className="cart-message">{successMessage}</p>}

@@ -227,7 +227,7 @@ const handleDeleteOrder = async (orderID) => {
                     <th>ID</th>
                     <th>Tiêu đề</th>
                     <th>Mô tả</th>
-                    <th>Giá</th>
+                    <th>Giá (VNĐ)</th>
                     <th>Hành động</th>
                   </tr>
                 </thead>
@@ -237,7 +237,7 @@ const handleDeleteOrder = async (orderID) => {
                       <td>{post.postID}</td>
                       <td>{post.title}</td>
                       <td>{post.description}</td>
-                      <td>{post.price}₫</td>
+                      <td>{post.price.toLocaleString()}</td>
                       <td>
                         <button className='button-post-delete' onClick={() => handleDeletePost(post.postID)}>Xóa</button>
                       </td>
@@ -273,7 +273,7 @@ const handleDeleteOrder = async (orderID) => {
                       <td>{order.orderID}</td>
                       <td>{order.user.username}</td>
                       <td>{new Date(order.date).toLocaleDateString()}</td>
-                      <td>{order.totalPrice} VNĐ</td>
+                      <td>{order.totalPrice.toLocaleString()}</td>
                       <td>{order.status}</td>
                       <td>
                         <button className='button-delete' onClick={() => handleDeleteOrder(order.orderID)}>Xóa</button>

@@ -106,14 +106,14 @@ const Checkout = () => {
             cartItems.map((item) => (
               <div className="order-item" key={item.flowerID}>
                 <span>{item.flowerName}</span>
-                <span>{item.quantity} x {item.price}₫</span>
+                <span>{item.quantity} x {item.price.toLocaleString()} VNĐ</span>
               </div>
             ))
           ) : (
             <p>Không có sản phẩm trong giỏ hàng</p>
           )}
           <div className="total-price">
-            <strong>Tổng cộng: {totalPrice}₫</strong>
+          <strong>Tổng cộng: {totalPrice.toLocaleString()} VNĐ</strong>
           </div>
         </div>
 

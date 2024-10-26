@@ -149,7 +149,7 @@ function FlowerBatchDetail() {
             <div key={currentBatch.flowerID}>
               <h2>{currentBatch.flowerName}</h2>
               <p className="flower-description">{currentBatch.description}</p>
-              <p>Giá: <span className="price">{currentBatch.price}₫</span></p>
+              <p>Giá: <span className="price">{currentBatch.price.toLocaleString()} VNĐ</span></p>
               <p>Số lượng còn lại: <span className="quantity">{currentBatch.quantity} bó</span></p>
               <p>Sự kiện: <span className="event-name">{currentBatch.category?.eventName || "Không có sự kiện"}</span></p>
               <div className="stock-availability">

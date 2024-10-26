@@ -31,7 +31,7 @@ public class EventFlowerPosting {
 
     String imageUrl;
 
-    String status;
+    String status="Còn Hàng";
 
     @Column(nullable = false)
     LocalDateTime createdAt;

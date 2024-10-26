@@ -270,7 +270,7 @@ function Menu() {
             >
               <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
               <h3>{flower.title}</h3>
-              <p className="discount-price">Giá dự kiến: {flower.price}VNĐ</p>
+              <p className="discount-price">Giá dự kiến: {flower.price.toLocaleString()} VNĐ</p>
               <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
               <p className="feature-content">{flower.description}</p>
               <button className="feature-detail-button">Xem chi tiết</button>
