@@ -79,7 +79,7 @@ const AdminUserManagement = () => {
   const handleBlockUser = async (userID, isBlocked) => {
     try {
       const availableStatus = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
-      await axios.put(`http://localhost:8080/identity/users/${userID}/availableStatus=${availableStatus}`);
+      await axios.put(`http://localhost:8080/identity/users/${userID}/status?status=${availableStatus}`);
       fetchUsers();
     } catch (error) {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
@@ -207,7 +207,7 @@ const AdminUserManagement = () => {
                           className='button-block'
                           onClick={() => handleBlockUser(user.userID, user.availableStatus === 'blocked')}
                         >
-                          {user.status === 'available' ? 'Khóa' : 'Bỏ khóa'}
+                          {user.availableStatus === 'available' ? 'Khóa' : 'Bỏ khóa'}
                         </button>
                         <button
                           className='button-delete'
