@@ -18,7 +18,7 @@ import Cart from './pages/Cart';
 import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
 import BlogPage from "./pages/Blog";
-import Payment from "./pages/Payment";
+// import Payment from "./pages/Payment";
 import Checkout from './pages/Checkout';
 import SuccessPage from './pages/SuccessPage';
 
@@ -57,7 +57,7 @@ function App() {
           <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} /> {/* Truyền props cho giỏ hàng */}
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
           <Route path="/blog-page" element={<BlogPage />} />
-          <Route path="/payment" element={<Payment />} />
+          {/* <Route path="/payment" element={<Payment />} /> */}
           <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
           <Route path="/seller-dashboard" element={<SellerDashboard />} /> {/* Fix: Add this route */}
           <Route path="/success-page" element={<SuccessPage />} />

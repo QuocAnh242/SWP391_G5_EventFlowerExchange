@@ -1,69 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import axios from 'axios'; // Import Axios để gọi API
-import '../styles/Checkout.css'; // Importing CSS styles
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import '../styles/Checkout.css';
 import Footer from '../components/Footer';
 
 const Checkout = () => {
   const location = useLocation();
-  const { cartItems,setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems:[], totalPrice: 0 };
-  const user = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
-  
-  // State để lưu phương thức thanh toán đã chọn
-  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const navigate = useNavigate();
+  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => {}, totalPrice: 0 };
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  // Xử lý khi chọn phương thức thanh toán
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [loading, setLoading] = useState(true);
+
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  // Xử lý khi nhấn nút thanh toán
   const handleCheckout = async () => {
     if (!paymentMethod) {
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
-  // Tạo orderDetails từ cartItems
-  const orderDetails = cartItems.map(item => ({
-    flowerID: item.flowerID,  // Flower ID
-    quantity: item.quantity,
-    price: item.price,
-  }));
-  const order = {
-    orderDate: new Date().toISOString(),
-    totalPrice: totalPrice,
-    shippingAddress: user?.address || 'Địa chỉ mặc định',
-    user: {
-      userID: user?.userID,
-    },
-    delivery: {
-      deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 ngày sau
-      rating: 4, // Có thể thay đổi theo logic của bạn
-      availableStatus: 'available',
-    },
-    payment: {
-      paymentID: paymentMethod === 'vnpay' ? 1 : 2,
-    },
-    orderDetails: orderDetails,
-  };
 
-  console.log(order); // Log order để kiểm tra cấu trúc
+    const orderDetails = cartItems.map(item => ({
+      flowerID: item.flowerID,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
+    const order = {
+      orderDate: new Date().toISOString(),
+      totalPrice: totalPrice,
+      shippingAddress: user?.address || 'Địa chỉ mặc định',
+      user: { userID: user?.userID },
+      delivery: {
+        deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(),
+        rating: 4,
+        availableStatus: 'available',
+      },
+      payment: {
+        paymentID: paymentMethod === 'vnpay' ? 1 : paymentMethod === 'momo' ? 2 : 3, // 1: VNPay, 2: MoMo, 3: COD
+      },
+      orderDetails: orderDetails,
+    };
+
+    console.log(order);
 
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
-      console.log(response.data); // Log toàn bộ phản hồi từ backend
+      console.log(response.data);
+
       if (response.status === 200 || response.status === 201) {
-        const { code, message, result } = response.data; // Lấy mã và thông báo từ phản hồi
-  
+        const { message } = response.data;
+
         if (paymentMethod === 'vnpay') {
-          const vnpUrl = message.split('VNPay URL: ')[1]; // Lấy URL VNPay từ message
-          window.location.href = vnpUrl; // Chuyển hướng đến VNPay URL
+          const vnpUrl = message.split('VNPay URL: ')[1];
+          window.location.href = vnpUrl;
+        } else if (paymentMethod === 'momo') {
+          const momoUrl = message.split('MoMo URL: ')[2];
+          window.location.href = momoUrl;
         } else {
           alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
-          
-          // Xóa giỏ hàng sau khi thanh toán thành công
-          localStorage.removeItem('cartItems'); // Xóa giỏ hàng khỏi localStorage
-          setCartItems([]); // Cập nhật state để làm trống giỏ hàng trong UI
+
+          // Clear cart items in local storage
+          localStorage.removeItem('cartItems');
+
+          // Update cart items if setCartItems is defined
+          if (typeof setCartItems === 'function') {
+            setCartItems([]);
+          }
+
+          // Navigate to a success page or order history
+          navigate('/success-page', { state: { order } });
         }
       }
     } catch (error) {
@@ -71,13 +80,10 @@ const Checkout = () => {
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
     }
   };
-  
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-  // Loading trang
+
   useEffect(() => {
-    // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
-      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
+      setLoading(false);
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -99,7 +105,6 @@ const Checkout = () => {
       </div>
 
       <div className="checkout-content">
-        {/* Cột bên trái - Tóm tắt đơn hàng */}
         <div className="order-summary">
           <h3>Tóm Tắt Đơn Hàng</h3>
           {cartItems.length > 0 ? (
@@ -113,11 +118,10 @@ const Checkout = () => {
             <p>Không có sản phẩm trong giỏ hàng</p>
           )}
           <div className="total-price">
-          <strong>Tổng cộng: {totalPrice.toLocaleString()} VNĐ</strong>
+            <strong>Tổng cộng: {totalPrice.toLocaleString()} VNĐ</strong>
           </div>
         </div>
 
-        {/* Cột bên phải - Thông tin người dùng */}
         <div className="user-info">
           <h3>Thông Tin Người Dùng</h3>
           <div className="user-details">
@@ -129,7 +133,6 @@ const Checkout = () => {
         </div>
       </div>
 
-      {/* Phần chọn phương thức thanh toán */}
       <div className="payment-method">
         <h3>Phương Thức Thanh Toán</h3>
         <div className="payment-options">

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart } from 'react-icons/fa'; // Import các icon từ react-icons
 import '../styles/AdminUserManagement.css';
 import '../styles/popup.css';
+
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -11,49 +12,43 @@ const AdminUserManagement = () => {
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
   const [posts, setPosts] = useState([]);
-  const [totalPosts, setTotalPosts] = useState(0); 
+  const [totalPosts, setTotalPosts] = useState(0);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
   const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
   const [orders, setOrders] = useState([]);
 
-  // const [loading, setLoading] = useState(true); // Thêm trạng thái loading
-  
-   //hiện thông tin khách hàng và bài post
   useEffect(() => {
     fetchUsers();
     fetchPosts();
     fetchOrders();
   }, []);
-  
 
+  // Hiển thị người dùng
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/identity/users');
+      const usersData = response.data.result;
+      setUsers(usersData);
+      setTotalUsers(usersData.length);
+      setActiveUsers(usersData.filter((user) => user.availableStatus === 'available').length);
 
- 
+      // Đếm số lượng người dùng bị khóa
+      const blockedCount = usersData.filter((user) => user.availableStatus === 'blocked').length;
+      setBlockedUsers(blockedCount);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setLoading(false);
+    }
+  };
 
-//Hiển thị người dùng
-const fetchUsers = async () => {
-  try {
-    const response = await axios.get('http://localhost:8080/identity/users');
-    const usersData = response.data.result;
-    setUsers(usersData);
-    setTotalUsers(usersData.length);
-    setActiveUsers(usersData.filter((user) => user.status === 'available').length);
-    
-    // Đếm số lượng người dùng bị khóa
-    const blockedCount = usersData.filter((user) => user.status === 'blocked').length;
-    setBlockedUsers(blockedCount);
-    setLoading(false);
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    setLoading(false);
-  }
-};
-//Hiển thị post
+  // Hiển thị post
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/posts/');
       setPosts(response.data);
-      setTotalPosts(response.data.length); 
+      setTotalPosts(response.data.length);
     } catch (error) {
       console.error('Error fetching posts:', error);
     }
@@ -68,13 +63,14 @@ const fetchUsers = async () => {
       console.error('Error fetching orders:', error);
     }
   };
-//Xóa post
+
+  // Xóa post
   const handleDeletePost = async (postID) => {
     try {
       await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
       fetchPosts();
       setPopupMessage("Bài viết đã xóa thành công");
-      setShowPopup(true); 
+      setShowPopup(true);
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -82,42 +78,58 @@ const fetchUsers = async () => {
 
   const handleBlockUser = async (userID, isBlocked) => {
     try {
-      const status = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
-      await axios.put(`http://localhost:8080/identity/users/${userID}/status?status=${status}`);
-      fetchUsers(); // Gọi lại hàm fetchUsers để cập nhật danh sách người dùng
+      const availableStatus = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
+      await axios.put(`http://localhost:8080/identity/users/${userID}/availableStatus=${availableStatus}`);
+      fetchUsers();
     } catch (error) {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
     }
   };
-  
-  
-  
-  
 
   const handleDeleteUser = async (userID) => {
     try {
       await axios.delete(`http://localhost:8080/identity/users/${userID}`);
       fetchUsers();
       setPopupMessage("Đã xóa tài khoản khách hàng thành công !");
-      setShowPopup(true); // Hiển thị pop-up
+      setShowPopup(true);
     } catch (error) {
       console.error('Error deleting user:', error);
     }
   };
 
-// Handle delete order
-const handleDeleteOrder = async (orderID) => {
-  try {
-    await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
-    fetchOrders();
-    setPopupMessage("Đơn hàng đã xóa thành công");
-    setShowPopup(true);
-  } catch (error) {
-    console.error('Error deleting order:', error);
-  }
-};
+  const handleSetSeller = async (userID) => {
+    try {
+      await axios.put(`http://localhost:8080/identity/users/seller/${userID}`);
+      setUsers(users.map(user =>
+        user.userID === userID ? { ...user, roles: [...user.roles, 'SELLER'] } : user
+      ));
+      // Update local storage for the logged-in user if their role has changed
+      const currentUser = JSON.parse(localStorage.getItem('user'));
+      if (currentUser && currentUser.userID === userID) {
+        localStorage.setItem('user', JSON.stringify({
+          ...currentUser,
+          roles: [...currentUser.roles, 'SELLER']
+        }));
+      }
+      setPopupMessage("Đã cập nhật người dùng thành Seller thành công !");
+      setShowPopup(true);
+    } catch (error) {
+      console.error('Error setting user as Seller:', error);
+    }
+  };
+  
 
-
+  // Handle delete order
+  const handleDeleteOrder = async (orderID) => {
+    try {
+      await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
+      fetchOrders();
+      setPopupMessage("Đơn hàng đã xóa thành công");
+      setShowPopup(true);
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    }
+  };
 
   const filteredUsers = users.filter(
     (user) =>
@@ -153,7 +165,7 @@ const handleDeleteOrder = async (orderID) => {
                 <h3>Người dùng bị khóa</h3>
                 <p>{blockedUsers}</p>
               </div>
-              <div className="stat"> 
+              <div className="stat">
                 <h3>Tổng số bài viết</h3>
                 <p>{totalPosts}</p>
               </div>
@@ -180,7 +192,6 @@ const handleDeleteOrder = async (orderID) => {
                     <th>Tên</th>
                     <th>Email</th>
                     <th>Vai trò</th>
-                    <th>Trạng thái</th>
                     <th>Hành động</th>
                   </tr>
                 </thead>
@@ -190,23 +201,29 @@ const handleDeleteOrder = async (orderID) => {
                       <td>{user.userID}</td>
                       <td>{user.username}</td>
                       <td>{user.email}</td>
-                      <td>{user.roles}</td>
-                      <td>{user.status}</td>
+                      <td>{user.roles.join(', ')}</td>
                       <td>
-  <button 
-    className='button-block' 
-    onClick={() => handleBlockUser(user.userID, user.status === 'blocked')}
-  >
-    {user.status === 'available' ? 'Khóa' : 'Bỏ khóa'}
-  </button>
-  <button 
-    className='button-delete' 
-    onClick={() => handleDeleteUser(user.userID)}
-  >
-    Xóa
-  </button>
-</td>
-
+                        <button
+                          className='button-block'
+                          onClick={() => handleBlockUser(user.userID, user.availableStatus === 'blocked')}
+                        >
+                          {user.status === 'available' ? 'Khóa' : 'Bỏ khóa'}
+                        </button>
+                        <button
+                          className='button-delete'
+                          onClick={() => handleDeleteUser(user.userID)}
+                        >
+                          Xóa
+                        </button>
+                        {!user.roles.includes('SELLER') && (
+                          <button
+                            className='button-set-seller'
+                            onClick={() => handleSetSeller(user.userID)}
+                          >
+                            Set Seller
+                          </button>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -250,8 +267,7 @@ const handleDeleteOrder = async (orderID) => {
             )}
           </div>
         );
-
-        case 'order-management':
+      case 'order-management':
         return (
           <div>
             <h2 className='admin-title'>Quản lý đơn hàng</h2>
@@ -326,17 +342,13 @@ const handleDeleteOrder = async (orderID) => {
             <button
               className="close-button-popup"
               onClick={() => {
-                setShowPopup(false); // Close the popup
-                // window.location.reload(); 
+                setShowPopup(false);
               }}>
               Đóng
             </button>
           </div>
         </div>
       )}
-
-
-
     </div>
   );
 };

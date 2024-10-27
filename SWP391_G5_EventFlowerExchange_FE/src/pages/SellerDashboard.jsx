@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CreatePost from "../components/profilepagecomponent/CreatePost.jsx";
 import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
-import ManageOrders from "../components/profilepagecomponent/ManageOrders.jsx"; // Import the new component
+import ManageSellerOrders from "../components/profilepagecomponent/MangeSellerOrders.jsx"; // Import the new component
 import "../styles/SellerDashboard.css";
 import { useNavigate } from 'react-router-dom';
 
@@ -34,8 +34,8 @@ const SellerDashboard = () => {
         return <CreatePost userID={userID} />;
       case 'manage-posts':
         return <ManagePosts userID={userID} />;
-      case 'manage-orders':
-        return <ManageOrders userID={userID} />; // Add the Manage Orders tab content
+      case 'manage-seller-orders':
+        return <ManageSellerOrders userID={userID} />; // Add the Manage Orders tab content
       default:
         return null;
     }
@@ -73,8 +73,8 @@ const SellerDashboard = () => {
               <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
                 <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lý bài post</a>
               </li>
-              <li className={`menu-item ${activeTab === 'manage-orders' ? 'active' : ''}`}>
-                <a href="#manage-orders" onClick={() => setActiveTab('manage-orders')}>Quản lý đơn hàng</a>
+              <li className={`menu-item ${activeTab === 'manage-seller-orders' ? 'active' : ''}`}>
+                <a href="#manage-seller-orders" onClick={() => setActiveTab('manage-seller-orders')}>Quản lý đơn hàng</a>
               </li>
             </ul>
           </aside>

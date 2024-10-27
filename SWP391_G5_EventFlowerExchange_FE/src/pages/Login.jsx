@@ -47,55 +47,71 @@ const Login = () => {
     const loginValues = { email, password };
 
     try {
-      const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
+        const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
 
-      if (response.data && response.data.result) {
-        const { token } = response.data.result;
+        if (response.data && response.data.result) {
+            const { token, isBlocked, status } = response.data.result;
 
-        if (!token) {
-          console.error("Token not found in response");
-          return;
-        }
+            // Log the result to confirm the structure
+            console.log("Login Response Result:", response.data.result);
 
-        localStorage.setItem("token", token);
-        const decodedPayload = decodeToken(token);
-        console.log(decodedPayload);
-        console.log(token);
-        const user = {
-          address: decodedPayload.address,
-          email: decodedPayload.email,
-          exp: decodedPayload.exp,
-          iat: decodedPayload.iat,
-          iss: decodedPayload.iss,
-          phoneNumber: decodedPayload.phoneNumber,
-          roles: decodedPayload.roles,
-          scope: decodedPayload.scope,
-          sub: decodedPayload.sub,
-          userID: decodedPayload.userID,
-          username: decodedPayload.username,
-        };
+            // Check if account is blocked based on response before decoding the token
+            if (isBlocked || status === 'blocked') {
+                setError("Tài khoản đã bị khóa");
+                return;
+            }
 
-        localStorage.setItem("user", JSON.stringify(user));
-        console.log("Infor", user);
-        
-        const { roles } = decodedPayload;
-        if (roles.includes('ADMIN')) {
-          navigate('/admin-user-management');
-        } else if (roles.includes('BUYER')) {
-          navigate('/');  // Navigate to profile page after login
+            if (!token) {
+                console.error("Token not found in response");
+                return;
+            }
+
+            localStorage.setItem("token", token);
+            const decodedPayload = decodeToken(token);
+
+            const user = {
+                address: decodedPayload.address,
+                email: decodedPayload.email,
+                exp: decodedPayload.exp,
+                iat: decodedPayload.iat,
+                iss: decodedPayload.iss,
+                phoneNumber: decodedPayload.phoneNumber,
+                roles: decodedPayload.roles,
+                scope: decodedPayload.scope,
+                sub: decodedPayload.sub,
+                userID: decodedPayload.userID,
+                username: decodedPayload.username,
+            };
+
+            localStorage.setItem("user", JSON.stringify(user));
+
+            const { roles } = decodedPayload;
+            if (roles.includes('ADMIN')) {
+                navigate('/admin-user-management');
+            } else if (roles.includes('BUYER')) {
+                navigate('/');  // Navigate to profile page after login
+            } else {
+                setError("Tài khoản hoặc mật khẩu sai");
+            }
+            window.location.reload();
         } else {
-          setError("Tài khoản hoặc mật khẩu sai");
+            setError("Tài khoản hoặc mật khẩu sai");
         }
-        window.location.reload();
-      } else {
-        setError("Tài khoản hoặc mật khẩu sai");
-      }
 
     } catch (error) {
-      setError("Tài khoản hoặc mật khẩu sai");
-      console.error("Login error:", error.response ? error.response.data : error.message);
+        // Set a specific error if the account is blocked or return a generic error
+        if (error.response && error.response.data && error.response.data.isBlocked) {
+            setError("Tài khoản đã bị khóa");
+        } else {
+            setError("Tài khoản hoặc mật khẩu sai");
+        }
+        console.error("Login error:", error.response ? error.response.data : error.message);
     }
-  };
+};
+
+
+
+
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
