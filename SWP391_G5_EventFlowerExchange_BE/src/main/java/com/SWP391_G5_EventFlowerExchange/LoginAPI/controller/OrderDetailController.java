@@ -3,6 +3,7 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderDetailRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.OrderDetailResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FlowerBatchService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderDetailService;
@@ -22,7 +23,7 @@ import java.util.List;
 public class OrderDetailController {
 
     IOrderDetailService orderDetailService;
-    private final FlowerBatchService flowerBatchService;
+    FlowerBatchService flowerBatchService;
 
     private ApiResponse<OrderDetail> createOrderDetail(Order order, OrderDetailRequest detailRequest) {
         FlowerBatch flowerBatch = flowerBatchService.findById(detailRequest.getFlowerID());
@@ -94,9 +95,9 @@ public class OrderDetailController {
 
     // Get Order Details by Order ID
     @GetMapping("/by-order/{orderID}")
-    public ResponseEntity<List<OrderDetail>> getOrderDetailsByOrderID(@PathVariable int orderID) {
-        List<OrderDetail> orderDetails = orderDetailService.getOrderDetailsByOrderID(orderID);
-        return ResponseEntity.ok(orderDetails);
+    public ResponseEntity<List<OrderDetailResponse>> getOrderDetailsByOrderID(@PathVariable int orderID) {
+        List<OrderDetailResponse> orderDetailsResponses = orderDetailService.getOrderDetailsByOrderID(orderID);
+        return ResponseEntity.ok(orderDetailsResponses);
     }
 
     // Get Seller by Order ID

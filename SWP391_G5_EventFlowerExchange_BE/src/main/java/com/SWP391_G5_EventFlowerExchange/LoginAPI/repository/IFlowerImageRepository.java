@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface IFlowerImageRepository extends JpaRepository<FlowerImage, Long> {
+public interface IFlowerImageRepository extends JpaRepository<FlowerImage, Integer> {
     List<FlowerImage> findByFlowerBatch(FlowerBatch flowerBatch);
     @Modifying
     @Query("DELETE FROM FlowerImage fi WHERE fi.flowerBatch.flowerID = :flowerID")
