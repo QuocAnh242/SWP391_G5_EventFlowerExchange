@@ -9,6 +9,7 @@ const CreatePostComponent = () => {
     title: '',
     description: '',
     price: '',
+    expirationDate: '', // New field for expiration date
     user: {
       userID: user ? user.userID : '',
     },
@@ -19,32 +20,31 @@ const CreatePostComponent = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Xử lý khi có thay đổi trong form
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
   };
 
-  // Xử lý khi chọn file ảnh
+  // Handle file selection
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
 
-  // Xử lý khi submit form
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Tạo bài đăng
+      // Create the post
       const response = await axios.post('http://localhost:8080/identity/posts/', post);
       const createdPostID = response.data.postID;
       setPostID(createdPostID);
 
-      // Nếu có file ảnh, upload file
+      // Upload image if selected
       if (selectedFile) {
         const formData = new FormData();
-        formData.append('image', selectedFile);// Đảm bảo tên trường 'file' đúng với yêu cầu API
+        formData.append('image', selectedFile);
 
-        // Upload file ảnh
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
         setSuccessMessage('Đã tạo bài đăng và upload ảnh thành công!');
       } else {
@@ -91,6 +91,17 @@ const CreatePostComponent = () => {
             type="number"
             name="price"
             value={post.price}
+            onChange={handleChange}
+            required
+          />
+        </label>
+
+        <label>
+          Ngày hết hạn:
+          <input
+            type="date"
+            name="expirationDate"
+            value={post.expirationDate}
             onChange={handleChange}
             required
           />

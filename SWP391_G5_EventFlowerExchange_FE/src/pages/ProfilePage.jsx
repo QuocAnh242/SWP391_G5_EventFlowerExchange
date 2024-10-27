@@ -4,30 +4,44 @@ import ChangeInfor from "../components/profilepagecomponent/ChangeInfor.jsx";
 import OrderHistory from "../components/profilepagecomponent/OrderHistory.jsx";
 import BecomeSeller from "../components/profilepagecomponent/BecomeSeller.jsx";  
 import "../styles/ProfilePage.css";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
 const ProfilePage = () => {
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState('profile');
   const [loading, setLoading] = useState(true);
   const [userID, setUserID] = useState(null);
-  const [userRole, setUserRole] = useState(null); // State to hold user's role
-  const navigate = useNavigate(); // Use useNavigate for redirection
+  const [role, setRole] = useState(null); // State to hold user's role
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchedUser = JSON.parse(localStorage.getItem('user'));
+    const fetchUserRole = () => {
+      const fetchedUser = JSON.parse(localStorage.getItem('user'));
 
-    if (fetchedUser && fetchedUser.userID) {
-      setUserID(fetchedUser.userID);
-      setUserRole(fetchedUser.role); // Set user role
-      console.log(fetchedUser.role);  // Log user's role for debugging
-    }
+      if (fetchedUser && fetchedUser.userID) {
+        setUserID(fetchedUser.userID);
+        setRole(fetchedUser.role); // Set user role
+      }
+    };
+
+    // Call function to fetch role on component mount
+    fetchUserRole();
+
+    // Update role when localStorage changes
+    const handleStorageChange = () => {
+      fetchUserRole();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
 
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
   const renderTabContent = () => {
@@ -46,14 +60,28 @@ const ProfilePage = () => {
   };
 
   const handleSellerAccess = () => {
-    // Check if the user has the SELLER role
-    if (userRole === 'SELLER') {
-      navigate('/seller-dashboard'); // Navigate to Seller Dashboard page
+    // Kiểm tra và in ra dữ liệu `user` để xem nó có trong `localStorage` không
+    const currentUser = JSON.parse(localStorage.getItem('user'));
+    console.log("Current user from localStorage:", currentUser);
+
+    // Đảm bảo currentUser có dữ liệu và chứa thuộc tính roles
+    if (currentUser && currentUser.roles) {
+      const currentRoles = currentUser.roles;
+      console.log("Current roles:", currentRoles);
+
+      // Kiểm tra nếu mảng roles chứa 'SELLER'
+      if (currentRoles.includes('SELLER')) {
+        navigate('/seller-dashboard');
+      } else {
+        setError("Bạn chưa đăng kí trở thành người bán.");
+      }
     } else {
-      // If not a seller, show error message
-      setError("Bạn chưa đăng kí trở thành người bán.");
+      setError("Dữ liệu người dùng không hợp lệ hoặc thiếu role.");
+      console.log("User data is missing or does not contain roles.");
     }
   };
+
+
 
   return (
     <div className="profile-page">
@@ -79,7 +107,6 @@ const ProfilePage = () => {
               <li className={`menu-item ${activeTab === 'become-seller' ? 'active' : ''}`}>
                 <a href="#become-seller" onClick={() => setActiveTab('become-seller')}>Trở thành người bán hàng</a>
               </li>
-              {/* Conditionally render the Seller Dashboard link */}
               <li className={`menu-item ${activeTab === 'seller-dashboard' ? 'active' : ''}`}>
                 <a href="#seller-dashboard" onClick={handleSellerAccess}>Trang quản lý người bán</a>
               </li>
