@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -44,15 +45,21 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     @Transactional
     public void updateExpiredStatus() {
         List<EventFlowerPosting> posts = iEventFlowerPostingRepository.findAll();
+        List<Integer> expiredPostIds = new ArrayList<>();
+
         for (EventFlowerPosting post : posts) {
             if (post.getExpiryDate() != null && post.getExpiryDate().isBefore(LocalDateTime.now())) {
-                post.setStatus("Hết Hạn");
-                try {
-                    iEventFlowerPostingRepository.save(post);
-                    System.out.println("Updated post ID: " + post.getPostID());
-                } catch (Exception e) {
-                    System.err.println("Error updating post ID: " + post.getPostID() + " - " + e.getMessage());
-                }
+                expiredPostIds.add(post.getPostID());
+            }
+        }
+
+        // Xóa tất cả bài viết đã hết hạn trong một lần gọi
+        for (Integer postId : expiredPostIds) {
+            try {
+                deleteEventFlowerPosting(postId);
+                System.out.println("Deleted expired post ID: " + postId);
+            } catch (Exception e) {
+                System.err.println("Error deleting post ID: " + postId + " - " + e.getMessage());
             }
         }
     }
