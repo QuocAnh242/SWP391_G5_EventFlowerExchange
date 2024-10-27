@@ -20,11 +20,11 @@ public class FlowerImageController {
     private FlowerImageService flowerImageService;
 
     // API upload nhiều hình ảnh cho flower batch
-    @PostMapping("/batch/{batchID}/upload")
-    public ResponseEntity<String> uploadImages(@PathVariable("batchID") int batchID,
+    @PostMapping("/batch/{flowerID}/upload")
+    public ResponseEntity<String> uploadImages(@PathVariable("flowerID") int flowerID,
                                                @RequestParam("files") List<MultipartFile> files) {
         try {
-            flowerImageService.uploadImages(batchID, files);
+            flowerImageService.uploadImages(flowerID, files);
             return ResponseEntity.status(HttpStatus.OK).body("Images uploaded successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images: " + e.getMessage());
@@ -47,9 +47,13 @@ public class FlowerImageController {
 
     // API xóa ảnh cho FlowerBatch
     @DeleteMapping("/delete/{batchID}")
-    public ResponseEntity<String> deleteImage(@PathVariable("batchID") int batchID) {
-        String message = flowerImageService.deleteImage(batchID);
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+    public ResponseEntity<String> deleteImagesByBatchID(@PathVariable("batchID") int batchID) {
+        try {
+            String message = flowerImageService.deleteImagesByBatchID(batchID);
+            return ResponseEntity.status(HttpStatus.OK).body(message);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy ảnh nào để xóa cho batchID: " + batchID);
+        }
     }
 
     // API lấy tất cả ảnh

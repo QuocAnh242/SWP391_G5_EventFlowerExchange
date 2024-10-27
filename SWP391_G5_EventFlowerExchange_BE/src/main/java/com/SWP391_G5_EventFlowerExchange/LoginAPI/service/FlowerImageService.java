@@ -27,12 +27,22 @@ public class FlowerImageService {
     }
 
     // Phương thức upload nhiều hình ảnh
-    public void uploadImages(int batchID, List<MultipartFile> files) throws IOException {
+    public void uploadImages(int flowerID, List<MultipartFile> files) throws IOException {
+        // Kiểm tra nếu danh sách tệp trống
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("Danh sách tệp không được để trống.");
+        }
+
         // Tìm FlowerBatch theo ID
-        FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
-                .orElseThrow(() -> new RuntimeException("Batch with ID " + batchID + " not found"));
+        FlowerBatch flowerBatch = flowerBatchRepository.findById(flowerID)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy lô hàng với ID " + flowerID));
 
         for (MultipartFile file : files) {
+            // Kiểm tra loại tệp có phải là hình ảnh không
+            if (!file.getContentType().startsWith("image/")) {
+                throw new IllegalArgumentException("Loại tệp không hợp lệ: " + file.getContentType());
+            }
+
             // Tạo đối tượng FlowerImage cho từng hình ảnh
             FlowerImage flowerImage = FlowerImage.builder()
                     .name(file.getOriginalFilename())
@@ -49,12 +59,13 @@ public class FlowerImageService {
     // Phương thức download hình ảnh
     public List<String> downloadImagesByBatchID(int batchID) throws IOException {
         FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
-                .orElseThrow(() -> new RuntimeException("Batch with ID " + batchID + " not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh với ID " + batchID));
 
         List<FlowerImage> images = flowerImageRepository.findByFlowerBatch(flowerBatch);
         if (images.isEmpty()) {
-            return Collections.emptyList();
+            throw new FileNotFoundException("Không tìm thấy ảnh cho ảnh với ID " + batchID);
         }
+
         return images.stream()
                 .map(img -> {
                     byte[] decompressedImage = ImageUtils.decompressImage(img.getImageData());
@@ -84,24 +95,22 @@ public class FlowerImageService {
     }
 
     // Hàm xóa ảnh
-    public String deleteImage(int batchID) {
+    public String deleteImagesByBatchID(int batchID) {
         FlowerBatch flowerBatch = flowerBatchRepository.findById(batchID)
-                .orElseThrow(() -> new RuntimeException("Batch with ID " + batchID + " not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh với ID " + batchID));
 
-        Optional<FlowerImage> flowerImage = flowerImageRepository.findByFlowerBatch(flowerBatch).stream().findFirst();
-
-        if (flowerImage.isPresent()) {
-            flowerImageRepository.deleteById(Long.valueOf(flowerImage.get().getId()));
-            return "Image deleted successfully for batchID: " + batchID;
-        } else {
-            throw new RuntimeException("Image not found for batchID: " + batchID);
+        List<FlowerImage> flowerImages = flowerImageRepository.findByFlowerBatch(flowerBatch);
+        if (flowerImages.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy ảnh nào để xóa cho batchID: " + batchID);
         }
+
+        flowerImageRepository.deleteAll(flowerImages);
+        return "Đã xóa tất cả ảnh thành công cho batchID: " + batchID;
     }
 
     // Hàm lấy tất cả ảnh
     public List<byte[]> getAllImages() {
-        List<FlowerImage> images = flowerImageRepository.findAll();
-        return images.stream()
+        return flowerImageRepository.findAll().stream()
                 .map(image -> ImageUtils.decompressImage(image.getImageData()))
                 .collect(Collectors.toList());
     }
