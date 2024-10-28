@@ -53,4 +53,7 @@ public class NotificationsService implements INoticationService {
         }
         return null;
     }
+    public List<Notifications> getNotificationsByUserId(int userID) {
+        return inotificationsRepository.findByUser_userID(userID);
+    }
 }
