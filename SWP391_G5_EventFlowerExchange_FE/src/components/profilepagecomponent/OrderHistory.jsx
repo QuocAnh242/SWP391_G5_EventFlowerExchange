@@ -52,7 +52,7 @@ const OrderHistory = () => {
         <div className="order-details">
           <h3>Đơn hàng #{order.orderID}</h3>
           {/* <p>{order.productName}</p> */}
-          <p className="order-total">{order.totalPrice.toLocaleString()}₫</p>
+          <p className="order-total">{order.totalPrice.toLocaleString()} VNĐ</p>
           <p>Ngày đặt: {new Date(order.orderDate).toLocaleDateString('vi-VN')}</p>
           <p>Phương thức thanh toán: {order.status}</p>
           <button className="view-details" onClick={() => viewOrderDetails(order.orderID)}>Xem chi tiết</button>

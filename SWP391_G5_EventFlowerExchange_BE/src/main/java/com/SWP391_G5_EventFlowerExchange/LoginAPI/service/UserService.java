@@ -158,6 +158,7 @@ public class UserService implements IUserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setAvailableStatus(status); // Cập nhật trạng thái người dùng
+
         return userRepository.save(user); // Lưu và trả về đối tượng User đã cập nhật
     }
 

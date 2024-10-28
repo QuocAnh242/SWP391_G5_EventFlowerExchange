@@ -40,6 +40,7 @@ public class OrderService implements IOrderService {
     IDeliveryService iDeliveryService;
     IUserRepository userRepository;
     UserService userService;
+    INotificationsRepository iNotificationsRepository;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
@@ -73,8 +74,17 @@ public class OrderService implements IOrderService {
                 break;
         }
         order.setUser(userService.findById(request.getUser().getUserID()));
+        // Save the order
+        Order savedOrder = iOrderRepository.save(order);
+
+        // Create and save the notification
+        Notifications notification = new Notifications();
+        notification.setContent("Bạn đã đặt hàng thành công: " + savedOrder.getOrderID());
+        notification.setNotificationType("Order Creation");
+        notification.setUser(savedOrder.getUser());
+        iNotificationsRepository.save(notification);
         // Step 5: Save and return the order
-        return iOrderRepository.save(order);
+        return savedOrder;
     }
 
     @Override

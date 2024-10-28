@@ -9,7 +9,7 @@ const CreatePostComponent = () => {
     title: '',
     description: '',
     price: '',
-    expirationDate: '', // New field for expiration date
+    expiryDate: '', // New field for expiration date
     user: {
       userID: user ? user.userID : '',
     },
@@ -35,22 +35,33 @@ const CreatePostComponent = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Create the post
-      const response = await axios.post('http://localhost:8080/identity/posts/', post);
+      // Set expiryDate to midnight of the selected day
+      const date = new Date(post.expiryDate);
+      date.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, milliseconds to zero
+  
+      const expiryDateMidnight = date.toISOString(); // Convert to ISO format with 0 time
+  
+      const formattedPost = {
+        ...post,
+        expiryDate: expiryDateMidnight, // Set the expiryDate in the desired format
+      };
+  
+      // Send the formatted post data
+      const response = await axios.post('http://localhost:8080/identity/posts/', formattedPost);
       const createdPostID = response.data.postID;
       setPostID(createdPostID);
-
+  
       // Upload image if selected
       if (selectedFile) {
         const formData = new FormData();
         formData.append('image', selectedFile);
-
+  
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
         setSuccessMessage('Đã tạo bài đăng và upload ảnh thành công!');
       } else {
         setSuccessMessage('Đã tạo bài đăng thành công!');
       }
-
+  
       setError('');
     } catch (error) {
       console.error('Error creating post or uploading image:', error);
@@ -100,8 +111,8 @@ const CreatePostComponent = () => {
           Ngày hết hạn:
           <input
             type="date"
-            name="expirationDate"
-            value={post.expirationDate}
+            name="expiryDate"
+            value={post.expiryDate}
             onChange={handleChange}
             required
           />

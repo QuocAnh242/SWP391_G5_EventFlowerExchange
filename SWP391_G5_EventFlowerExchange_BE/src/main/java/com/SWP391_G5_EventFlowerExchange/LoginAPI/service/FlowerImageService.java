@@ -35,7 +35,7 @@ public class FlowerImageService {
 
         // Tìm FlowerBatch theo ID
         FlowerBatch flowerBatch = flowerBatchRepository.findById(flowerID)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lô hàng với ID " + flowerID));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy ảnh với ID " + flowerID));
 
         for (MultipartFile file : files) {
             // Kiểm tra loại tệp có phải là hình ảnh không
