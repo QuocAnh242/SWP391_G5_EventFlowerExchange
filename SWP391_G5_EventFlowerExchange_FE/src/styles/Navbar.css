@@ -199,6 +199,84 @@ body {
   color: #666;
   margin-top: 5px;
 }
+.notification-icon-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Hiệu ứng cho toàn bộ bảng thông báo */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hiệu ứng cho các mục thông báo */
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.notification-panel {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  width: 200px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  animation: fadeIn 0.5s ease forwards; /* Thêm hiệu ứng fade-in khi xuất hiện */
+}
+
+.notification-panel h4 {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Danh sách các mục thông báo */
+.notification-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+
+/* Các mục thông báo xuất hiện với hiệu ứng */
+.notification-panel ul li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  opacity: 0;
+  animation: slideIn 0.3s ease forwards;
+}
+
+/* Tạo hiệu ứng xuất hiện tuần tự cho mỗi mục */
+.notification-panel ul li:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.notification-panel ul li:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+.notification-panel ul li:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+
 
 
 @media only screen and (max-width: 480px) {

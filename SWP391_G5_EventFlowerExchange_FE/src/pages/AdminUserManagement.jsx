@@ -122,16 +122,16 @@ const AdminUserManagement = () => {
   
 
   // Handle delete order
-  const handleDeleteOrder = async (orderID) => {
-    try {
-      await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
-      fetchOrders();
-      setPopupMessage("Đơn hàng đã xóa thành công");
-      setShowPopup(true);
-    } catch (error) {
-      console.error('Error deleting order:', error);
-    }
-  };
+  // const handleDeleteOrder = async (orderID) => {
+  //   try {
+  //     await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
+  //     fetchOrders();
+  //     setPopupMessage("Đơn hàng đã xóa thành công");
+  //     setShowPopup(true);
+  //   } catch (error) {
+  //     console.error('Error deleting order:', error);
+  //   }
+  // };
 
   const filteredUsers = users.filter(
     (user) =>
@@ -293,9 +293,9 @@ const AdminUserManagement = () => {
                       <td>{new Date(order.date).toLocaleDateString()}</td>
                       <td>{order.totalPrice.toLocaleString()}</td>
                       <td>{order.status}</td>
-                      <td>
+                      {/* <td>
                         <button className='button-delete' onClick={() => handleDeleteOrder(order.orderID)}>Xóa</button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
