@@ -39,7 +39,7 @@ const SuccessPage = () => {
   //     // Handle online payment success
   //     updateOrderStatus();
   //   } else {
-  //     // navigate('/');
+  //     navigate('/payment-failed');
   //   }
   // }, [isCod, vnp_TxnRef, vnp_ResponseCode, vnp_TransactionStatus]);
 

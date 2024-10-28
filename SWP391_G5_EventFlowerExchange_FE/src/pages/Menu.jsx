@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import a2 from '../assets/about-img/a5.jpg'; // Hình ảnh mẫu
 import b1 from '../assets/banner-post.png';
+import dayjs from 'dayjs'; // if using dayjs to manage various formats
 
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
@@ -273,12 +274,15 @@ function Menu() {
               <p className="discount-price">Giá dự kiến: {flower.price.toLocaleString()} VNĐ</p>
               <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
               <p className="feature-content">{flower.description}</p>
+              <p className="e-date">
+                Ngày sự kiện kết thúc : {dayjs(flower.expiryDate).isValid() ? dayjs(flower.expiryDate).format('DD/MM/YYYY') : 'Không xác định'}
+              </p>
+
               <button className="feature-detail-button">Xem chi tiết</button>
             </div>
-
           ))}
-
         </div>
+
 
 
         {/* Phân trang */}

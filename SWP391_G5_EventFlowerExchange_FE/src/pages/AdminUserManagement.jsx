@@ -80,6 +80,8 @@ const AdminUserManagement = () => {
     try {
       const availableStatus = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
       await axios.put(`http://localhost:8080/identity/users/${userID}/status?status=${availableStatus}`);
+      // setPopupMessage("Khóa thành công");
+      // setShowPopup(true);
       fetchUsers();
     } catch (error) {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
@@ -335,19 +337,20 @@ const AdminUserManagement = () => {
 
       {showPopup && (
         <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-icon">✅</div>
-            <h2>Thông báo</h2>
-            <p className="popup-message">{popupMessage}</p>
-            <button
-              className="close-button-popup"
-              onClick={() => {
-                setShowPopup(false);
-              }}>
-              Đóng
-            </button>
-          </div>
-        </div>
+  <div className="popup-container">
+    <div className="popup-icon">✅</div>
+    <h2>Thông báo</h2>
+    <p className="popup-message">{popupMessage}</p>
+    <button
+      className="close-button-popup"
+      onClick={() => {
+        setShowPopup(false);
+      }}>
+      Đóng
+    </button>
+  </div>
+</div>
+
       )}
     </div>
   );

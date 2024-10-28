@@ -170,7 +170,7 @@ function FlowerBatchDetail() {
             <button onClick={goToNextBatch} disabled={currentBatchIndex >= (post.flowerBatches?.length || 0) - 1}>Sau</button>
           </div>
 
-          <div className="button-container-post-detail">
+          <div className="button-container-post-detail" >
             <button className="add-cart-button-detail" onClick={() => handleAddToCart(currentBatch)}>Thêm vào giỏ hàng</button>
             <button className="buy-all-event-flowers-button" onClick={handleAddAllEventFlowersToCart}>
               Thêm tất cả các hoa trong sự kiện
@@ -199,7 +199,7 @@ function FlowerBatchDetail() {
               className="close-button-popup"
               onClick={() => {
                 setShowPopup(false); // Close the popup
-                window.location.reload(); // Reload the page
+                // window.location.reload();
               }}>
               Đóng
             </button>

@@ -22,57 +22,63 @@ const Checkout = () => {
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
-
+  
     const orderDetails = cartItems.map(item => ({
       flowerID: item.flowerID,
       quantity: item.quantity,
       price: item.price,
     }));
+    
+    const orderDate = new Date();
+    const vnTimeOffset = 7 * 60;
+    const vnDate = new Date(orderDate.getTime() + vnTimeOffset * 60 * 1000);
 
+    const paymentMethodName = paymentMethod === 'vnpay' ? 'VNPay' : paymentMethod === 'momo' ? 'MoMo' : 'COD';
+  
     const order = {
-      orderDate: new Date().toISOString(),
+      orderDate: vnDate.toISOString(),
       totalPrice: totalPrice,
       shippingAddress: user?.address || 'Địa chỉ mặc định',
       user: { userID: user?.userID },
       delivery: {
         deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(),
         rating: 4,
-        availableStatus: 'available',
+        availableStatus: 'Đơn hàng đã nhận, người bán hàng sẽ giao cho bạn trong thời gian sớm nhất',
       },
       payment: {
-        paymentID: paymentMethod === 'vnpay' ? 1 : paymentMethod === 'momo' ? 2 : 3, // 1: VNPay, 2: MoMo, 3: COD
+        paymentID: paymentMethod === 'vnpay' ? 1 : paymentMethod === 'momo' ? 2 : 3,
+        paymentMethodName: paymentMethodName,  // Add this line
       },
       orderDetails: orderDetails,
     };
-
-    console.log(order);
-
+  
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
-      console.log(response.data);
-
+      const createdOrder = response.data; // Assuming the response contains the created order details, including orderID
+      console.log(createdOrder);
       if (response.status === 200 || response.status === 201) {
-        const { message } = response.data;
-
+        // Add the orderID to the local order object
+        if (createdOrder.orderID) {
+          const orderWithID = { ...order, orderID: createdOrder.orderID };
+          localStorage.setItem('order', JSON.stringify(orderWithID));
+          console.log(orderWithID);
+        }
+  
         if (paymentMethod === 'vnpay') {
-          const vnpUrl = message.split('VNPay URL: ')[1];
+          const vnpUrl = createdOrder.message.split('Payment URL: ')[1];
           window.location.href = vnpUrl;
         } else if (paymentMethod === 'momo') {
-          const momoUrl = message.split('MoMo URL: ')[2];
+          const momoUrl = createdOrder.message.split('Payment URL: ')[2];
           window.location.href = momoUrl;
         } else {
           alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
-
-          // Clear cart items in local storage
+  
           localStorage.removeItem('cartItems');
-
-          // Update cart items if setCartItems is defined
           if (typeof setCartItems === 'function') {
             setCartItems([]);
           }
-
-          // Navigate to a success page or order history
-          navigate('/success-page', { state: { order } });
+  
+          navigate('/success-page');
         }
       }
     } catch (error) {
@@ -80,6 +86,7 @@ const Checkout = () => {
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
     }
   };
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {

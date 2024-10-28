@@ -103,7 +103,7 @@ const Login = () => {
         if (error.response && error.response.data && error.response.data.isBlocked) {
             setError("Tài khoản đã bị khóa");
         } else {
-            setError("Tài khoản hoặc mật khẩu sai");
+            setError("Tài khoản đã bị khóa");
         }
         console.error("Login error:", error.response ? error.response.data : error.message);
     }

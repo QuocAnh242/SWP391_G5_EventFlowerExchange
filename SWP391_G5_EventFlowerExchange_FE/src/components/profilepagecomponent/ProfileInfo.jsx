@@ -69,7 +69,7 @@ const ProfileInfo = () => {
           />
         </label>
         
-        <label>
+        {/* <label>
           vai trò:
           <input className='roles'
             type="text"
@@ -77,7 +77,7 @@ const ProfileInfo = () => {
             value={user.roles}
             readOnly
           />
-        </label>
+        </label> */}
         
       
     </div>

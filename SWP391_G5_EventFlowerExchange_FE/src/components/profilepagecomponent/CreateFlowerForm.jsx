@@ -10,11 +10,11 @@ const CreateFlowerForm = ({ postID }) => {
       status: 'Còn hàng',
       description: '',
       price: '',
-      imageUrl: '',
-      saleType: 'batch', // Thêm state để lưu hình thức bán
-      eventName: '', // Thêm state để lưu tên sự kiện
+      images: [], // Chuyển từ imageUrl sang images
+      saleType: 'batch',
+      eventName: '',
       eventFlowerPosting: {
-        postID: postID, // Gán postID từ bài đăng đã tạo
+        postID: postID,
       },
       category: {
         categoryID: '',
@@ -45,7 +45,6 @@ const CreateFlowerForm = ({ postID }) => {
     const newFlowers = [...flowers];
 
     if (name === 'categoryID') {
-      // Cập nhật categoryID
       newFlowers[index] = {
         ...newFlowers[index],
         category: {
@@ -54,22 +53,26 @@ const CreateFlowerForm = ({ postID }) => {
         },
       };
     } else if (name === 'eventName') {
-      // Cập nhật eventName nếu tồn tại
       newFlowers[index] = { 
         ...newFlowers[index], 
         eventName: value 
       };
     } else {
-      // Cập nhật các trường khác
       newFlowers[index] = { 
         ...newFlowers[index], 
         [name]: value 
       };
     }
-
     setFlowers(newFlowers);
-};
+  };
 
+  // Xử lý chọn nhiều ảnh
+  const handleFileChange = (index, e) => {
+    const files = Array.from(e.target.files);
+    const newFlowers = [...flowers];
+    newFlowers[index].images = files; // Lưu danh sách các file ảnh vào state
+    setFlowers(newFlowers);
+  };
 
   // Xử lý thêm loại hoa mới
   const addFlower = () => {
@@ -81,15 +84,14 @@ const CreateFlowerForm = ({ postID }) => {
         status: 'Còn hàng',
         description: '',
         price: '',
-        imageUrl: '',
-        saleType: 'batch', // Mặc định là "batch"
+        images: [],
+        saleType: 'batch',
         eventName: '',
         eventFlowerPosting: {
           postID: postID,
         },
         category: {
           categoryID: '',
-          
         },
       },
     ]);
@@ -104,9 +106,31 @@ const CreateFlowerForm = ({ postID }) => {
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+  
+    flowers.forEach((flower, index) => {
+      formData.append(`flowers[${index}].flowerName`, flower.flowerName);
+      formData.append(`flowers[${index}].quantity`, flower.quantity);
+      formData.append(`flowers[${index}].status`, flower.status);
+      formData.append(`flowers[${index}].description`, flower.description);
+      formData.append(`flowers[${index}].price`, flower.price);
+      formData.append(`flowers[${index}].saleType`, flower.saleType);
+      formData.append(`flowers[${index}].eventName`, flower.eventName || '');
+      formData.append(`flowers[${index}].eventFlowerPosting.postID`, flower.eventFlowerPosting.postID);
+      formData.append(`flowers[${index}].category.categoryID`, flower.category.categoryID);
+  
+      // Add images for each flower
+      flower.images.forEach((imageFile) => {
+        formData.append(`files`, imageFile);
+      });
+    });
+  
     try {
-      // Gửi request POST để tạo nhiều loại hoa
-      await axios.post('http://localhost:8080/identity/flower/', flowers);
+      const response = await axios.post('http://localhost:8080/identity/flower/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       setSuccessMessage('Đã thêm loại hoa thành công!');
       setError('');
     } catch (error) {
@@ -115,6 +139,7 @@ const CreateFlowerForm = ({ postID }) => {
       setSuccessMessage('');
     }
   };
+  
 
   return (
     <div className="create-flower-form">
@@ -166,12 +191,11 @@ const CreateFlowerForm = ({ postID }) => {
             </label>
 
             <label>
-              URL hình ảnh:
+              Hình ảnh:
               <input
-                type="text"
-                name="imageUrl"
-                value={flower.imageUrl}
-                onChange={(e) => handleFlowerChange(index, e)}
+                type="file"
+                multiple
+                onChange={(e) => handleFileChange(index, e)}
               />
             </label>
 
@@ -192,7 +216,6 @@ const CreateFlowerForm = ({ postID }) => {
               </select>
             </label>
 
-            {/* Thêm trường chọn hình thức bán */}
             <label>
               Bán theo:
               <select
@@ -206,7 +229,6 @@ const CreateFlowerForm = ({ postID }) => {
               </select>
             </label>
 
-            {/* Hiển thị phần nhập tên sự kiện nếu chọn theo sự kiện */}
             {flower.saleType === 'event' && (
               <label>
                 Nhập tên sự kiện:
