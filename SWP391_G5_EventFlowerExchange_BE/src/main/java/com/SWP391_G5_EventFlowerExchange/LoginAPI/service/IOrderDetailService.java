@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.OrderDetailResponse;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
@@ -14,5 +15,5 @@ public interface IOrderDetailService {
     OrderDetail updateOrderDetail(OrderDetailKey id, OrderDetail orderDetail);
     void deleteOrderDetail(OrderDetailKey id);
     List<OrderDetailResponse> getOrderDetailsByOrderID(int orderID);
-    User getSellerByOrderID(int orderID);
+    List<OrderDetailResponse> getOrdersBySellerID(int sellerID);
 }

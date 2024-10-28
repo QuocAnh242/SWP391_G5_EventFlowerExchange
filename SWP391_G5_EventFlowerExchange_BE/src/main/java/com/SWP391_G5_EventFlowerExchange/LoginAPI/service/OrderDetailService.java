@@ -1,15 +1,18 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.FlowerBatchWithQuantity;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.OrderDetailResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +20,8 @@ import java.util.List;
 public class OrderDetailService implements IOrderDetailService {
 
     IOrderDetailRepository orderDetailRepository;
+    IEventFlowerPostingRepository eventFlowerPostingRepository;
+
 
     @Override
     public OrderDetail createOrderDetail(OrderDetail orderDetail) {
@@ -50,42 +55,74 @@ public class OrderDetailService implements IOrderDetailService {
 
     @Override
     public List<OrderDetailResponse> getOrderDetailsByOrderID(int orderID) {
+        // Fetch all order details for the given order ID
         List<OrderDetail> orderDetails = orderDetailRepository.findByOrder_OrderID(orderID);
-        List<OrderDetailResponse> responses = new ArrayList<>();
 
-        for (OrderDetail orderDetail : orderDetails) {
-            Order order = orderDetail.getOrder();
-            Delivery delivery = order.getDelivery(); // Get the delivery associated with the order
-
-            OrderDetailResponse response = new OrderDetailResponse(orderDetail, delivery);
-            responses.add(response);
+        if (orderDetails.isEmpty()) {
+            return Collections.emptyList(); // Handle case where there are no order details
         }
 
-        return responses;
+        // Consolidate flower batches into a list along with their quantities
+        List<FlowerBatchWithQuantity> flowerBatchesWithQuantity = orderDetails.stream()
+                .map(orderDetail -> new FlowerBatchWithQuantity(orderDetail.getFlowerBatch(), orderDetail.getQuantity()))
+                .collect(Collectors.toList());
+
+        // Get delivery and payment from the first order detail
+        Order order = orderDetails.getFirst().getOrder();
+        Delivery delivery = order.getDelivery();
+        Payment payment = order.getPayment();
+
+        // Create a single response with all flower batches and their quantities
+        OrderDetailResponse response = new OrderDetailResponse(
+                order,
+                flowerBatchesWithQuantity, // Pass the consolidated flower batches with quantities
+                delivery,
+                payment
+        );
+
+        return Collections.singletonList(response); // Return as a list containing one consolidated response
     }
 
 
     @Override
-    public User getSellerByOrderID(int orderID) {
-        List<OrderDetail> orderDetails = orderDetailRepository.findByOrder_OrderID(orderID);
-        if (!orderDetails.isEmpty()) {
-            FlowerBatch flowerBatch = orderDetails.getFirst().getFlowerBatch();
-            if (flowerBatch == null) {
-                throw new RuntimeException("No flower batch found for order details");
-            }
+    public List<OrderDetailResponse> getOrdersBySellerID(int sellerID) {
+        // Find all postings made by the seller
+        List<EventFlowerPosting> postings = eventFlowerPostingRepository.findByUser_UserID(sellerID);
 
-            EventFlowerPosting posting = flowerBatch.getEventFlowerPosting();
-            if (posting == null) {
-                throw new RuntimeException("No event flower posting found for flower batch");
-            }
+        // Collect all flower batches from the postings
+        List<FlowerBatch> flowerBatches = postings.stream()
+                .flatMap(posting -> posting.getFlowerBatches().stream())
+                .collect(Collectors.toList());
 
-            User seller = posting.getUser();
-            if (seller == null) {
-                throw new RuntimeException("No seller found for event flower posting");
-            }
+        // Find all order details that reference any of the seller's flower batches
+        List<OrderDetail> orderDetails = orderDetailRepository.findByFlowerBatchIn(flowerBatches);
 
-            return seller; // Returns the seller (User) who created the post
-        }
-        throw new RuntimeException("No order details found for order ID: " + orderID);
+        // Group order details by order ID and create responses
+        return orderDetails.stream()
+                .collect(Collectors.groupingBy(orderDetail -> orderDetail.getOrder().getOrderID()))
+                .values().stream()
+                .map(details -> {
+                    // Consolidate flower batches for this group of order details
+                    List<FlowerBatchWithQuantity> consolidatedFlowerBatchesWithQuantity = details.stream()
+                            .map(orderDetail -> new FlowerBatchWithQuantity(orderDetail.getFlowerBatch(), orderDetail.getQuantity()))
+                            .collect(Collectors.toList());
+
+                    // Extract delivery and payment details from the first order detail in the group
+                    Order order = details.getFirst().getOrder();
+                    Delivery delivery = order.getDelivery();
+                    Payment payment = order.getPayment();
+
+                    return new OrderDetailResponse(
+                            order,
+                            consolidatedFlowerBatchesWithQuantity, // Pass the consolidated flower batches with quantities
+                            delivery,
+                            payment
+                    );
+                })
+                .collect(Collectors.toList());
     }
+
+
+
+
 }

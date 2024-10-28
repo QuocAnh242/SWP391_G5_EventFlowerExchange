@@ -20,4 +20,5 @@ public interface IEventFlowerPostingRepository extends JpaRepository<EventFlower
      List<EventFlowerPosting> findByUser(User user);
      // Sắp xếp theo createdAt giảm dần (từ mới đến cũ)
      List<EventFlowerPosting> findAllByOrderByCreatedAtDesc();
+     List<EventFlowerPosting> findByUser_UserID(int userID);
 }

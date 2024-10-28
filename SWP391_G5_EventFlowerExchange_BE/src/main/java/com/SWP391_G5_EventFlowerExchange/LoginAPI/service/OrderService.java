@@ -73,6 +73,7 @@ public class OrderService implements IOrderService {
                 order.setStatus("Đã Đặt Hàng");
                 break;
         }
+        order.setPayment(request.getPayment());
         order.setUser(userService.findById(request.getUser().getUserID()));
         // Save the order
         Order savedOrder = iOrderRepository.save(order);

@@ -149,11 +149,11 @@ function FlowerBatchDetail() {
             <div key={currentBatch.flowerID}>
               <h2>{currentBatch.flowerName}</h2>
               <p className="flower-description">{currentBatch.description}</p>
-              <p>Giá: <span className="price">{currentBatch.price.toLocaleString()} VNĐ</span></p>
-              <p>Số lượng còn lại: <span className="quantity">{currentBatch.quantity} bó</span></p>
-              <p>Sự kiện: <span className="event-name">{currentBatch.category?.eventName || "Không có sự kiện"}</span></p>
+              <p><strong>Giá:</strong> <span className="price">{currentBatch.price.toLocaleString()} VNĐ</span></p>
+              <p><strong>Số lượng còn lại:</strong> <span className="quantity">{currentBatch.quantity} bó</span></p>
+              <p><strong>Sự kiện:</strong> <span className="event-name">{currentBatch.category?.eventName || "Không có sự kiện"}</span></p>
               <div className="stock-availability">
-                <p>Tình trạng: <span className="in-stock">{currentBatch.status}</span></p>
+                <p><strong>Tình trạng:</strong> <span className="in-stock">{currentBatch.status}</span></p>
               </div>
             </div>
           ) : (
@@ -161,7 +161,7 @@ function FlowerBatchDetail() {
           )}
 
           <div className="star-rating">
-            <p>Đánh giá: <span className="stars">⭐⭐⭐⭐⭐</span></p>
+            <p><strong>Đánh giá: </strong><span className="stars">⭐⭐⭐⭐⭐</span></p>
           </div>
 
           <div className="pagination-controls">
