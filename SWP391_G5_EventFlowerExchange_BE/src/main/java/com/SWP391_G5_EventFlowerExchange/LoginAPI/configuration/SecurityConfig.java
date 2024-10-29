@@ -1,9 +1,10 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.Role;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -19,8 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
 
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Arrays;
@@ -30,9 +29,9 @@ import java.util.Arrays;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final String[] PUBLIC_ENDPOINTS = {
-            "/users/create", "/auth/token", "/auth/introspect", "/posts/","/posts/${id}", "posts/{userID}",
-            "/users/{userID}", "/flower/","/catetory/" , "/flower/${id}"
+    // Define public endpoints
+    private static final String[] PUBLIC_ENDPOINTS = {
+            "/users/create", "/auth/token", "/auth/introspect", "/posts/**", "/flower/**"
     };
 
     @Value("${jwt.signerKey}")
@@ -40,73 +39,51 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
-                .authorizeHttpRequests(request -> request
-                // Public Endpoints
-//                .requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-//                .requestMatchers(HttpMethod.PUT, "/users/{userID}").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/posts/").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/posts/${id}").permitAll()
-//                .requestMatchers(HttpMethod.GET, "/flower/").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/flower/${id}").permitAll()
-//                .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
-//
-//                // Admin Endpoints
-//                .requestMatchers(HttpMethod.GET, "/users").hasRole(Role.ADMIN.name())
-//
-//                .anyRequest()
-//                .authenticated()
-                                .anyRequest().permitAll()
+                .cors(Customizer.withDefaults()) // Enable CORS
+                .authorizeHttpRequests(authorize -> authorize
+                        // Public Endpoints
+//                        .requestMatchers(HttpMethod.POST, "/auth/token").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/posts/**").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/flower/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/users", "/users/create").permitAll()
+//                        .requestMatchers("/blog/").permitAll()
+//                        .requestMatchers("/identity/order-details/").permitAll()
+//                        .requestMatchers("/identity/orders/").permitAll()
+
+                        // Admin Endpoints
+//                        .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN") // Only admins can access this
+                        // All other requests require authentication
+                        .anyRequest().permitAll() //authenticated()
+                )
+                .csrf(AbstractHttpConfigurer::disable)
+                .formLogin(Customizer.withDefaults())// CSRF protection disabled (consider implications)
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                        )
                 );
-
-
-//        http.oauth2ResourceServer(oauth2 -> oauth2
-//                .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-//                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-//                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-//
-//        );
-
-        http.csrf(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
-//    @Bean
-//    public CorsConfigurationSource() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//
-//        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-//        corsConfiguration.setAllowedMethods(Arrays.asList("GET","POST"));
-//        corsConfiguration.addAllowedHeader("*");
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//
-//        return source;
-//    }
 
-//    @Bean
-//    public CorsFilter corsFilter() {
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//
-//        corsConfiguration.addAllowedOrigin("http://localhost:3000");
-//        corsConfiguration.addAllowedMethod("*");
-//        corsConfiguration.addAllowedHeader("*");
-//
-//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-//
-//        return new CorsFilter(urlBasedCorsConfigurationSource);
-//    }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // Update with your frontend URL
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        corsConfiguration.addAllowedHeader("*");
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
 
+        return source;
+    }
 
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-
         grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         converter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return converter;

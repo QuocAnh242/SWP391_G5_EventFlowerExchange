@@ -1,4 +1,4 @@
-#configuration
+# configuration
 server:
   port: 8080
   servlet:
@@ -13,6 +13,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 23148986973-0btj17vsb3gflkboj6h73pbs3ejjnhq6.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - email
+              - profile
+            redirect-uri: "{baseUrl}/auth/google/login"
 jwt:
   signerKey: "i4cybrMyoNxh6mETxxxRx/9tLhs3q2osKSXEL5fQHaFQJGKQfkFsPAYYDpf7L+6v"

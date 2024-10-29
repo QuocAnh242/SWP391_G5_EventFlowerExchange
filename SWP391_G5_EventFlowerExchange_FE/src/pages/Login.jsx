@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from 'react-google-login'; // Import GoogleLogin
 import api from '../config/axios';
 import '../styles/Login.css';
 import Footer from '../components/Footer';
@@ -43,75 +44,104 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     const loginValues = { email, password };
 
     try {
-        const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
+      const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
+      if (response.data && response.data.result) {
+        const { token, isBlocked, status } = response.data.result;
 
-        if (response.data && response.data.result) {
-            const { token, isBlocked, status } = response.data.result;
-
-            // Log the result to confirm the structure
-            console.log("Login Response Result:", response.data.result);
-
-            // Check if account is blocked based on response before decoding the token
-            if (isBlocked || status === 'blocked') {
-                setError("Tài khoản đã bị khóa");
-                return;
-            }
-
-            if (!token) {
-                console.error("Token not found in response");
-                return;
-            }
-
-            localStorage.setItem("token", token);
-            const decodedPayload = decodeToken(token);
-
-            const user = {
-                address: decodedPayload.address,
-                email: decodedPayload.email,
-                exp: decodedPayload.exp,
-                iat: decodedPayload.iat,
-                iss: decodedPayload.iss,
-                phoneNumber: decodedPayload.phoneNumber,
-                roles: decodedPayload.roles,
-                scope: decodedPayload.scope,
-                sub: decodedPayload.sub,
-                userID: decodedPayload.userID,
-                username: decodedPayload.username,
-            };
-
-            localStorage.setItem("user", JSON.stringify(user));
-
-            const { roles } = decodedPayload;
-            if (roles.includes('ADMIN')) {
-                navigate('/admin-user-management');
-            } else if (roles.includes('BUYER')) {
-                navigate('/');  // Navigate to profile page after login
-            } else {
-                setError("Tài khoản hoặc mật khẩu sai");
-            }
-            window.location.reload();
-        } else {
-            setError("Tài khoản hoặc mật khẩu sai");
+        if (isBlocked || status === 'blocked') {
+          setError("Tài khoản đã bị khóa");
+          return;
         }
+
+        if (!token) {
+          console.error("Token not found in response");
+          return;
+        }
+
+        localStorage.setItem("token", token);
+        const decodedPayload = decodeToken(token);
+
+        const user = {
+          address: decodedPayload.address,
+          email: decodedPayload.email,
+          exp: decodedPayload.exp,
+          iat: decodedPayload.iat,
+          iss: decodedPayload.iss,
+          phoneNumber: decodedPayload.phoneNumber,
+          roles: decodedPayload.roles,
+          scope: decodedPayload.scope,
+          sub: decodedPayload.sub,
+          userID: decodedPayload.userID,
+          username: decodedPayload.username,
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        const { roles } = decodedPayload;
+        if (roles.includes('ADMIN')) {
+          navigate('/admin-user-management');
+        } else if (roles.includes('BUYER')) {
+          navigate('/');  // Navigate to profile page after login
+        } else {
+          setError("Tài khoản hoặc mật khẩu sai");
+        }
+        window.location.reload();
+      } else {
+        setError("Tài khoản hoặc mật khẩu sai");
+      }
 
     } catch (error) {
-        // Set a specific error if the account is blocked or return a generic error
-        if (error.response && error.response.data && error.response.data.isBlocked) {
-            setError("Tài khoản đã bị khóa");
-        } else {
-            setError("Tài khoản đã bị khóa");
-        }
-        console.error("Login error:", error.response ? error.response.data : error.message);
+      if (error.response && error.response.data && error.response.data.isBlocked) {
+        setError("Tài khoản đã bị khóa");
+      } else {
+        setError("Tài khoản hoặc mật khẩu sai");
+      }
+      console.error("Login error:", error.response ? error.response.data : error.message);
     }
-};
+  };
 
+  const handleGoogleLogin = async (response) => {
+    const { tokenId } = response;
+    if (!tokenId) {
+      setError("Google login token not found");
+      return;
+    }
 
+    try {
+      const googleResponse = await api.post("http://localhost:8080/auth/google/login", { tokenId });
+      if (googleResponse.data && googleResponse.data.jwtToken) {
+        const { jwtToken } = googleResponse.data;
 
+        localStorage.setItem("token", jwtToken);
+        const decodedPayload = decodeToken(jwtToken);
 
+        if (decodedPayload) {
+          const user = {
+            email: decodedPayload.email,
+            username: decodedPayload.username,
+            userID: decodedPayload.userID,
+            roles: decodedPayload.roles,
+          };
+
+          localStorage.setItem("user", JSON.stringify(user));
+          const { roles } = decodedPayload;
+          if (roles.includes('ADMIN')) {
+            navigate('/admin-user-management');
+          } else if (roles.includes('BUYER')) {
+            navigate('/');
+          }
+        }
+      } else {
+        setError("Google login failed. Please try again.");
+      }
+    } catch (error) {
+      setError("Đăng nhập bằng Google không thành công");
+      console.error("Google Login error:", error);
+    }
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -158,6 +188,15 @@ const Login = () => {
             Đăng Nhập
           </button>
         </form>
+        <div className="google-login">
+        <GoogleLogin
+            clientId="23148986973-0btj17vsb3gflkboj6h73pbs3ejjnhq6.apps.googleusercontent.com"
+            buttonText="Đăng nhập bằng Google"
+            onSuccess={handleGoogleLogin}
+            cookiePolicy={'single_host_origin'}
+          />
+
+      </div>
         <div className="signup-link">
           Bạn chưa có tài khoản? <Link to="/signup">Đăng kí tại đây</Link>
         </div>

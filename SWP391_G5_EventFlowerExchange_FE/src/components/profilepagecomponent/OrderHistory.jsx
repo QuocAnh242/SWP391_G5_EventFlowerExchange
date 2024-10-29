@@ -100,7 +100,7 @@ const OrderHistory = () => {
               {selectedOrderDetails.map((detail, index) => (
                 <div key={index} className="product-detail">
                   <p><strong>Sản phẩm:</strong> {detail.orderDetail?.flowerBatch?.flowerName || "N/A"}</p>
-                  <p><strong>Loại hoa:</strong> {detail.orderDetail?.flowerBatch?.category?.flowerType || "N/A"}</p>
+                  {/* <p><strong>Loại hoa:</strong> {detail.orderDetail?.flowerBatch?.category?.flowerType || "N/A"}</p> */}
                   <p><strong>Số lượng:</strong> {detail.orderDetail?.quantity || "0"}</p>
                   <p><strong>Giá đơn vị:</strong> {detail.orderDetail?.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</p>
                   <p><strong>Tổng tiền :</strong> {(detail.orderDetail?.quantity * detail.orderDetail?.flowerBatch?.price).toLocaleString() || "0"}₫</p>
