@@ -13,25 +13,29 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
+
 @CrossOrigin("http://localhost:3000")
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
+
     AuthenticationService authenticationService;
 
+    // For normal login
     @PostMapping("/token")
-    ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        var result= authenticationService.authenticate(request);
+    public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
+        var result = authenticationService.authenticate(request);
         return ApiResponse.<AuthenticationResponse>builder().code(1000)
                 .result(result)
                 .build();
     }
 
+    // For introspection
     @PostMapping("/introspect")
-    ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
-        var result= authenticationService.introspect(request);
+    public ApiResponse<IntrospectResponse> introspect(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
+        var result = authenticationService.introspect(request);
         return ApiResponse.<IntrospectResponse>builder().code(1000)
                 .result(result)
                 .build();
