@@ -199,7 +199,7 @@ function FlowerBatchDetail() {
               className="close-button-popup"
               onClick={() => {
                 setShowPopup(false); // Close the popup
-                // window.location.reload();
+                window.location.reload();
               }}>
               Đóng
             </button>
