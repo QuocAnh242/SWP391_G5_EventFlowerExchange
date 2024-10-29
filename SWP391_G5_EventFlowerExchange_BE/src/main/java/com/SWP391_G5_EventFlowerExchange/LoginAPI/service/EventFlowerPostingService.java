@@ -45,21 +45,16 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
     @Transactional
     public void updateExpiredStatus() {
         List<EventFlowerPosting> posts = iEventFlowerPostingRepository.findAll();
-        List<Integer> expiredPostIds = new ArrayList<>();
 
         for (EventFlowerPosting post : posts) {
             if (post.getExpiryDate() != null && post.getExpiryDate().isBefore(LocalDateTime.now())) {
-                expiredPostIds.add(post.getPostID());
-            }
-        }
-
-        // Xóa tất cả bài viết đã hết hạn trong một lần gọi
-        for (Integer postId : expiredPostIds) {
-            try {
-                deleteEventFlowerPosting(postId);
-                System.out.println("Deleted expired post ID: " + postId);
-            } catch (Exception e) {
-                System.err.println("Error deleting post ID: " + postId + " - " + e.getMessage());
+                try {
+                    post.setStatus("Hết hạn");
+                    iEventFlowerPostingRepository.save(post);  // Save the updated post
+                    System.out.println("Set post ID " + post.getPostID() + " to hết hạn");
+                } catch (Exception e) {
+                    System.err.println("Error updating status for post ID: " + post.getPostID() + " - " + e.getMessage());
+                }
             }
         }
     }
