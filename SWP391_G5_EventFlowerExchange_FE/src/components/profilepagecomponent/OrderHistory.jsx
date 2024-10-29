@@ -54,7 +54,7 @@ const OrderHistory = () => {
             <h3>Đơn hàng #{order.orderID}</h3>
             <p className="order-total">{order.totalPrice.toLocaleString()} VNĐ</p>
             <p>Ngày đặt: {new Date(order.orderDate).toLocaleDateString('vi-VN')}</p>
-            <p>Phương thức thanh toán: {order.status}</p>
+            <p>Tình trạng đơn hàng : {order.status}</p>
             <button className="view-details" onClick={() => viewOrderDetails(order.orderID)}>Xem chi tiết</button>
           </div>
         </div>
@@ -82,12 +82,12 @@ const OrderHistory = () => {
           <h3 className="order-history-title">Thông Tin Đơn Hàng</h3>
           {selectedOrderDetails && (
             <div className="order-info">
-              <p><strong>Mã đơn hàng:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.orderID}</p>
-              <p><strong>Ngày đặt:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.orderDate ? new Date(selectedOrderDetails[0]?.orderDetail?.order?.orderDate).toLocaleDateString('vi-VN') : "N/A"}</p>
-              <p><strong>Tổng cộng:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</p>
-              <p><strong>Phương thức thanh toán:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.paymentMethodName || "N/A"}</p>
-              <p><strong>Địa chỉ giao hàng:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.shippingAddress || "N/A"}</p>
-              <p><strong>Trạng thái:</strong> {selectedOrderDetails[0]?.orderDetail?.order?.status || "N/A"}</p>
+              <p><strong>Mã đơn hàng:</strong> {selectedOrderDetails[0]?.order?.orderID}</p>
+              <p><strong>Ngày đặt:</strong> {selectedOrderDetails[0]?.order?.orderDate ? new Date(selectedOrderDetails[0]?.order?.orderDate).toLocaleDateString('vi-VN') : "N/A"}</p>
+              <p><strong>Tổng cộng:</strong> {selectedOrderDetails[0]?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</p>
+              <p><strong>Phương thức thanh toán:</strong> {selectedOrderDetails[0]?.payment?.method || "N/A"}</p>
+              <p><strong>Địa chỉ giao hàng:</strong> {selectedOrderDetails[0]?.order?.shippingAddress || "N/A"}</p>
+              <p><strong>Trạng thái:</strong> {selectedOrderDetails[0]?.order?.status || "N/A"}</p>
             </div>
           )}
         </div>
@@ -96,19 +96,20 @@ const OrderHistory = () => {
         <div className={`tab-content ${activeTab === "productDetails" ? "active" : ""}`}>
           <h3 className='order-history-title'>Chi Tiết Sản Phẩm</h3>
           {selectedOrderDetails && (
-            <div className="order-details">
-              {selectedOrderDetails.map((detail, index) => (
-                <div key={index} className="product-detail">
-                  <p><strong>Sản phẩm:</strong> {detail.orderDetail?.flowerBatch?.flowerName || "N/A"}</p>
-                  {/* <p><strong>Loại hoa:</strong> {detail.orderDetail?.flowerBatch?.category?.flowerType || "N/A"}</p> */}
-                  <p><strong>Số lượng:</strong> {detail.orderDetail?.quantity || "0"}</p>
-                  <p><strong>Giá đơn vị:</strong> {detail.orderDetail?.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</p>
-                  <p><strong>Tổng tiền :</strong> {(detail.orderDetail?.quantity * detail.orderDetail?.flowerBatch?.price).toLocaleString() || "0"}₫</p>
-                  {/* <p><strong>Trạng thái:</strong> {detail.orderDetail?.flowerBatch?.status || "N/A"}</p> */}
-                </div>
-              ))}
-            </div>
-          )}
+  <div className="order-details">
+    {selectedOrderDetails.map((detail, index) => (
+      <div key={index} className="product-detail">
+        <p><strong>Sản phẩm:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.flowerName || "N/A"}</p>
+        <p><strong>Loại hoa:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.category?.flowerType || "N/A"}</p>
+        <p><strong>Số lượng:</strong> {detail.flowerBatchesWithQuantity[0]?.orderQuantity || "0"}</p>
+        <p><strong>Giá đơn vị:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</p>
+        <p><strong>Tổng tiền :</strong> {((detail.flowerBatchesWithQuantity[0]?.orderQuantity || 0) * (detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</p>
+        <p><strong>Trạng thái:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.status || "N/A"}</p>
+      </div>
+    ))}
+  </div>
+)}
+
         </div>
 
         {/* Tab Thông Tin Giao Hàng */}
