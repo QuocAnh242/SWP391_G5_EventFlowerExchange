@@ -101,10 +101,10 @@ public class OrderDetailController {
     }
 
     // Get Seller by Order ID
-    @GetMapping("/seller-by-order/{orderID}")
-    public ResponseEntity<User> getSellerByOrderID(@PathVariable int orderID) {
-        User seller = orderDetailService.getSellerByOrderID(orderID);
-        return ResponseEntity.ok(seller);
+    @GetMapping("/orders-by-seller/{sellerID}")
+    public ResponseEntity<List<OrderDetailResponse>> getOrdersBySellerID(@PathVariable int sellerID) {
+        List<OrderDetailResponse> orders = orderDetailService.getOrdersBySellerID(sellerID);
+        return ResponseEntity.ok(orders);
     }
 }
 
