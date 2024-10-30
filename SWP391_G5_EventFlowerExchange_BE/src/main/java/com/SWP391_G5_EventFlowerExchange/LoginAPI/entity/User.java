@@ -53,4 +53,5 @@ public class User {
     public void generateVerificationToken() {
         this.verificationToken = UUID.randomUUID().toString(); // Tạo mã token ngẫu nhiên
     }
+
 }

@@ -10,6 +10,8 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.INotificationsRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -175,6 +178,10 @@ public class UserService implements IUserService {
 
         return userRepository.save(user); // Lưu và trả về đối tượng User đã cập nhật
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////
     private String generateRandomPassword() {
         SecureRandom random = new SecureRandom();
         int password = random.nextInt(999999); // Tạo số ngẫu nhiên từ 0 đến 999999
@@ -195,11 +202,11 @@ public class UserService implements IUserService {
         userRepository.save(user);
 
         // Gửi email với mật khẩu mới cho người dùng
-        sendEmail(email, newPassword);
+        sendEmailResetPassword(email, newPassword);
         return "Mật khẩu đã được gửi đến email của bạn!";
 
     }
-    private void sendEmail(String to, String newPassword) {
+    private void sendEmailResetPassword(String to, String newPassword) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setSubject("Mật khẩu mới của bạn");
@@ -212,15 +219,30 @@ public class UserService implements IUserService {
     // Hàm gửi email xác nhận
     private void sendVerificationEmail(String to, String verificationToken) {
         String verificationLink = "http://localhost:8080/identity/users/verify-email?token=" + verificationToken;
+        //gửi email với định dạng (HTML, hình ảnh, tệp đính kèm)
+        MimeMessage message = mailSender.createMimeMessage();
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject("Xác nhận email của bạn");
-        message.setText("Vui lòng nhấn vào liên kết sau để xác nhận email của bạn: " + verificationLink);
-        message.setFrom("posteventblooms@gmail.com");
+        try {
+            MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart, false nếu gửi mỗi text
+            helper.setTo(to);
+            helper.setSubject("Xác nhận email của bạn");
 
-        mailSender.send(message);
-        System.out.println("Email xác nhận đã được gửi tới " + to);
+            // Nội dung email dưới dạng HTML
+            String htmlContent = "<h2>Xin chào!</h2>" +
+                    "<p>Vui lòng nhấn vào liên kết dưới đây để xác nhận email của bạn:</p>" +
+                    "<a href=\"" + verificationLink + "\" style=\"font-size: 16px; color: #007BFF; text-decoration: none;\">" +
+                    "Xác nhận email của tôi</a>" +
+                    "<p>Cảm ơn bạn!</p>";
+
+            helper.setText(htmlContent, true); // true = send as HTML
+            message.setFrom("posteventblooms@gmail.com");
+
+            mailSender.send(message);
+            System.out.println("Email xác nhận đã được gửi tới " + to);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("Gửi email thất bại: " + e.getMessage());
+        }
     }
     //verifyemail
     public String verifyEmail(String token) {
@@ -237,6 +259,14 @@ public class UserService implements IUserService {
         userRepository.save(user);
 
         return "Email của bạn đã được xác nhận thành công!";
+    }
+    public User setStatusemail() {
+        User user = userRepository.findById(1)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setEmailVerified(true); // Cập nhật trạng thái admin
+
+        return userRepository.save(user);
     }
 
 }

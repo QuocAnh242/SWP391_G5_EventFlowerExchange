@@ -148,9 +148,10 @@ public class OrderService implements IOrderService {
     }
     // This method will create the URL for MoMo payment
     public String createMoMoUrl(Order order) throws Exception {
-        double totalAmount = order.getTotalPrice() * 100;
+        double totalAmount = order.getTotalPrice() * 100; // Convert to VND
         String amount = String.valueOf(Math.round(totalAmount));
 
+        // Create MoMo parameters
         Map<String, String> momoParams = new HashMap<>();
         momoParams.put("partnerCode", MoMoConfig.PARTNER_CODE);
         momoParams.put("accessKey", MoMoConfig.ACCESS_KEY);
@@ -162,6 +163,7 @@ public class OrderService implements IOrderService {
         momoParams.put("notifyUrl", MoMoConfig.NOTIFY_URL);
         momoParams.put("extraData", "");
 
+        // Create raw data string for signature
         String rawData = String.format(
                 "accessKey=%s&amount=%s&extraData=%s&notifyUrl=%s&orderId=%s&orderInfo=%s&partnerCode=%s&returnUrl=%s&requestId=%s",
                 MoMoConfig.ACCESS_KEY, amount, momoParams.get("extraData"), MoMoConfig.NOTIFY_URL,
@@ -169,37 +171,25 @@ public class OrderService implements IOrderService {
                 momoParams.get("requestId")
         );
 
+        // Generate HMAC signature
         String signature = generateHMAC(MoMoConfig.SECRET_KEY, rawData);
         momoParams.put("signature", signature);
 
-        return sendMoMoRequest(momoParams); // Helper method is called here
+        // Build the final MoMo payment URL
+        StringBuilder urlBuilder = new StringBuilder(MoMoConfig.MOMO_URL);
+        urlBuilder.append("?");
+        for (Map.Entry<String, String> entry : momoParams.entrySet()) {
+            urlBuilder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.toString()));
+            urlBuilder.append("=");
+            urlBuilder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.toString()));
+            urlBuilder.append("&");
+        }
+        urlBuilder.deleteCharAt(urlBuilder.length() - 1); // Remove last '&'
+
+        return urlBuilder.toString();
     }
 
-    // Private helper method to send the request to MoMo
-    private String sendMoMoRequest(Map<String, String> params) throws Exception {
-        String jsonPayload = new ObjectMapper().writeValueAsString(params);
 
-        HttpURLConnection connection = (HttpURLConnection) new URL(MoMoConfig.MOMO_URL).openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
-
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = jsonPayload.getBytes(StandardCharsets.UTF_8);
-            os.write(input, 0, input.length);
-        }
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
-            StringBuilder response = new StringBuilder();
-            String responseLine;
-            while ((responseLine = br.readLine()) != null) {
-                response.append(responseLine.trim());
-            }
-
-            Map<String, Object> responseMap = new ObjectMapper().readValue(response.toString(), Map.class);
-            return responseMap.get("payUrl").toString(); // Parse and return the payment URL
-        }
-    }
 
 
     // Create VNPay payment URL
