@@ -104,7 +104,7 @@ const OrderHistory = () => {
         <p><strong>Số lượng:</strong> {detail.flowerBatchesWithQuantity[0]?.orderQuantity || "0"}</p>
         <p><strong>Giá đơn vị:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</p>
         <p><strong>Tổng tiền :</strong> {((detail.flowerBatchesWithQuantity[0]?.orderQuantity || 0) * (detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</p>
-        <p><strong>Trạng thái:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.status || "N/A"}</p>
+        {/* <p><strong>Trạng thái:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.status || "N/A"}</p> */}
       </div>
     ))}
   </div>

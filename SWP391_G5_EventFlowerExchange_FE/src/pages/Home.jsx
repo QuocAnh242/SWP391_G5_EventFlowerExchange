@@ -12,7 +12,6 @@ import BannerImage3 from '../assets/banner/banner3.jpg';
 
 // Import hình ảnh cho các phần khác
 import FeaturedImage from '../assets/about-img/a1.jpg';
-import BlogImage1 from '../assets/about-img/a2.jpg';
 
 import '../styles/Home.css';
 import "slick-carousel/slick/slick.css";

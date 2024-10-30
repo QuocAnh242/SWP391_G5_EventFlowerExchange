@@ -175,7 +175,7 @@ const SignUp = () => {
               {successMessage && <p className="success-message">{successMessage}</p>}
 
               <button type="submit" className="signup-btn">
-                Sign Up
+                Đăng ký
               </button>
             </form>
             <div className="already-account">

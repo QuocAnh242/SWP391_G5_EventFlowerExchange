@@ -57,7 +57,7 @@ const CreatePostComponent = () => {
         formData.append('image', selectedFile);
   
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
-        setSuccessMessage('Đã tạo bài đăng và upload ảnh thành công!');
+        setSuccessMessage('Đã tạo bài đăng thành công');
       } else {
         setSuccessMessage('Đã tạo bài đăng thành công!');
       }
