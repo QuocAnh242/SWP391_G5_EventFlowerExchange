@@ -175,7 +175,7 @@ public class UserService implements IUserService {
     public String resetPassword(String email) {
         // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
         Optional<User> userOptional=userRepository.findByEmail(email);
-        if(userOptional == null){
+        if(userOptional.isEmpty()){
             return "Tài khoản không tồn tại!";
         }
         User user = userOptional.get();

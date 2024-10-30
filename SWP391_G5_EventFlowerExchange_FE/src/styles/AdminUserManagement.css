@@ -66,22 +66,25 @@
 /* Dashboard tổng quan */
 .dashboard {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap; /* Allow wrapping to create multiple rows */
+  justify-content: center; /* Center-align the items */
+  gap: 20px;
   margin-top: 25px;
   margin-left: 15%;
-  gap: 20px;
-  height:fit-content;
+  height: fit-content;
 }
 
 .dashboard .stat {
   background-color: #fff;
   padding: 20px;
-  flex: 1;
+  flex: 1 1 calc(50% - 20px); /* Each item takes up 50% of the container width, minus the gap */
   text-align: center;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 600px;
 }
 
 .dashboard .stat:hover {
@@ -414,3 +417,77 @@ button {
     width: 100%;
   }
 }
+/* Chart container styling for equal-sized charts */
+.charts-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px 10px;
+}
+
+.chart{
+  margin-left: 250px;
+  
+  
+}
+.chart-colum {
+  flex: 1;
+  min-width: 300px;
+  max-width: 900px;
+  height: 100%;
+  max-height: 490px;
+  /* margin-left: 10px; */
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Apply hover effect to both chart types */
+.chart:hover,
+.chart-colum:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Center-align chart titles */
+.chart h3,
+.chart-colum h3 {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2d3e50;
+  margin-bottom: 15px;
+}
+
+/* Responsive styling for smaller screens */
+@media (max-width: 768px) {
+  .charts-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .chart,
+  .chart-colum {
+    width: 90%; /* Full width on smaller screens */
+    max-width: 100%;
+    margin: 10px auto;
+  }
+}
+
+
+/* Responsive for smaller screens */
+@media (max-width: 768px) {
+  .charts-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .chart {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
