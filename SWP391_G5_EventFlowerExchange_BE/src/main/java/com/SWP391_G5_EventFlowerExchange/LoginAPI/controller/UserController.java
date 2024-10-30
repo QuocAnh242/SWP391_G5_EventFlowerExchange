@@ -97,5 +97,9 @@ public class UserController {
         // Trả về người dùng đã cập nhật
         return ResponseEntity.ok(updatedUser);
     }
+    @PostMapping("/forgot-password")
+    public String forgotPassword(@RequestParam String email) {
+        return userService.resetPassword(email);
+    }
 
 }

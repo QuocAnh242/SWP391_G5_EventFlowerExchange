@@ -15,12 +15,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -32,6 +36,8 @@ public class UserService implements IUserService {
     INotificationsRepository notificationsRepository;
     IEventFlowerPostingRepository iEventFlowerPostingRepository;
     PasswordEncoder passwordEncoder;
+
+    private JavaMailSender mailSender;
 
     // USER METHODS
     @Override
@@ -160,6 +166,40 @@ public class UserService implements IUserService {
         user.setAvailableStatus(status); // Cập nhật trạng thái người dùng
 
         return userRepository.save(user); // Lưu và trả về đối tượng User đã cập nhật
+    }
+    private String generateRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        int password = random.nextInt(999999); // Tạo số ngẫu nhiên từ 0 đến 999999
+        return String.format("%06d", password); // Đảm bảo mật khẩu có 6 chữ số
+    }
+    public String resetPassword(String email) {
+        // Kiểm tra xem email có tồn tại trong cơ sở dữ liệu không
+        Optional<User> userOptional=userRepository.findByEmail(email);
+        if(userOptional == null){
+            return "Tài khoản không tồn tại!";
+        }
+        User user = userOptional.get();
+        // Tạo mật khẩu ngẫu nhiên (6 số)
+        String newPassword=generateRandomPassword();
+        // Mã hóa mật khẩu mới và cập nhật vào cơ sở dữ liệu
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+        userRepository.save(user);
+
+        // Gửi email với mật khẩu mới cho người dùng
+        sendEmail(email, newPassword);
+        return "Mật khẩu đã được gửi đến email của bạn!";
+
+    }
+    private void sendEmail(String to, String newPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Mật khẩu mới của bạn");
+        message.setText("Mật khẩu mới của bạn là: " + newPassword);
+        message.setFrom("posteventblooms@gmail.com");
+
+        mailSender.send(message);
+        System.out.println("Đã gửi email đến " + to);
     }
 
 }
