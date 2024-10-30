@@ -35,6 +35,7 @@ public class ApplicationInitConfig {
                       .roles(roles)
                       .password(passwordEncoder.encode("12345"))
                       .availableStatus("available")
+                      .emailVerified(true)
                       .build();
 
               IUserRepository.save(user);

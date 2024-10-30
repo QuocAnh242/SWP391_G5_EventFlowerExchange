@@ -76,6 +76,7 @@ public class UserController {
     // List Users
     @GetMapping
     ApiResponse<List<User>> getAllUsers() {
+        User user=userService.setStatusemail();
         return ApiResponse.<List<User>>builder()
                 .result(userService.getUsers())
                 .code(1000) // Set success code
