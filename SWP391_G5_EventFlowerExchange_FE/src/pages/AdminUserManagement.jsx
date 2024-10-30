@@ -1,49 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart } from 'react-icons/fa'; // Import các icon từ react-icons
+import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart } from 'react-icons/fa';
+import { Pie, Bar } from 'react-chartjs-2';
+import 'chart.js/auto'; // This is needed for Chart.js
 import '../styles/AdminUserManagement.css';
 import '../styles/popup.css';
 
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [userStats, setUserStats] = useState({ total: 0, active: 0, blocked: 0 });
+  const [totalPosts, setTotalPosts] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
-  const [posts, setPosts] = useState([]);
-  const [totalPosts, setTotalPosts] = useState(0);
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
-  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
-  const [orders, setOrders] = useState([]);
+
+  
 
   useEffect(() => {
     fetchUsers();
     fetchPosts();
     fetchOrders();
+    fetchData();
   }, []);
 
-  // Hiển thị người dùng
+  const fetchData = async () => {
+    await Promise.all([fetchUsers(), fetchPosts(), fetchOrders()]);
+    setLoading(false);
+  };
+
   const fetchUsers = async () => {
     try {
+      //Chart
       const response = await axios.get('http://localhost:8080/identity/users');
       const usersData = response.data.result;
       setUsers(usersData);
+      const active = usersData.filter((user) => user.availableStatus === 'available').length;
+      const blocked = usersData.filter((user) => user.availableStatus === 'blocked').length;
+      //Bảnh thông số
       setTotalUsers(usersData.length);
       setActiveUsers(usersData.filter((user) => user.availableStatus === 'available').length);
-
-      // Đếm số lượng người dùng bị khóa
-      const blockedCount = usersData.filter((user) => user.availableStatus === 'blocked').length;
-      setBlockedUsers(blockedCount);
-      setLoading(false);
+      setUserStats({ total: usersData.length, active, blocked });
     } catch (error) {
       console.error('Error fetching users:', error);
-      setLoading(false);
     }
   };
 
-  // Hiển thị post
   const fetchPosts = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/posts/');
@@ -54,7 +62,6 @@ const AdminUserManagement = () => {
     }
   };
 
-  // Fetch orders
   const fetchOrders = async () => {
     try {
       const response = await axios.get('http://localhost:8080/identity/orders/');
@@ -63,7 +70,6 @@ const AdminUserManagement = () => {
       console.error('Error fetching orders:', error);
     }
   };
-
   // Xóa post
   const handleDeletePost = async (postID) => {
     try {
@@ -148,32 +154,77 @@ const AdminUserManagement = () => {
     );
   }
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard':
-        return (
-          <div>
-            <h2 className='admin-title'>Tổng quan</h2>
+  // Action handlers for user actions, updated based on your requirements
+
+  const renderDashboard = () => {
+    // Pie Chart data for active and blocked users
+    const pieData = {
+      labels: ['Người dùng hoạt động', 'Người dùng bị khóa'],
+      datasets: [
+        {
+          data: [userStats.active, userStats.blocked],
+          backgroundColor: ['#4CAF50', '#FF5733'],
+        },
+      ],
+    };
+
+    // Bar Chart data for users and posts
+    const barData = {
+      labels: ['TTổng số người dùng', 'Tổng số bài viết'],
+      datasets: [
+        {
+          label: 'Statistics',
+          data: [userStats.total, totalPosts],
+          backgroundColor: ['#36A2EB', '#FFCE56'],
+        },
+      ],
+    };
+
+    return (
+      <div>
+       <h2 className='admin-title'>Tổng quan</h2>
             <div className="dashboard">
               <div className="stat">
                 <h3>Tổng số người dùng</h3>
                 <p>{totalUsers}</p>
               </div>
-              <div className="stat">
+              {/* <div className="stat">
                 <h3>Người dùng hoạt động</h3>
                 <p>{activeUsers}</p>
-              </div>
-              <div className="stat">
+              </div> */}
+              {/* <div className="stat">
                 <h3>Người dùng bị khóa</h3>
                 <p>{blockedUsers}</p>
-              </div>
+              </div> */}
               <div className="stat">
                 <h3>Tổng số bài viết</h3>
                 <p>{totalPosts}</p>
               </div>
             </div>
+        {/* <h2 className='admin-title'>Dashboard</h2> */}
+        <div className="charts-container">
+          <div className="chart">
+            <h3>Bảng thông tin người dùng</h3>
+            <Pie data={pieData} />
           </div>
-        );
+          <div className="chart-colum">
+            <h3>Tổng số người dùng và bài viết có trong trang web</h3>
+            <Bar data={barData} />
+          </div>
+        </div>
+        
+      </div>
+   
+
+      
+    );
+  };
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return renderDashboard();
+      // Add other case handlers for user list, posts, orders, as in your original code
       case 'userList':
         return (
           <div>
@@ -305,6 +356,7 @@ const AdminUserManagement = () => {
             )}
           </div>
         );
+
       default:
         return null;
     }
@@ -354,6 +406,7 @@ const AdminUserManagement = () => {
       )}
     </div>
   );
+
 };
 
 export default AdminUserManagement;
