@@ -5,6 +5,8 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserCreationReques
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.UserUpdateRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.UserResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IUserService;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.UserService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -23,6 +26,7 @@ import java.util.List;
 public class UserController {
 
     UserService userService;
+    IUserRepository userRepository;
 
     // USER API
     // Create User
@@ -34,7 +38,10 @@ public class UserController {
                 .message("User created successfully") // Set success message
                 .build();
     }
-
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token) {
+        return userService.verifyEmail(token);
+    }
     // Find User by their ID
     @GetMapping("/{userID}")
     ApiResponse<UserResponse> getUser(@PathVariable("userID") int userID) {

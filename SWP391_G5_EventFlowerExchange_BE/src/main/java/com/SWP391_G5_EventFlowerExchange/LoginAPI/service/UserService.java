@@ -47,27 +47,35 @@ public class UserService implements IUserService {
 
     @Override
     public User createUser(UserCreationRequest request) {
-        User user = new User();
-
-        // Advance Exception Handling For Already Existed Email
-        if(userRepository.existsByEmail(request.getEmail())) {
+        // Kiểm tra email đã tồn tại
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTED);
         }
 
+        User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setAddress(request.getAddress());
         user.setPhoneNumber(request.getPhoneNumber());
 
-        // Encode password
+        // Mã hóa mật khẩu
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Set role for user is BUYER
-        HashSet<String> roles = new HashSet<>();
+        // Thiết lập vai trò mặc định là BUYER
+        Set<String> roles = new HashSet<>();
         roles.add(Role.BUYER.name());
         user.setRoles(roles);
 
-        return userRepository.save(user);
+        // Tạo mã xác nhận
+        user.generateVerificationToken();
+
+        // Lưu đối tượng User vào cơ sở dữ liệu
+        User savedUser = userRepository.save(user);
+
+        // Gửi email xác nhận
+        sendVerificationEmail(user.getEmail(), user.getVerificationToken());
+
+        return savedUser;
     }
 
     @Override
@@ -200,6 +208,35 @@ public class UserService implements IUserService {
 
         mailSender.send(message);
         System.out.println("Đã gửi email đến " + to);
+    }
+    // Hàm gửi email xác nhận
+    private void sendVerificationEmail(String to, String verificationToken) {
+        String verificationLink = "http://localhost:8080/identity/users/verify-email?token=" + verificationToken;
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setSubject("Xác nhận email của bạn");
+        message.setText("Vui lòng nhấn vào liên kết sau để xác nhận email của bạn: " + verificationLink);
+        message.setFrom("posteventblooms@gmail.com");
+
+        mailSender.send(message);
+        System.out.println("Email xác nhận đã được gửi tới " + to);
+    }
+    //verifyemail
+    public String verifyEmail(String token) {
+        Optional<User> userOptional = userRepository.findByVerificationToken(token);
+
+        if (userOptional.isEmpty()) {
+            return "Token không hợp lệ hoặc đã hết hạn!";
+        }
+
+        User user = userOptional.get();
+        user.setVerificationToken(null); // Xóa mã xác nhận sau khi xác thực
+        user.setEmailVerified(true);
+        user.setAvailableStatus("available"); // Đặt trạng thái là 'available'
+        userRepository.save(user);
+
+        return "Email của bạn đã được xác nhận thành công!";
     }
 
 }

@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "User")
@@ -34,7 +35,9 @@ public class User {
 
     String phoneNumber;
 
-    String availableStatus ="available";
+    String availableStatus ="";
+    private boolean emailVerified = false; // Trạng thái xác thực email
+    private String verificationToken; // Mã xác nhận duy nhất
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Column(name = "role")
@@ -46,5 +49,8 @@ public class User {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
+    }
+    public void generateVerificationToken() {
+        this.verificationToken = UUID.randomUUID().toString(); // Tạo mã token ngẫu nhiên
     }
 }
