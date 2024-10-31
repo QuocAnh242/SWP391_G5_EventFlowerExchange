@@ -1,8 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -10,26 +10,31 @@ import java.time.LocalDateTime;
 @Table(name = "Feedback")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Feedback {
 
-    @EmbeddedId
-    private FeedbackKey id;
-
-    @Column(columnDefinition = "TEXT")
-    private String comment;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int feedbackID;
 
     @Column(nullable = false)
-    private int rating;
+    String content;
+
+    @ManyToOne
+    @JoinColumn(name = "userID", nullable = false)
+    User user;
+
+    @ManyToOne
+    @JoinColumn(name = "postID", nullable = false)
+    EventFlowerPosting eventFlowerPosting;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime createdAt;
 
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false, insertable = false, updatable = false)
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "sellerID", nullable = false, insertable = false, updatable = false)
-    private User seller;
-
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
