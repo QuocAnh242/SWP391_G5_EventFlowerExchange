@@ -64,7 +64,6 @@ public class DeliveryController {
 
     @PatchMapping("/status/{deliID}")
     public ResponseEntity<Delivery> updateDeliveryStatus(@PathVariable int deliID, @RequestBody DeliveryUpdateRequest request) {
-
         Delivery updatedDelivery = deliveryService.updateDeliveryStatus(deliID, request.getAvailableStatus());
         return ResponseEntity.ok(updatedDelivery);
     }

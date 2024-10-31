@@ -51,6 +51,7 @@ public class OrderService implements IOrderService {
     JavaMailSender mailSender;
     EmailService emailService;
     FlowerBatchService flowerBatchService;
+    IOrderDetailRepository orderDetailRepository;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
@@ -95,7 +96,22 @@ public class OrderService implements IOrderService {
         order.setUser(userService.findById(request.getUser().getUserID()));
         // Save the order
         Order savedOrder = iOrderRepository.save(order);
+        // Create OrderDetails and associate them with the saved order
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (OrderDetailRequest detailRequest : request.getOrderDetails()) {
+            OrderDetail orderDetail = new OrderDetail();
+            OrderDetailKey key = new OrderDetailKey(savedOrder.getOrderID(), detailRequest.getFlowerID());
+            orderDetail.setId(key);
+            orderDetail.setOrder(savedOrder);
+            orderDetail.setFlowerBatch(flowerBatchService.findById(detailRequest.getFlowerID())); // get FlowerBatch
+            orderDetail.setQuantity(detailRequest.getQuantity());
+            orderDetail.setPrice(detailRequest.getPrice());
 
+            orderDetails.add(orderDetail);
+        }
+
+        // Save all OrderDetails
+        orderDetailRepository.saveAll(orderDetails);
         // Create and save the notification
         Notifications notification = new Notifications();
         notification.setContent("Bạn đã đặt hàng thành công: " + savedOrder.getOrderID());
