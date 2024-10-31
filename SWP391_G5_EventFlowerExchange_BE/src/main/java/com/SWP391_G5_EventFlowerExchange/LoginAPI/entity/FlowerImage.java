@@ -21,7 +21,8 @@ public class FlowerImage {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] imageData;
-    @ManyToOne
-    @JoinColumn(name="flowerBatchId") //  lưu ID của FlowerBatch
+    @JsonIgnore
+    @OneToOne
+    @JoinColumn(name="flowerID") //  lưu ID của FlowerBatch
     private FlowerBatch flowerBatch;
 }

@@ -21,21 +21,24 @@ public class FlowerImageController {
 
     // API upload nhiều hình ảnh cho flower batch
     @PostMapping("/batch/{flowerID}/upload")
-    public ResponseEntity<String> uploadImages(@PathVariable("flowerID") int flowerID,
-                                               @RequestParam("files") List<MultipartFile> files) {
+    public ResponseEntity<?> uploadImage(@PathVariable("flowerID") int flowerID,
+                                              @RequestParam("file") MultipartFile file) {
         try {
-            flowerImageService.uploadImages(flowerID, files);
-            return ResponseEntity.status(HttpStatus.OK).body("Images uploaded successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload images: " + e.getMessage());
+            String uploadImg = flowerImageService.uploadImage(file, flowerID);
+            return ResponseEntity.status(HttpStatus.OK).body(uploadImg);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image: " + e.getMessage());
         }
     }
 
-    // API lấy tất cả hình ảnh theo batchID
-    @GetMapping("/batch/{batchID}/images")
-    public ResponseEntity<List<String>> downloadImagesByBatchID(@PathVariable("batchID") int batchID) throws IOException {
-        List<String> imagesBase64 = flowerImageService.downloadImagesByBatchID(batchID);
-        return ResponseEntity.ok(imagesBase64);
+    // API lấy hình ảnh theo batchID
+    @GetMapping("/batch/{batchID}/image")
+    public ResponseEntity<byte[]> downloadImageByBatchID(@PathVariable("batchID") int batchID) throws IOException {
+        // Gọi phương thức trong service để lấy hình ảnh
+        byte[] imageBytes = flowerImageService.downloadImageByBatchID(batchID);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // Hoặc loại MIME phù hợp khác
+                .body(imageBytes);
     }
 
     // API cập nhật ảnh cho FlowerBatch
