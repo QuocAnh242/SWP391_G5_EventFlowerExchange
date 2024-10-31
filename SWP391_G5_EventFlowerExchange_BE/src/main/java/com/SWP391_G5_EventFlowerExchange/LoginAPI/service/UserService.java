@@ -258,7 +258,7 @@ public class UserService implements IUserService {
         user.setAvailableStatus("available"); // Đặt trạng thái là 'available'
         userRepository.save(user);
 
-        return "Email của bạn đã được xác nhận thành công!";
+        return "Bạn đã xác nhận thành công";
     }
     public User setStatusemail() {
         User user = userRepository.findById(1)

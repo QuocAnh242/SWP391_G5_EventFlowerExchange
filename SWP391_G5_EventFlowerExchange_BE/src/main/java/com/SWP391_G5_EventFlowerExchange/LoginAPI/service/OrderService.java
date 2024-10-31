@@ -7,11 +7,16 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderCreationReque
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -41,6 +46,8 @@ public class OrderService implements IOrderService {
     IUserRepository userRepository;
     UserService userService;
     INotificationsRepository iNotificationsRepository;
+    JavaMailSender mailSender;
+    EmailService emailService;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
@@ -84,6 +91,9 @@ public class OrderService implements IOrderService {
         notification.setNotificationType("Order Creation");
         notification.setUser(savedOrder.getUser());
         iNotificationsRepository.save(notification);
+        // gửi mail về khi order
+        emailService.sendOrderConfirmationEmail(order);
+
         // Step 5: Save and return the order
         return savedOrder;
     }
@@ -313,5 +323,4 @@ public class OrderService implements IOrderService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userID));
         return iOrderRepository.findByUser(user);
     }
-
-}
+    }
