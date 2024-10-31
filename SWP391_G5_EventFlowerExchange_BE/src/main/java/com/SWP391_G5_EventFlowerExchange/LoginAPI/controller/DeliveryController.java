@@ -5,7 +5,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.DeliveryUpdateRequ
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.DeliveryCreationResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Delivery;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.DeliveryService;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IDeliveryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,7 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class DeliveryController {
-    DeliveryService deliveryService;
+    IDeliveryService deliveryService;
 
     // Get All Delivery Company
     @GetMapping("/")

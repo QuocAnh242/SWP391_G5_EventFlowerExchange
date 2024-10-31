@@ -31,7 +31,7 @@ public class ReviewService {
         review.setFlowerBatch(flowerBatch);
         review.setRating(reviewRequest.getRating());
         review.setComment(reviewRequest.getComment());
-
+        review.setDeliveryRating(reviewRequest.getDeliveryRating());
         return reviewRepository.save(review);
     }
 
@@ -43,8 +43,6 @@ public class ReviewService {
         Review review = reviewRepository.findById(reviewID)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
-        review.setQualityRating(reviewRequest. getQualityRating());
-        review.setServiceRating(reviewRequest.getServiceRating());
         review.setDeliveryRating(reviewRequest.getDeliveryRating());
         review.setRating(reviewRequest.getRating());
         review.setComment(reviewRequest.getComment());

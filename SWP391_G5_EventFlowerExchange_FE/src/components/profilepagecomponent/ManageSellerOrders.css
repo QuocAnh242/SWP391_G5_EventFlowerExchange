@@ -205,4 +205,36 @@
     padding: 16px;
     font-size: 0.95rem;
   }
+  /*nút xác nhận đã giao hàng*/
+  .update-status-button {
+    background-color: #FFC0CB; /* Màu nền chính */
+    color: white; /* Màu chữ */
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .update-status-button:hover {
+    background-color: #FFC0CB; /* Màu nền khi di chuột qua */
+    transform: translateY(-2px); /* Hiệu ứng nổi lên nhẹ */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Hiệu ứng bóng khi di chuột qua */
+  }
+  
+  .update-status-button:active {
+    background-color: #FFC0CB; /* Màu nền khi nhấn */
+    transform: translateY(1px); /* Hiệu ứng khi nhấn xuống */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .update-status-button:disabled {
+    background-color: #cccccc; /* Màu nền khi nút bị vô hiệu */
+    color: #666666; /* Màu chữ khi nút bị vô hiệu */
+    cursor: not-allowed; /* Đổi con trỏ khi nút bị vô hiệu */
+    box-shadow: none; /* Không có bóng */
+  }
+  
   

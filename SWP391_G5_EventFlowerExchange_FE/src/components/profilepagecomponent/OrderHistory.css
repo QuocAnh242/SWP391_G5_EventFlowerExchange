@@ -164,6 +164,76 @@
   animation: fadeSlideIn 0.3s ease;
 }
 
+/* Tổng thể bảng */
+.flower-detail-table {
+  border-collapse: collapse;
+  margin-top: 40px;
+  margin-right: 40px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Đầu bảng */
+.flower-detail-table thead {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.flower-detail-table th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+/* Hàng của bảng */
+.flower-detail-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.flower-detail-table tbody tr:nth-of-type(even) {
+  background-color: #f2f2f2;
+}
+
+.flower-detail-table tbody tr:hover {
+  background-color: #e0f7e0;
+}
+
+/* Các ô dữ liệu */
+.flower-detail-table td {
+  padding: 12px 15px;
+  color: #333;
+}
+
+/* Các ô đặc biệt */
+.flower-name {
+  font-weight: bold;
+}
+
+.flower-total-price {
+  font-weight: bold;
+  color: #d32f2f;
+}
+
+.flower-unit-price,
+.flower-quantity,
+.flower-type {
+  color: #555;
+}
+
+/* Đường viền và bo tròn */
+.flower-detail-table th,
+.flower-detail-table td {
+  border-bottom: 1px solid #ddd;
+}
+
+.flower-detail-table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+
+
 @keyframes fadeSlideIn {
   from {
     opacity: 0;

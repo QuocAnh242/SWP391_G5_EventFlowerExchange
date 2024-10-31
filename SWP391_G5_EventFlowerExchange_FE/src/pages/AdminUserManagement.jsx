@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart } from 'react-icons/fa';
+import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart, FaBell } from 'react-icons/fa';
 import { Pie, Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // This is needed for Chart.js
 import '../styles/AdminUserManagement.css';
@@ -20,14 +20,16 @@ const AdminUserManagement = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
   const [blockedUsers, setBlockedUsers] = useState(0);
+  const [notifications, setNotifications] = useState([]);
 
-  
+
 
   useEffect(() => {
     fetchUsers();
     fetchPosts();
     fetchOrders();
     fetchData();
+    fetchNotifications();
   }, []);
 
   const fetchData = async () => {
@@ -70,6 +72,23 @@ const AdminUserManagement = () => {
       console.error('Error fetching orders:', error);
     }
   };
+  // hiện thông request seller
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('http://localhost:8080/identity/noti/');
+      const sellerRequests = response.data.filter(
+        (noti) => noti.notificationType === 'setSeller'
+      );
+      console.log("Fetched notifications:", sellerRequests); // Debug line
+      setNotifications(sellerRequests);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
+
+
+
+
   // Xóa post
   const handleDeletePost = async (postID) => {
     try {
@@ -81,7 +100,7 @@ const AdminUserManagement = () => {
       console.error('Error deleting post:', error);
     }
   };
-
+// Bloc người dùng
   const handleBlockUser = async (userID, isBlocked) => {
     try {
       const availableStatus = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
@@ -93,7 +112,7 @@ const AdminUserManagement = () => {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
     }
   };
-
+// Xóa người dùng
   const handleDeleteUser = async (userID) => {
     try {
       await axios.delete(`http://localhost:8080/identity/users/${userID}`);
@@ -104,6 +123,17 @@ const AdminUserManagement = () => {
       console.error('Error deleting user:', error);
     }
   };
+  
+// Xóa thông báo yêu cầu thành seller
+const handleDeleteNotification = async (notificationID) => {
+  try {
+    await axios.delete(`http://localhost:8080/identity/noti/${notificationID}`);
+    setNotifications(notifications.filter((noti) => noti.notificationID !== notificationID));
+  } catch (error) {
+    console.error('Error deleting notification:', error);
+  }
+};
+
 
   const handleSetSeller = async (userID) => {
     try {
@@ -125,19 +155,7 @@ const AdminUserManagement = () => {
       console.error('Error setting user as Seller:', error);
     }
   };
-  
 
-  // Handle delete order
-  // const handleDeleteOrder = async (orderID) => {
-  //   try {
-  //     await axios.delete(`http://localhost:8080/identity/orders/${orderID}`);
-  //     fetchOrders();
-  //     setPopupMessage("Đơn hàng đã xóa thành công");
-  //     setShowPopup(true);
-  //   } catch (error) {
-  //     console.error('Error deleting order:', error);
-  //   }
-  // };
 
   const filteredUsers = users.filter(
     (user) =>
@@ -182,25 +200,25 @@ const AdminUserManagement = () => {
 
     return (
       <div>
-       <h2 className='admin-title'>Tổng quan</h2>
-            <div className="dashboard">
-              <div className="stat">
-                <h3>Tổng số người dùng</h3>
-                <p>{totalUsers}</p>
-              </div>
-              {/* <div className="stat">
+        <h2 className='admin-title'>Tổng quan</h2>
+        <div className="dashboard">
+          <div className="stat">
+            <h3>Tổng số người dùng</h3>
+            <p>{totalUsers}</p>
+          </div>
+          {/* <div className="stat">
                 <h3>Người dùng hoạt động</h3>
                 <p>{activeUsers}</p>
               </div> */}
-              {/* <div className="stat">
+          {/* <div className="stat">
                 <h3>Người dùng bị khóa</h3>
                 <p>{blockedUsers}</p>
               </div> */}
-              <div className="stat">
-                <h3>Tổng số bài viết</h3>
-                <p>{totalPosts}</p>
-              </div>
-            </div>
+          <div className="stat">
+            <h3>Tổng số bài viết</h3>
+            <p>{totalPosts}</p>
+          </div>
+        </div>
         {/* <h2 className='admin-title'>Dashboard</h2> */}
         <div className="charts-container">
           <div className="chart">
@@ -212,14 +230,9 @@ const AdminUserManagement = () => {
             <Bar data={barData} />
           </div>
         </div>
-        
       </div>
-   
-
-      
     );
   };
-
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -298,7 +311,7 @@ const AdminUserManagement = () => {
                     <th>Tiêu đề</th>
                     <th>Mô tả</th>
                     <th>Giá (VNĐ)</th>
-                    <th>Hành động</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -309,7 +322,7 @@ const AdminUserManagement = () => {
                       <td>{post.description}</td>
                       <td>{post.price.toLocaleString()}</td>
                       <td>
-                        <button className='button-post-delete' onClick={() => handleDeletePost(post.postID)}>Xóa</button>
+                        <button className='button-delete' onClick={() => handleDeletePost(post.postID)}>Xóa</button>
                       </td>
                     </tr>
                   ))}
@@ -341,12 +354,9 @@ const AdminUserManagement = () => {
                     <tr key={order.orderID}>
                       <td>{order.orderID}</td>
                       <td>{order.user.username}</td>
-                      <td>{new Date(order.date).toLocaleDateString()}</td>
+                      <td>{new Date(order.orderDate).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
                       <td>{order.totalPrice.toLocaleString()}</td>
                       <td>{order.status}</td>
-                      {/* <td>
-                        <button className='button-delete' onClick={() => handleDeleteOrder(order.orderID)}>Xóa</button>
-                      </td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -356,6 +366,39 @@ const AdminUserManagement = () => {
             )}
           </div>
         );
+        case 'seller-requests': // Make sure this case matches
+  return (
+    <div>
+      <h2 className='admin-title'>Yêu cầu thành người bán hàng </h2>
+      {notifications.length > 0 ? (
+        <table className="notification-table">
+          <thead>
+            <tr>
+              <th>Tên người dùng</th>
+              <th>Email</th>
+              <th>Ngày nhận đơn</th>
+              <th></th> {/* New column for action buttons */}
+            </tr>
+          </thead>
+          <tbody>
+            {notifications.map((noti) => (
+              <tr key={noti.notificationID}>
+                <td><strong>{noti.user.username}</strong></td>
+                <td>{noti.user.email}</td>
+                <td>{new Date(noti.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                <td>
+                  <button className="button-delete" onClick={() => handleDeleteNotification(noti.notificationID)}>Xóa</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>Không có yêu cầu thành người bán hàng.</p>
+      )}
+    </div>
+  );
+      
 
       default:
         return null;
@@ -379,6 +422,13 @@ const AdminUserManagement = () => {
           <li onClick={() => setActiveTab('order-management')}>
             <FaShoppingCart className="icon" /> Quản lý Đơn hàng
           </li>
+          <li onClick={() => setActiveTab('seller-requests')}>
+            <FaBell className="icon" /> Quản lí yêu cầu thành người bán hàng
+            {/* {notifications.length > 0 && (
+              <span className="seller-requests">{notifications.length}</span>
+            )} */}
+          </li>
+
         </ul>
       </div>
 
@@ -389,21 +439,25 @@ const AdminUserManagement = () => {
 
       {showPopup && (
         <div className="popup-overlay">
-  <div className="popup-container">
-    <div className="popup-icon">✅</div>
-    <h2>Thông báo</h2>
-    <p className="popup-message">{popupMessage}</p>
-    <button
-      className="close-button-popup"
-      onClick={() => {
-        setShowPopup(false);
-      }}>
-      Đóng
-    </button>
-  </div>
-</div>
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false);
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
 
       )}
+
+
+
+
     </div>
   );
 

@@ -23,7 +23,7 @@ public enum ErrorCode {
     FLOWER_OUT_OF_QUANTITY(1011, "Flower Out of Quantity", HttpStatus.BAD_REQUEST),;
     private final int code;
     private final String message;
-    private HttpStatusCode statusCode;
+    private final HttpStatusCode statusCode;
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
         this.code = code;
         this.message = message;

@@ -17,10 +17,8 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-  int reviewID;
-   int qualityRating;
-  int serviceRating;
-  int deliveryRating;
+    int reviewID;
+    int deliveryRating;
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)

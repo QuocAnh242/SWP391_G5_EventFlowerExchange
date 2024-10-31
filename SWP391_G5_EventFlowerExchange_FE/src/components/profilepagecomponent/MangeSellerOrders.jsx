@@ -8,7 +8,7 @@ const ManageSellerOrders = ({ userID }) => {
   const [error, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState('orderDetails'); // State to handle active tab
+  const [activeTab, setActiveTab] = useState('orderDetails');
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -24,28 +24,39 @@ const ManageSellerOrders = ({ userID }) => {
     fetchOrders();
   }, [userID]);
 
-  const handleDeliveryStatusUpdate = async (deliveryID) => {
-    try {
-      await axios.put(`http://localhost:8080/identity/delivery/status/${deliveryID}`, { status: "Đã Giao" });
-      setOrders(orders.map(order =>
-        order.delivery.deliveryID === deliveryID
-          ? { ...order, delivery: { ...order.delivery, availableStatus: "Đã Giao" } }
-          : order
-      ));
-    } catch (err) {
-      console.error("Lỗi khi cập nhật trạng thái đơn hàng:", err);
-    }
-  };
-
   const viewOrderDetails = (order) => {
     setSelectedOrder(order);
     setModalVisible(true);
-    setActiveTab('orderDetails'); // Set default tab to "Order Details" when modal opens
+    setActiveTab('orderDetails');
   };
 
   const closeModal = () => {
     setModalVisible(false);
     setSelectedOrder(null);
+  };
+
+  const updateDeliveryStatus = async () => {
+    if (!selectedOrder) return;
+    const { deliveryID } = selectedOrder.delivery;
+
+    try {
+      const response = await axios.patch(`http://localhost:8080/identity/delivery/status/${deliveryID}`, {
+        availableStatus: "Delivered"
+      });
+
+      // Cập nhật trạng thái của đơn hàng đã chọn
+      setSelectedOrder((prevOrder) => ({
+        ...prevOrder,
+        delivery: {
+          ...prevOrder.delivery,
+          availableStatus: response.data.availableStatus
+        }
+      }));
+
+      console.log('Trạng thái đơn hàng đã cập nhật:', response.data);
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái đơn hàng:', error);
+    }
   };
 
   if (loading) {
@@ -72,13 +83,6 @@ const ManageSellerOrders = ({ userID }) => {
               <p className="order-status-text">Trạng Thái: {orderItem.order.status}</p>
               <p className="buyer-name">Người Mua: {orderItem.order.user.username}</p>
               <button className="details-button" onClick={() => viewOrderDetails(orderItem)}>Xem Chi Tiết</button>
-              <button
-                className="mark-delivered-button"
-                onClick={() => handleDeliveryStatusUpdate(orderItem.delivery.deliveryID)}
-                disabled={orderItem.delivery.availableStatus === "Đã Giao"}
-              >
-                {orderItem.delivery.availableStatus === "Đã Giao" ? "Đã Giao" : "Đánh Dấu Đã Giao"}
-              </button>
             </div>
           </div>
         ))}
@@ -89,8 +93,7 @@ const ManageSellerOrders = ({ userID }) => {
           <div className="modal-overlay" onClick={closeModal}></div>
           <div className="order-modal">
             <span className="close-modal-button" onClick={closeModal}>×</span>
-            
-            {/* Tab Navigation */}
+
             <div className="modal-tabs">
               <button
                 className={`tab-button ${activeTab === 'orderDetails' ? 'active' : ''}`}
@@ -102,11 +105,16 @@ const ManageSellerOrders = ({ userID }) => {
                 className={`tab-button ${activeTab === 'productDetails' ? 'active' : ''}`}
                 onClick={() => setActiveTab('productDetails')}
               >
-                Chi Tiết Sản Phẩm
+                Thông tin sản phẩm
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'deliveryDetails' ? 'active' : ''}`}
+                onClick={() => setActiveTab('deliveryDetails')}
+              >
+                Thông tin vận chuyển
               </button>
             </div>
 
-            {/* Tab Content */}
             {activeTab === 'orderDetails' && (
               <div className="order-details-content">
                 <h3 className="modal-title">Chi Tiết Đơn Hàng #{selectedOrder.order.orderID}</h3>
@@ -115,7 +123,6 @@ const ManageSellerOrders = ({ userID }) => {
                 <p><strong>Người Mua:</strong> {selectedOrder.order.user.username}</p>
                 <p><strong>Email Người Mua:</strong> {selectedOrder.order.user.email}</p>
                 <p><strong>Phương Thức Thanh Toán:</strong> {selectedOrder.payment.method}</p>
-                {/* <p><strong>Trạng Thái Thanh Toán:</strong> {selectedOrder.payment.status}</p> */}
               </div>
             )}
 
@@ -130,6 +137,22 @@ const ManageSellerOrders = ({ userID }) => {
                     <p><strong>Thành tiền:</strong> {(item.orderQuantity * item.flowerBatch.price).toLocaleString()} VND</p>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {activeTab === 'deliveryDetails' && (
+              <div className="delivery-details-content">
+                <p><strong>Mã đơn hàng :#</strong>{selectedOrder.delivery.deliveryID}</p>
+                <p><strong>Trạng Thái Giao Hàng:</strong> {selectedOrder.delivery.availableStatus}</p>
+                <p><strong>Ngày Giao Dự Kiến:</strong> {new Date(selectedOrder.delivery.deliveryDate).toLocaleDateString('vi-VN')}</p>
+
+                <button
+                  className="update-status-button"
+                  onClick={updateDeliveryStatus}
+                  disabled={selectedOrder.delivery.availableStatus === 'Delivered'}
+                >
+                  {selectedOrder.delivery.availableStatus === 'Delivered' ? 'Đã Giao' : 'Cập Nhật Trạng Thái'}
+                </button>
               </div>
             )}
           </div>

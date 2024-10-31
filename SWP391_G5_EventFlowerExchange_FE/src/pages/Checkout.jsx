@@ -7,9 +7,9 @@ import Footer from '../components/Footer';
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => {}, totalPrice: 0 };
+  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => { }, totalPrice: 0 };
   const user = JSON.parse(localStorage.getItem('user'));
-
+  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(true);
 
@@ -17,24 +17,33 @@ const Checkout = () => {
     setPaymentMethod(e.target.value);
   };
 
+  const handleConfirmCheckout = async () => {
+    setConfirmModalVisible(false);
+    await handleCheckout(); // Gọi hàm checkout khi người dùng xác nhận "Có"
+  };
+
+  const handleShowConfirmModal = () => {
+    setConfirmModalVisible(true); // Hiển thị modal khi người dùng nhấn nút
+  };
+
   const handleCheckout = async () => {
     if (!paymentMethod) {
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
-  
+
     const orderDetails = cartItems.map(item => ({
       flowerID: item.flowerID,
       quantity: item.quantity,
       price: item.price,
     }));
-    
+
     const orderDate = new Date();
     const vnTimeOffset = 7 * 60;
     const vnDate = new Date(orderDate.getTime() + vnTimeOffset * 60 * 1000);
 
     const paymentMethodName = paymentMethod === 'vnpay' ? 'VNPay' : paymentMethod === 'momo' ? 'MoMo' : 'COD';
-  
+
     const order = {
       orderDate: vnDate.toISOString(),
       totalPrice: totalPrice,
@@ -51,7 +60,7 @@ const Checkout = () => {
       },
       orderDetails: orderDetails,
     };
-  
+
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
       const createdOrder = response.data; // Assuming the response contains the created order details, including orderID
@@ -63,7 +72,7 @@ const Checkout = () => {
           localStorage.setItem('order', JSON.stringify(orderWithID));
           console.log(orderWithID);
         }
-  
+
         if (paymentMethod === 'vnpay') {
           const vnpUrl = createdOrder.message.split('Payment URL: ')[1];
           window.location.href = vnpUrl;
@@ -72,12 +81,12 @@ const Checkout = () => {
           window.location.href = momoUrl;
         } else {
           alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
-  
+
           localStorage.removeItem('cartItems');
           if (typeof setCartItems === 'function') {
             setCartItems([]);
           }
-  
+
           navigate('/success-page');
         }
       }
@@ -86,7 +95,7 @@ const Checkout = () => {
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
     }
   };
-  
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -171,12 +180,25 @@ const Checkout = () => {
             Thanh toán khi nhận hàng (COD)
           </label>
         </div>
-        <button className="checkout-btn" onClick={handleCheckout}>
+        <button className="checkout-btn" onClick={handleShowConfirmModal}>
           Xác Nhận Thanh Toán
         </button>
+
       </div>
 
       <Footer />
+      {isConfirmModalVisible && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal">
+            <p>Bạn có chắc chắn muốn mua hàng?</p>
+            <div className="confirm-modal-buttons">
+              <button onClick={handleConfirmCheckout} className="confirm-btn">Có</button>
+              <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
