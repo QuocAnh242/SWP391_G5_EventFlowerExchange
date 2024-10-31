@@ -65,7 +65,7 @@ const ManageSellerOrders = ({ userID }) => {
         {orders.map((orderItem) => (
           <div className="order-card" key={orderItem.order.orderID}>
             <div className="order-info">
-              <h3 className="order-id">Mã Đơn Hàng: {orderItem.order.orderID}</h3>
+              <h3 className="order-id">Mã Đơn Hàng: #{orderItem.order.orderID}</h3>
               <p className="order-date">Ngày Đặt: {new Date(orderItem.order.orderDate).toLocaleDateString('vi-VN')}</p>
               <p className="order-address">Địa Chỉ: {orderItem.order.shippingAddress}</p>
               <p className="order-total">Tổng Giá: {orderItem.order.totalPrice.toLocaleString()} VND</p>
@@ -115,7 +115,7 @@ const ManageSellerOrders = ({ userID }) => {
                 <p><strong>Người Mua:</strong> {selectedOrder.order.user.username}</p>
                 <p><strong>Email Người Mua:</strong> {selectedOrder.order.user.email}</p>
                 <p><strong>Phương Thức Thanh Toán:</strong> {selectedOrder.payment.method}</p>
-                <p><strong>Trạng Thái Thanh Toán:</strong> {selectedOrder.payment.status}</p>
+                {/* <p><strong>Trạng Thái Thanh Toán:</strong> {selectedOrder.payment.status}</p> */}
               </div>
             )}
 

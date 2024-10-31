@@ -104,24 +104,45 @@ public class OrderController {
     }
 
     // Handle payment success
+    // Handle payment success for both MoMo and VNPay
     @PostMapping("/payments/success")
     public ResponseEntity<String> paymentSuccess(@RequestParam Map<String, String> params) {
         try {
-            String responseCode = params.get("vnp_ResponseCode");
-            String transactionStatus = params.get("vnp_TransactionStatus");
-            String txnRef = params.get("vnp_TxnRef");
+            // Kiểm tra loại thanh toán dựa trên các tham số đặc trưng
+            if (params.containsKey("resultCode")) { // Thanh toán MoMo
+                String resultCode = params.get("resultCode");
+                String txnRef = params.get("orderId");
 
-            // Update order status based on payment response
-            if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
-                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Đã Thanh Toán");
-                String reviewPageUrl = "http://localhost:3000/review/" + txnRef; // URL đến trang review
-                return ResponseEntity.ok(reviewPageUrl); // Trả về URL chuyển hướng
-            } else if ("24".equals(responseCode) && "02".equals(transactionStatus)) {
-                orderService.updateOrderStatus(Integer.parseInt(txnRef), "Chưa Thanh Toán");
-                return ResponseEntity.ok("Payment was canceled. Order status updated.");
+                if ("0".equals(resultCode)) {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Thành công");
+                    String reviewPageUrl = "http://localhost:3000/review/" + txnRef;
+                    return ResponseEntity.ok(reviewPageUrl);
+                } else if ("1006".equals(resultCode)) {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Chưa thanh toán");
+                    return ResponseEntity.ok("Payment was canceled. Order status updated.");
+                } else {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Thất bại");
+                    return ResponseEntity.ok("Payment failed. Order status updated.");
+                }
+            } else if (params.containsKey("vnp_ResponseCode")) { // Thanh toán VNPay
+                String responseCode = params.get("vnp_ResponseCode");
+                String transactionStatus = params.get("vnp_TransactionStatus");
+                String txnRef = params.get("vnp_TxnRef");
+
+                if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Thành công");
+                    String reviewPageUrl = "http://localhost:3000/review/" + txnRef;
+                    return ResponseEntity.ok(reviewPageUrl);
+                } else if ("24".equals(responseCode) && "02".equals(transactionStatus)) {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Chưa thanh toán");
+                    return ResponseEntity.ok("Payment was canceled. Order status updated.");
+                } else {
+                    orderService.updateOrderStatus(Integer.parseInt(txnRef), "Thất bại");
+                    return ResponseEntity.ok("Payment failed. Order status updated.");
+                }
             }
 
-            return ResponseEntity.badRequest().body("Payment failed or invalid response.");
+            return ResponseEntity.badRequest().body("Invalid payment response.");
         } catch (NumberFormatException e) {
             return ResponseEntity.badRequest().body("Invalid transaction reference.");
         } catch (Exception e) {

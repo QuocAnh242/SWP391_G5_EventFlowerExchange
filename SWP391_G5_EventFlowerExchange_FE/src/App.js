@@ -21,6 +21,7 @@ import BlogPage from "./pages/Blog";
 // import Payment from "./pages/Payment";
 import Checkout from './pages/Checkout';
 import SuccessPage from './pages/SuccessPage';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   // State quản lý giỏ hàng toàn cục
@@ -52,6 +53,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile-page" element={<ProfilePage />} />
           <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} /> {/* Truyền props cho giỏ hàng */}

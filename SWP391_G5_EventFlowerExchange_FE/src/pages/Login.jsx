@@ -151,7 +151,10 @@ const Login = () => {
             </span>
           </div>
 
-          <div className="forgot-password">Quên mật khẩu?</div>
+          {/* <div className="forgot-password">Quên mật khẩu?</div> */}
+          <div className="forgot-password-button">
+            <Link to="/forgot-password">Quên mật khẩu?</Link>
+          </div>
           {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
 
           <button type="submit" className="login-btn">

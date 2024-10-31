@@ -10,9 +10,10 @@ const CreateFlowerForm = ({ postID }) => {
       status: 'Còn hàng',
       description: '',
       price: '',
-      images: [], // Chuyển từ imageUrl sang images
+      imageUrl: '',
       saleType: 'batch',
-      eventName: '',
+      eventType: 'Không', // State for event type
+      eventName: '', // State for event name
       eventFlowerPosting: {
         postID: postID,
       },
@@ -52,10 +53,12 @@ const CreateFlowerForm = ({ postID }) => {
           categoryID: value,
         },
       };
-    } else if (name === 'eventName') {
+    } else if (name === 'eventType') {
+      // Update eventType and auto-fill eventName based on selection
       newFlowers[index] = { 
         ...newFlowers[index], 
-        eventName: value 
+        eventType: value,
+        eventName: value === 'Không' ? 'Không' : '' // Auto-set eventName to 'Không' if 'Không' selected
       };
     } else {
       newFlowers[index] = { 
@@ -63,14 +66,7 @@ const CreateFlowerForm = ({ postID }) => {
         [name]: value 
       };
     }
-    setFlowers(newFlowers);
-  };
 
-  // Xử lý chọn nhiều ảnh
-  const handleFileChange = (index, e) => {
-    const files = Array.from(e.target.files);
-    const newFlowers = [...flowers];
-    newFlowers[index].images = files; // Lưu danh sách các file ảnh vào state
     setFlowers(newFlowers);
   };
 
@@ -84,8 +80,9 @@ const CreateFlowerForm = ({ postID }) => {
         status: 'Còn hàng',
         description: '',
         price: '',
-        images: [],
+        imageUrl: '',
         saleType: 'batch',
+        eventType: 'Không',
         eventName: '',
         eventFlowerPosting: {
           postID: postID,
@@ -106,31 +103,9 @@ const CreateFlowerForm = ({ postID }) => {
   // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-  
-    flowers.forEach((flower, index) => {
-      formData.append(`flowers[${index}].flowerName`, flower.flowerName);
-      formData.append(`flowers[${index}].quantity`, flower.quantity);
-      formData.append(`flowers[${index}].status`, flower.status);
-      formData.append(`flowers[${index}].description`, flower.description);
-      formData.append(`flowers[${index}].price`, flower.price);
-      formData.append(`flowers[${index}].saleType`, flower.saleType);
-      formData.append(`flowers[${index}].eventName`, flower.eventName || '');
-      formData.append(`flowers[${index}].eventFlowerPosting.postID`, flower.eventFlowerPosting.postID);
-      formData.append(`flowers[${index}].category.categoryID`, flower.category.categoryID);
-  
-      // Add images for each flower
-      flower.images.forEach((imageFile) => {
-        formData.append(`files`, imageFile);
-      });
-    });
-  
     try {
-      const response = await axios.post('http://localhost:8080/identity/flower/', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await axios.post('http://localhost:8080/identity/flower/', flowers);
+      console.log(flowers)
       setSuccessMessage('Đã thêm loại hoa thành công!');
       setError('');
     } catch (error) {
@@ -139,7 +114,6 @@ const CreateFlowerForm = ({ postID }) => {
       setSuccessMessage('');
     }
   };
-  
 
   return (
     <div className="create-flower-form">
@@ -190,14 +164,15 @@ const CreateFlowerForm = ({ postID }) => {
               />
             </label>
 
-            <label>
-              Hình ảnh:
+            {/* <label>
+              URL hình ảnh:
               <input
-                type="file"
-                multiple
-                onChange={(e) => handleFileChange(index, e)}
+                type="text"
+                name="imageUrl"
+                value={flower.imageUrl}
+                onChange={(e) => handleFlowerChange(index, e)}
               />
-            </label>
+            </label> */}
 
             <label>
               Chọn loại hoa:
@@ -210,34 +185,34 @@ const CreateFlowerForm = ({ postID }) => {
                 <option value="">Chọn loại hoa</option>
                 {categories.map((category) => (
                   <option key={category.categoryID} value={category.categoryID}>
-                    {category.categoryName}
+                    {category.flowerType}
                   </option>
                 ))}
               </select>
             </label>
 
             <label>
-              Bán theo:
+              Có sự kiện hay không:
               <select
-                name="saleType"
-                value={flower.saleType}
+                name="eventType"
+                value={flower.eventType}
                 onChange={(e) => handleFlowerChange(index, e)}
                 required
               >
-                <option value="batch">Theo batch</option>
-                <option value="event">Theo sự kiện</option>
+                <option value="Không">Không</option>
+                <option value="Có">Có</option>
               </select>
             </label>
 
-            {flower.saleType === 'event' && (
+            {flower.eventType === 'Có' && (
               <label>
-                Nhập tên sự kiện:
+                Tên sự kiện:
                 <input
                   type="text"
                   name="eventName"
-                  value={flower.eventName || ''}
+                  value={flower.eventName}
                   onChange={(e) => handleFlowerChange(index, e)}
-                  required
+                  required={flower.eventType === 'Có'}
                 />
               </label>
             )}

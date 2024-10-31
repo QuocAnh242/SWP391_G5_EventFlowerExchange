@@ -77,17 +77,25 @@ h2 {
 
 
 /* "Forgot password" link */
-.forgot-password {
+.forgot-password-button {
   text-align: right;
   font-size: 14px;
-  color: #666;
+  color: black;
   cursor: pointer;
   margin-bottom: 20px;
 }
-.forgot-password:hover {
-  opacity: 0.9;
-  color: #FFC0CB;
+
+.forgot-password-button a {
+  color: inherit; /* Kế thừa màu từ .forgot-password-button */
+  text-decoration: none; /* Xóa gạch chân */
+  transition: color 0.3s ease; /* Tạo hiệu ứng chuyển màu */
 }
+
+.forgot-password-button:hover a {
+  color: #FFC0CB; /* Màu hồng nhạt khi di chuột */
+  opacity: 0.9;
+}
+
 /* Gradient button with smooth transition */
 .login-btn {
   background: #FFC0CB; /* Pink background */
@@ -142,7 +150,7 @@ h2 {
 .signup-link {
   margin-top: 20px;
   font-size: 14px;
-  color: #777;
+  color: black;
 }
 
 .signup-link a {
