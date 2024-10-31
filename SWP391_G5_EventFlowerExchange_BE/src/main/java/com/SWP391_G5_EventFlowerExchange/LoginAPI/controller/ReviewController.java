@@ -34,5 +34,21 @@ public class ReviewController {
         List<Review> reviews = reviewService.getReviewsByFlowerId(flowerID);
         return ResponseEntity.ok(reviews);
     }
+
+    @GetMapping("/")
+    public ResponseEntity<List<Review>> getAllReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(reviews);
+    }
+
+    @PutMapping("/{reviewID}")
+    public ResponseEntity<ApiResponse<Review>> updateReview(@PathVariable int reviewID, @RequestBody ReviewRequest reviewRequest) {
+        Review updatedReview = reviewService.updateReview(reviewID, reviewRequest);
+        return ResponseEntity.ok(ApiResponse.<Review>builder()
+                .result(updatedReview)
+                .code(1000)
+                .message("Review updated successfully")
+                .build());
+    }
 }
 

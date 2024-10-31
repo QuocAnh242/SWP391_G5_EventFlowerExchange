@@ -38,4 +38,21 @@ public class ReviewService {
     public List<Review> getReviewsByFlowerId(int flowerID) {
         return reviewRepository.findByFlowerBatch_FlowerID(flowerID);
     }
+
+    public Review updateReview(int reviewID, ReviewRequest reviewRequest) {
+        Review review = reviewRepository.findById(reviewID)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        review.setQualityRating(reviewRequest. getQualityRating());
+        review.setServiceRating(reviewRequest.getServiceRating());
+        review.setDeliveryRating(reviewRequest.getDeliveryRating());
+        review.setRating(reviewRequest.getRating());
+        review.setComment(reviewRequest.getComment());
+
+        return reviewRepository.save(review);
+    }
+
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
+    }
 }

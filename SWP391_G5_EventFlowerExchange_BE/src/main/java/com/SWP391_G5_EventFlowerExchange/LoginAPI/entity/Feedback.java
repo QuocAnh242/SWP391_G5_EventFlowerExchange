@@ -1,8 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -10,26 +10,44 @@ import java.time.LocalDateTime;
 @Table(name = "Feedback")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Feedback {
 
-    @EmbeddedId
-    private FeedbackKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    int feedbackID;
 
-    @Column(columnDefinition = "TEXT")
-    private String comment;
-
-    @Column(nullable = false)
-    private int rating;
+    @Column(nullable = false, length = 1000)
+    String comment; // Feedback comment
 
     @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    int rating; // Rating out of 5
 
     @ManyToOne
-    @JoinColumn(name = "userID", nullable = false, insertable = false, updatable = false)
-    private User user;
+    @JoinColumn(name = "userID", nullable = false)
+    User user; // The user who created the feedback
 
     @ManyToOne
-    @JoinColumn(name = "sellerID", nullable = false, insertable = false, updatable = false)
-    private User seller;
+    @JoinColumn(name = "postID", nullable = false)
+    EventFlowerPosting eventFlowerPosting; // The post related to the feedback
 
+    @Column(nullable = false)
+    LocalDateTime createdAt;
+
+    @Column(nullable = true)
+    LocalDateTime responseAt; // When the response was given
+    String response; // Response from seller/administrator
+
+    @Column(nullable = false)
+    boolean anonymous = false; // If feedback is anonymous
+
+    @Column(nullable = false)
+    int likeCount = 0; // Number of likes for the feedback
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }

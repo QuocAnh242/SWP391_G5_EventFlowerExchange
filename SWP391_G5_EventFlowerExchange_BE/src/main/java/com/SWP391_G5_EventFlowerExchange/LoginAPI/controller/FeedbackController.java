@@ -1,57 +1,60 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/feedback")
-@CrossOrigin("http://localhost:3000")
-@RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FeedbackController {
 
-    FeedbackService feedbackService;
+    @Autowired
+    private FeedbackService feedbackService;
 
-    // Tạo mới feedback với ApiResponse
-    @PostMapping("/")
-    public ApiResponse<Feedback> createFeedback(@RequestBody Feedback feedback) {
-        // Kiểm tra dữ liệu đầu vào
-        if (feedback == null || feedback.getId() == null || feedback.getComment() == null || feedback.getRating() == 0) {
-            return new ApiResponse<>(400, "Invalid feedback data", null);
-        }
-
-        // Lưu feedback
-        Feedback savedFeedback = feedbackService.saveFeedback(feedback);
-
-        // Trả về phản hồi với ApiResponse
-        return new ApiResponse<>(1000, "Feedback created successfully", savedFeedback);
+    @PostMapping
+    public ResponseEntity<Feedback> createFeedback(@RequestBody Feedback feedback) {
+        Feedback createdFeedback = feedbackService.createFeedback(feedback);
+        return ResponseEntity.ok(createdFeedback);
     }
 
-    // Lấy feedback theo sellerID với ApiResponse
-    @GetMapping("/seller/{sellerID}")
-    public ApiResponse<List<Feedback>> getFeedbackForSeller(@PathVariable int sellerID) {
-        User seller = new User();
-        seller.setUserID(sellerID);
-
-        List<Feedback> feedbackList = feedbackService.getFeedbackForSeller(seller);
-        return new ApiResponse<>(1000, "Feedback for seller retrieved successfully", feedbackList);
+    @GetMapping("/post/{postID}")
+    public ResponseEntity<List<Feedback>> getFeedbacksByPostId(@PathVariable int postID) {
+        List<Feedback> feedbacks = feedbackService.getFeedbacksByPostId(postID);
+        return ResponseEntity.ok(feedbacks);
     }
 
-    // Lấy feedback theo userID với ApiResponse
-    @GetMapping("/user/{userID}")
-    public ApiResponse<List<Feedback>> getFeedbackForUser(@PathVariable int userID) {
-        User user = new User();
-        user.setUserID(userID);
-
-        List<Feedback> feedbackList = feedbackService.getFeedbackForUser(user);
-        return new ApiResponse<>(1000, "Feedback for user retrieved successfully", feedbackList);
+    @PostMapping("/{feedbackID}/like")
+    public ResponseEntity<Void> likeFeedback(@PathVariable int feedbackID) {
+        feedbackService.likeFeedback(feedbackID);
+        return ResponseEntity.ok().build();
     }
+
+    // Existing endpoints...
+
+    @PutMapping("/{feedbackID}")
+    public ResponseEntity<Feedback> updateFeedback(
+            @PathVariable int feedbackID,
+            @RequestBody Feedback feedbackDetails) {
+        Feedback updatedFeedback = feedbackService.updateFeedback(feedbackID, feedbackDetails);
+        return ResponseEntity.ok(updatedFeedback);
+    }
+
+    @DeleteMapping("/{feedbackID}")
+    public ResponseEntity<Void> deleteFeedback(@PathVariable int feedbackID) {
+        feedbackService.deleteFeedback(feedbackID);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Feedback>> getAllFeedback() {
+        List<Feedback> feedbackList = feedbackService.getAllFeedback();
+        return ResponseEntity.ok(feedbackList);
+    }
+
+
 }
