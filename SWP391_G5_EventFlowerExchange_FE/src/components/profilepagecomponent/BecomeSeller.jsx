@@ -14,29 +14,30 @@ const BecomeSeller = ({ setError }) => {
 
       const userID = user.userID;
 
-      // Send request to update user role to 'Seller'
-      const response = await axios.put(`http://localhost:8080/identity/users/seller/${userID}`);
-      
-      if (response.status === 200) {
-        alert('Bạn đã trở thành người bán hàng thành công!');
+      // Send notification to admin about the seller request
+      const notificationData = {
+        content: "Tôi muốn làm seller, bạn hãy thêm role cho tôi",
+        notificationType: "setSeller",
+        user: {
+          userID: userID
+        }
+      };
 
-        // Update the user role in localStorage
-        const updatedUser = { ...user, role: 'SELLER' };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+      const response = await axios.post(`http://localhost:8080/identity/noti/`, notificationData);
 
-        // Redirect to the seller dashboard
-        window.location.href = "/seller-dashboard";
+      if (response.status === 201) {
+        alert('Yêu cầu trở thành người bán hàng của bạn đã được gửi đến quản trị viên.');
       }
     } catch (error) {
-      console.error('Error becoming seller:', error);
-      setError('Có lỗi xảy ra khi chuyển sang vai trò người bán hàng.');
+      console.error('Error sending seller request notification:', error);
+      setError('Có lỗi xảy ra khi gửi yêu cầu trở thành người bán hàng.');
     }
   };
 
   return (
     <div className="become-seller-container">
       <h2>Bạn có muốn trở thành người bán hàng không?</h2>
-      <p>Khi xác nhận, tài khoản của bạn sẽ chuyển sang vai trò người bán hàng.</p>
+      <p>Khi xác nhận, yêu cầu của bạn sẽ được gửi đến quản trị viên.</p>
       <button className="confirm-seller-button" onClick={handleBecomeSeller}>
         Xác nhận
       </button>

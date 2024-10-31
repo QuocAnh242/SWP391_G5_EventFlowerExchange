@@ -9,7 +9,7 @@ const ManagePosts = () => {
   const [flowers, setFlowers] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null); // For editing
   const [userID, setUserID] = useState(null); // State to hold userID
-  
+
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -17,7 +17,7 @@ const ManagePosts = () => {
       setUserID(parsedUser.userID); // Gán userID
     }
   }, []);
-  
+
   useEffect(() => {
     if (userID) {
       fetchPosts();
@@ -79,7 +79,7 @@ const ManagePosts = () => {
                   <h3>{post.title}</h3>
                   <p>{post.description}</p>
                   <p>Giá: {post.price} VNĐ</p>
-                  
+
                   <div className="post-actions">
                     <button onClick={() => deletePost(post.postID)}>Xóa bài post</button>
                     <button onClick={() => handleEditPost(post)}>Sửa bài post</button>
@@ -97,12 +97,14 @@ const ManagePosts = () => {
                         <p>Số lượng: {flower.quantity}</p>
                         <p>Giá: {flower.price} VNĐ</p>
                         <p>Mô tả: {flower.description}</p>
+                        <p>Sự kiện : {flower.category.eventName}</p>
                       </div>
                     ))
                   ) : (
                     <p>Không có hoa nào trong bài viết.</p>
                   )}
                 </div>
+
               </div>
             ))
           ) : (

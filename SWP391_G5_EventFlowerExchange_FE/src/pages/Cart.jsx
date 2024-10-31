@@ -18,6 +18,14 @@ const Cart = ({ cartItems, setCartItems }) => {
     setCartItems(updatedItems);
   };
 
+  const handleQuantityInputChange = (id, value) => {
+    const updatedItems = cartItems.map((item) =>
+      item.flowerID === id ? { ...item, quantity: Math.max(1, parseInt(value) || 1) } : item
+    );
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    setCartItems(updatedItems);
+  };
+
   const handleDelete = (id) => {
     const updatedItems = cartItems.filter((item) => item.flowerID !== id);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
@@ -90,7 +98,13 @@ const Cart = ({ cartItems, setCartItems }) => {
                   <td>{item.price.toLocaleString()} VNĐ</td>
                   <td>
                     <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, -1)}>-</button>
-                    <input type="number" value={item.quantity} readOnly className="quantity-input" />
+                    <input 
+                      type="number" 
+                      value={item.quantity} 
+                      onChange={(e) => handleQuantityInputChange(item.flowerID, e.target.value)}
+                      className="quantity-input" 
+                      min="1"
+                    />
                     <button className="quantity-btn" onClick={() => handleQuantityChange(item.flowerID, 1)}>+</button>
                   </td>
                   <td>{new Intl.NumberFormat('vi-VN').format(item.price * item.quantity)} VNĐ</td>

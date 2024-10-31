@@ -43,90 +43,115 @@ const OrderHistory = () => {
   const switchTab = (tab) => setActiveTab(tab);
 
   return (
-<div className="order-history">
-<h2>Lịch Sử Đơn Hàng</h2>
-<div className="order-history">
-  {orders.length > 0 ? (
-    <div className="order-history-grid">
-      {orders.map((order) => (
-        <div key={order.orderID} className="order-item">
-          <div className="orders-history">
-            <h3>Đơn hàng #{order.orderID}</h3>
-            <p className="order-total">{order.totalPrice.toLocaleString()} VNĐ</p>
-            <p>Ngày đặt: {new Date(order.orderDate).toLocaleDateString('vi-VN')}</p>
-            <p>Tình trạng đơn hàng : {order.status}</p>
-            <button className="view-details" onClick={() => viewOrderDetails(order.orderID)}>Xem chi tiết</button>
+    <div className="order-history">
+      <h2>Lịch Sử Đơn Hàng</h2>
+      <div className="order-history">
+        {orders.length > 0 ? (
+          <div className="order-history-grid">
+            {orders.map((order) => (
+              <div key={order.orderID} className="order-item">
+                <div className="orders-history">
+                  <h3>Đơn hàng #{order.orderID}</h3>
+                  <p className="order-total">{order.totalPrice.toLocaleString()} VNĐ</p>
+                  <p>Ngày đặt: {new Date(order.orderDate).toLocaleDateString('vi-VN')}</p>
+                  <p>Tình trạng đơn hàng : {order.status}</p>
+                  <button className="view-details" onClick={() => viewOrderDetails(order.orderID)}>Xem chi tiết</button>
+                </div>
+              </div>
+            ))}
           </div>
+        ) : (
+          <p>Không có đơn hàng nào</p>
+        )}
+      </div>
+
+
+      {isModalVisible && (
+        <>
+          <div className="overlay" onClick={closeModal}></div>
+          <div className="order-detail">
+            <span className="close-btn" onClick={closeModal}>×</span>
+            <div className="tab-menu">
+              <button onClick={() => switchTab("orderInfo")} className={activeTab === "orderInfo" ? "active" : ""}>Thông Tin Đơn Hàng</button>
+              <button onClick={() => switchTab("productDetails")} className={activeTab === "productDetails" ? "active" : ""}>Chi Tiết Sản Phẩm</button>
+              <button onClick={() => switchTab("deliveryInfo")} className={activeTab === "deliveryInfo" ? "active" : ""}>Thông Tin Giao Hàng</button>
+            </div>
+
+            {/* Tab Thông Tin Đơn Hàng */}
+            <div className={`tab-content ${activeTab === "orderInfo" ? "active" : ""}`}>
+              <h3 className="order-history-title">Thông Tin Đơn Hàng</h3>
+              {selectedOrderDetails && (
+                <div className="order-info">
+                  <p><strong>Mã đơn hàng:</strong> {selectedOrderDetails[0]?.order?.orderID}</p>
+                  <p><strong>Ngày đặt:</strong> {selectedOrderDetails[0]?.order?.orderDate ? new Date(selectedOrderDetails[0]?.order?.orderDate).toLocaleDateString('vi-VN') : "N/A"}</p>
+                  <p><strong>Tổng cộng:</strong> {selectedOrderDetails[0]?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</p>
+                  <p><strong>Phương thức thanh toán:</strong> {selectedOrderDetails[0]?.payment?.method || "N/A"}</p>
+                  <p><strong>Địa chỉ giao hàng:</strong> {selectedOrderDetails[0]?.order?.shippingAddress || "N/A"}</p>
+                  <p><strong>Trạng thái:</strong> {selectedOrderDetails[0]?.order?.status || "N/A"}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Tab Chi Tiết Sản Phẩm */}
+            <div className={`tab-content ${activeTab === "productDetails" ? "active" : ""}`}>
+  <h3 className='order-history-title'>Chi Tiết Sản Phẩm</h3>
+  {selectedOrderDetails && (
+    <div className="order-details">
+      {selectedOrderDetails.map((detail, index) => (
+        <div key={index} className="product-detail">
+        <table className="flower-detail-table">
+  <thead>
+    <tr>
+      <th>Sản phẩm</th>
+      <th>Loại hoa</th>
+      <th>Số lượng</th>
+      <th>Giá đơn vị</th>
+      <th>Tổng tiền</th>
+    </tr>
+  </thead>
+  <tbody>
+    {detail.flowerBatchesWithQuantity.map((batch, idx) => (
+      <tr key={idx} className="flower-detail-row">
+        <td className="flower-name">{batch.flowerBatch?.flowerName || "N/A"}</td>
+        <td className="flower-type">{batch.flowerBatch?.category?.flowerType || "N/A"}</td>
+        <td className="flower-quantity">{batch.orderQuantity || "0"}</td>
+        <td className="flower-unit-price">{batch.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</td>
+        <td className="flower-total-price">{((batch.orderQuantity || 0) * (batch.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</td>
+        {/* <td className="flower-status">{batch.flowerBatch?.status || "N/A"}</td> */}
+      </tr>
+    ))}
+  </tbody>
+</table>
+
         </div>
       ))}
     </div>
-  ) : (
-    <p>Không có đơn hàng nào</p>
   )}
 </div>
 
 
-  {isModalVisible && (
-    <>
-      <div className="overlay" onClick={closeModal}></div>
-      <div className="order-detail">
-        <span className="close-btn" onClick={closeModal}>×</span>
-        <div className="tab-menu">
-          <button onClick={() => switchTab("orderInfo")} className={activeTab === "orderInfo" ? "active" : ""}>Thông Tin Đơn Hàng</button>
-          <button onClick={() => switchTab("productDetails")} className={activeTab === "productDetails" ? "active" : ""}>Chi Tiết Sản Phẩm</button>
-          <button onClick={() => switchTab("deliveryInfo")} className={activeTab === "deliveryInfo" ? "active" : ""}>Thông Tin Giao Hàng</button>
-        </div>
 
-        {/* Tab Thông Tin Đơn Hàng */}
-        <div className={`tab-content ${activeTab === "orderInfo" ? "active" : ""}`}>
-          <h3 className="order-history-title">Thông Tin Đơn Hàng</h3>
-          {selectedOrderDetails && (
-            <div className="order-info">
-              <p><strong>Mã đơn hàng:</strong> {selectedOrderDetails[0]?.order?.orderID}</p>
-              <p><strong>Ngày đặt:</strong> {selectedOrderDetails[0]?.order?.orderDate ? new Date(selectedOrderDetails[0]?.order?.orderDate).toLocaleDateString('vi-VN') : "N/A"}</p>
-              <p><strong>Tổng cộng:</strong> {selectedOrderDetails[0]?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</p>
-              <p><strong>Phương thức thanh toán:</strong> {selectedOrderDetails[0]?.payment?.method || "N/A"}</p>
-              <p><strong>Địa chỉ giao hàng:</strong> {selectedOrderDetails[0]?.order?.shippingAddress || "N/A"}</p>
-              <p><strong>Trạng thái:</strong> {selectedOrderDetails[0]?.order?.status || "N/A"}</p>
+            {/* Tab Thông Tin Giao Hàng */}
+            <div className={`tab-content ${activeTab === "deliveryInfo" ? "active" : ""}`}>
+              <h3 className='order-history-title'>Thông Tin Giao Hàng</h3>
+              {selectedOrderDetails && (
+                <div className="delivery-info">
+                  <p className="order-history-deli"><strong>Ngày giao hàng dự kiến:</strong> {selectedOrderDetails[0]?.delivery?.deliveryDate ? new Date(selectedOrderDetails[0]?.delivery?.deliveryDate).toLocaleDateString('vi-VN') : "N/A"}</p>
+                  {/* <p><strong>Đánh giá:</strong> {selectedOrderDetails[0]?.delivery?.rating || "Chưa có"}</p> */}
+                  <p className="order-history-deli">
+                    <strong>Trạng thái giao hàng:</strong>
+                    {selectedOrderDetails[0]?.delivery?.availableStatus === "Delivered"
+                      ? " Đơn hàng của bạn đã giao thành công. Vui lòng để lại feedback!"
+                      : selectedOrderDetails[0]?.delivery?.availableStatus || "N/A"}
+                  </p>
+
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Tab Chi Tiết Sản Phẩm */}
-        <div className={`tab-content ${activeTab === "productDetails" ? "active" : ""}`}>
-          <h3 className='order-history-title'>Chi Tiết Sản Phẩm</h3>
-          {selectedOrderDetails && (
-  <div className="order-details">
-    {selectedOrderDetails.map((detail, index) => (
-      <div key={index} className="product-detail">
-        <p><strong>Sản phẩm:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.flowerName || "N/A"}</p>
-        <p><strong>Loại hoa:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.category?.flowerType || "N/A"}</p>
-        <p><strong>Số lượng:</strong> {detail.flowerBatchesWithQuantity[0]?.orderQuantity || "0"}</p>
-        <p><strong>Giá đơn vị:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</p>
-        <p><strong>Tổng tiền :</strong> {((detail.flowerBatchesWithQuantity[0]?.orderQuantity || 0) * (detail.flowerBatchesWithQuantity[0]?.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</p>
-        {/* <p><strong>Trạng thái:</strong> {detail.flowerBatchesWithQuantity[0]?.flowerBatch?.status || "N/A"}</p> */}
-      </div>
-    ))}
-  </div>
-)}
-
-        </div>
-
-        {/* Tab Thông Tin Giao Hàng */}
-        <div className={`tab-content ${activeTab === "deliveryInfo" ? "active" : ""}`}>
-          <h3 className='order-history-title'>Thông Tin Giao Hàng</h3>
-          {selectedOrderDetails && (
-            <div className="delivery-info">
-              <p className="order-history-deli"><strong>Ngày giao hàng dự kiến:</strong> {selectedOrderDetails[0]?.delivery?.deliveryDate ? new Date(selectedOrderDetails[0]?.delivery?.deliveryDate).toLocaleDateString('vi-VN') : "N/A"}</p>
-              {/* <p><strong>Đánh giá:</strong> {selectedOrderDetails[0]?.delivery?.rating || "Chưa có"}</p> */}
-              <p className="order-history-deli"><strong>Trạng thái giao hàng:</strong> {selectedOrderDetails[0]?.delivery?.availableStatus || "N/A"}</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </>
-  )}
-</div>
+          </div>
+        </>
+      )}
+    </div>
 
   );
 };

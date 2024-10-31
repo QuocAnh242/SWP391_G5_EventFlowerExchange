@@ -52,8 +52,8 @@ const ProfilePage = () => {
         return <ChangeInfor userID={userID} />;
       case 'orders':
         return <OrderHistory userID={userID} />;
-      // case 'become-seller':
-      //   return <BecomeSeller userID={userID} setError={setError} />;
+      case 'become-seller':
+        return <BecomeSeller userID={userID} setError={setError} />;
       default:
         return null;
     }
@@ -104,9 +104,9 @@ const ProfilePage = () => {
               <li className={`menu-item ${activeTab === 'orders' ? 'active' : ''}`}>
                 <a href="#orders" onClick={() => setActiveTab('orders')}>Đơn hàng của tôi</a>
               </li>
-              {/* <li className={`menu-item ${activeTab === 'become-seller' ? 'active' : ''}`}>
+              <li className={`menu-item ${activeTab === 'become-seller' ? 'active' : ''}`}>
                 <a href="#become-seller" onClick={() => setActiveTab('become-seller')}>Trở thành người bán hàng</a>
-              </li> */}
+              </li>
               <li className={`menu-item ${activeTab === 'seller-dashboard' ? 'active' : ''}`}>
                 <a href="#seller-dashboard" onClick={handleSellerAccess}>Trang quản lý người bán</a>
               </li>
