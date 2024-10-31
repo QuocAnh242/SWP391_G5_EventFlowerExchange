@@ -34,12 +34,6 @@ public class CategoryService implements ICategoryService {
             if (category.getFlowerType() != null) {
                 cate.setFlowerType(category.getFlowerType());
             }
-            if (category.getDescription() != null) {
-                cate.setDescription(category.getDescription());
-            }
-            if (category.getImageUrl() != null) {
-                cate.setImageUrl(category.getImageUrl());
-            }
             iCatetoryRepository.save(cate);
 
         }

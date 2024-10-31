@@ -36,6 +36,8 @@ public class Order {
     @Column(nullable = false, length = 50)
     private String status = "Chưa Thanh Toán";
 
+    private String linkPayment=null;
+
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)
     private User user;

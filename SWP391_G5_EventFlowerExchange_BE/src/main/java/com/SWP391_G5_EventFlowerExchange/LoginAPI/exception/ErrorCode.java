@@ -19,7 +19,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(1007, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1008, "You do not have permission", HttpStatus.FORBIDDEN),
     USER_NOT_AVAILABLE(1009, "User is not available for login", HttpStatus.FORBIDDEN),
-    USER_NOT_VERIFIED(10010, "User is not verified", HttpStatus.FORBIDDEN),;
+    USER_NOT_VERIFIED(10010, "User is not verified", HttpStatus.FORBIDDEN),
+    FLOWER_OUT_OF_QUANTITY(1011, "Flower Out of Quantity", HttpStatus.BAD_REQUEST),;
     private final int code;
     private final String message;
     private HttpStatusCode statusCode;
