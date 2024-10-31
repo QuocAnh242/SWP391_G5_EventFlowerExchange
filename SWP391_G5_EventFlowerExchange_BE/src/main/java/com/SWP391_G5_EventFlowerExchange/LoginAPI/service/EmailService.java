@@ -43,7 +43,7 @@ public class EmailService {
                 "</ul>" +
                 "<p>Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để giao hàng.</p>" +
                 "<p>Trân trọng,</p>" +
-                "<p>Đội ngũ Hỗ trợ Khách hàng</p>";
+                "<p>Đội ngũ Flower Exchange</p>";
 
 
         try {

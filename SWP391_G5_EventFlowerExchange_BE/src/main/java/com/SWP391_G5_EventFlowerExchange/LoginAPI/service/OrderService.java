@@ -2,9 +2,11 @@ package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.MoMoConfig;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.configuration.VNPayConfig;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderDetailRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.OrderCreationRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.*;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.OutOfQuantity;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.mail.MessagingException;
@@ -48,10 +50,19 @@ public class OrderService implements IOrderService {
     INotificationsRepository iNotificationsRepository;
     JavaMailSender mailSender;
     EmailService emailService;
+    FlowerBatchService flowerBatchService;
 
     @Override
     public Order createOrder(OrderCreationRequest request) {
         Order order = new Order();
+        // Check số lưọng hoa
+        for(OrderDetailRequest detail: request.getOrderDetails()){
+            FlowerBatch flower=flowerBatchService.findById(detail.getFlowerID());
+            if(flower.getQuantity()< detail.getQuantity()){
+                System.out.println("Flower không đủ số lượng: " + flower.getFlowerName());
+                throw new OutOfQuantity();
+            }
+        }
 
         // Create the Delivery in the backend
         Delivery newDelivery = new Delivery();
@@ -312,5 +323,13 @@ public class OrderService implements IOrderService {
         User user = userRepository.findById(userID)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userID));
         return iOrderRepository.findByUser(user);
+    }
+    public void setLinkPaymentToNull(int orderId) {
+        Optional<Order> optionalOrder = iOrderRepository.findById(orderId);
+        if (optionalOrder.isPresent()) {
+            Order order = optionalOrder.get();
+            order.setLinkPayment(null); // Set linkPayment to null
+            iOrderRepository.save(order); // Save the updated order
+        }
     }
     }

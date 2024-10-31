@@ -7,6 +7,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.MonthlyRevenueRes
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Order;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetail;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.OrderDetailKey;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.*;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.IOrderService;
 import jakarta.persistence.EntityNotFoundException;
@@ -27,9 +28,10 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class OrderController {
 
-    IOrderService orderService;
-    IOrderDetailService orderDetailService;
-    IFlowerBatchService flowerBatchService;
+    OrderService orderService;
+    OrderDetailService orderDetailService;
+    FlowerBatchService flowerBatchService;
+    IOrderRepository orderRepository;
 
     // Create a new order
     @PostMapping("/")
@@ -90,6 +92,7 @@ public class OrderController {
         if (request.getPayment().getPaymentID() == 1) {
             // VNPay payment
             paymentURL = orderService.createVNPayUrl(order); // Generate VNPay URL
+            order.setLinkPayment(paymentURL);
         } else if (request.getPayment().getPaymentID() == 2) {
             // MoMo payment
             paymentURL = orderService.createMoMoUrl(order); // Generate MoMo URL
@@ -132,6 +135,7 @@ public class OrderController {
                 if ("00".equals(responseCode) && "00".equals(transactionStatus)) {
                     orderService.updateOrderStatus(Integer.parseInt(txnRef), "Thành công");
                     String reviewPageUrl = "http://localhost:3000/review/" + txnRef;
+                    orderService.setLinkPaymentToNull(Integer.parseInt(txnRef));
                     return ResponseEntity.ok(reviewPageUrl);
                 } else if ("24".equals(responseCode) && "02".equals(transactionStatus)) {
                     orderService.updateOrderStatus(Integer.parseInt(txnRef), "Chưa thanh toán");

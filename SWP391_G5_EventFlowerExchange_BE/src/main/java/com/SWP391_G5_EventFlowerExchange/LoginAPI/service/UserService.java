@@ -221,20 +221,17 @@ public class UserService implements IUserService {
         String verificationLink = "http://localhost:8080/identity/users/verify-email?token=" + verificationToken;
         //gửi email với định dạng (HTML, hình ảnh, tệp đính kèm)
         MimeMessage message = mailSender.createMimeMessage();
-
+        // Nội dung email dưới dạng HTML
+        String body = "<h2>Xin chào!</h2>" +
+                "<p>Vui lòng nhấn vào liên kết dưới đây để xác nhận email của bạn:</p>" +
+                "<a href=\"" + verificationLink + "\" style=\"font-size: 16px; color: #007BFF; text-decoration: none;\">" +
+                "Xác nhận email của tôi</a>" +
+                "<p>Cảm ơn bạn!</p>";
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart, false nếu gửi mỗi text
             helper.setTo(to);
             helper.setSubject("Xác nhận email của bạn");
-
-            // Nội dung email dưới dạng HTML
-            String htmlContent = "<h2>Xin chào!</h2>" +
-                    "<p>Vui lòng nhấn vào liên kết dưới đây để xác nhận email của bạn:</p>" +
-                    "<a href=\"" + verificationLink + "\" style=\"font-size: 16px; color: #007BFF; text-decoration: none;\">" +
-                    "Xác nhận email của tôi</a>" +
-                    "<p>Cảm ơn bạn!</p>";
-
-            helper.setText(htmlContent, true); // true = send as HTML
+            helper.setText(body, true); // true = send as HTML
             message.setFrom("posteventblooms@gmail.com");
 
             mailSender.send(message);
