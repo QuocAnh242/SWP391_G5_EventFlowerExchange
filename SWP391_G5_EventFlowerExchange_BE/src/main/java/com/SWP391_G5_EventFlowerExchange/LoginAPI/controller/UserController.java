@@ -109,5 +109,10 @@ public class UserController {
     public String forgotPassword(@RequestParam String email) {
         return userService.resetPassword(email);
     }
+    @PutMapping("/mod/{userID}")
+    public ResponseEntity<User> setModStatus(@PathVariable int userID) {
+        User user=userService.setStatusUser(userID);
+        return ResponseEntity.ok(user);
+    }
 
 }

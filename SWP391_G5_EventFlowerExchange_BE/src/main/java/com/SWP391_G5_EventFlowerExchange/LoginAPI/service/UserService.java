@@ -268,5 +268,14 @@ public class UserService implements IUserService {
 
         return userRepository.save(user);
     }
+    public  User setStatusUser(int  userID){
+        User user = userRepository.findById(userID)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setAvailableStatus("available");
+        user.setVerificationToken(null);
+        user.setEmailVerified(true);
+        return userRepository.save(user);
+    }
+
 
 }
