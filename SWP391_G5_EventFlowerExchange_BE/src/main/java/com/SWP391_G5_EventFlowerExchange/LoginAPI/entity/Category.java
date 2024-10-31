@@ -14,14 +14,8 @@ public class Category {
     @Column(nullable = false)
     private String flowerType;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(255) DEFAULT 'Available'")
-    private String description = "Available";
-
-    private String imageUrl;
-
     private String eventType;
 
     private String eventName;
 
-    private String categoryName;
 }

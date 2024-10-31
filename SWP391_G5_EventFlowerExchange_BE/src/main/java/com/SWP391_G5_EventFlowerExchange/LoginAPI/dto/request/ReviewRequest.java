@@ -13,5 +13,8 @@ public class ReviewRequest {
    int flowerID; // Flower being reviewed
    int rating; // Rating given
    String comment; // Feedback comment
+   int qualityRating;
+   int serviceRating;
+   int deliveryRating;
 }
 

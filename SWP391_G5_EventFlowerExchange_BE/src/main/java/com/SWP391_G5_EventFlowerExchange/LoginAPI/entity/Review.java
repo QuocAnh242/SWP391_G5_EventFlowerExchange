@@ -1,9 +1,8 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 
@@ -12,14 +11,16 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int reviewID;
-    private int qualityRating;
-    private int serviceRating;
-    private int deliveryRating;
+  int reviewID;
+   int qualityRating;
+  int serviceRating;
+  int deliveryRating;
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false)

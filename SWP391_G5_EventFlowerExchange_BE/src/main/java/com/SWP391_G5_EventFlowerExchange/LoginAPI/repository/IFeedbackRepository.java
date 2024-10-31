@@ -8,9 +8,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
-public interface IFeedbackRepository extends JpaRepository<Feedback, FeedbackKey> {
-    List<Feedback> findBySeller(User seller);
-    List<Feedback> findByUser(User user);
+public interface IFeedbackRepository extends JpaRepository<Feedback, Integer> {
+    List<Feedback> findByEventFlowerPosting_PostID(int postID);
+    List<Feedback> findByUser_UserID(int userID);
 }
 
