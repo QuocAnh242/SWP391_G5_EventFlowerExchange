@@ -1,31 +1,38 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.EventFlowerPosting;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFeedbackRepository;
-import lombok.AccessLevel;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FeedbackService {
+    private final IFeedbackRepository feedbackRepository;
+    private final IEventFlowerPostingRepository eventFlowerPostingRepository;
+    private final IUserRepository userRepository;
 
-    IFeedbackRepository feedbackRepository;
+    public Feedback createFeedback(int userID, int postID, String content) {
+        User user = userRepository.findById(userID).orElseThrow(() -> new RuntimeException("User not found"));
+        EventFlowerPosting eventFlowerPosting = eventFlowerPostingRepository.findById(postID)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
 
-    public Feedback saveFeedback(Feedback feedback) {
+        Feedback feedback = Feedback.builder()
+                .user(user)
+                .eventFlowerPosting(eventFlowerPosting)
+                .content(content)
+                .build();
+
         return feedbackRepository.save(feedback);
     }
 
-    public List<Feedback> getFeedbackForSeller(User seller) {
-        return feedbackRepository.findBySeller(seller);
-    }
-
-    public List<Feedback> getFeedbackForUser(User user) {
-        return feedbackRepository.findByUser(user);
+    public List<Feedback> getFeedbackByPostID(int postID) {
+        return feedbackRepository.findByEventFlowerPosting_PostID(postID);
     }
 }
