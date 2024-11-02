@@ -2,32 +2,26 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const CreateFlowerForm = ({ postID }) => {
-  // State cho danh sách các loại hoa
   const [flowers, setFlowers] = useState([
     {
+      flowerType: 'Hoa bán theo lô',
       flowerName: '',
       quantity: '',
       status: 'Còn hàng',
       description: '',
       price: '',
-      imageUrl: '',
+      imageUrl: null, // Store file as null initially
       saleType: 'batch',
-      eventType: 'Không', // State for event type
-      eventName: '', // State for event name
-      eventFlowerPosting: {
-        postID: postID,
-      },
-      category: {
-        categoryID: '',
-      },
+      eventType: 'Không',
+      eventName: 'Không',
+      eventFlowerPosting: { postID },
+      category: { categoryID: '' },
     },
   ]);
-
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  // Lấy danh mục hoa từ API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -40,80 +34,81 @@ const CreateFlowerForm = ({ postID }) => {
     fetchCategories();
   }, []);
 
-  // Xử lý thay đổi form cho một loại hoa
   const handleFlowerChange = (index, e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
     const newFlowers = [...flowers];
 
-    if (name === 'categoryID') {
-      newFlowers[index] = {
-        ...newFlowers[index],
-        category: {
-          ...newFlowers[index].category,
-          categoryID: value,
-        },
-      };
-    } else if (name === 'eventType') {
-      // Update eventType and auto-fill eventName based on selection
-      newFlowers[index] = { 
-        ...newFlowers[index], 
-        eventType: value,
-        eventName: value === 'Không' ? 'Không' : '' // Auto-set eventName to 'Không' if 'Không' selected
-      };
+    if (name === 'imageUrl' && files.length > 0) {
+      newFlowers[index].imageUrl = files[0]; // Set file object directly
+    } else if (name === 'categoryID') {
+      newFlowers[index].category = { ...newFlowers[index].category, categoryID: value };
     } else {
-      newFlowers[index] = { 
-        ...newFlowers[index], 
-        [name]: value 
-      };
+      newFlowers[index][name] = value;
     }
 
     setFlowers(newFlowers);
   };
 
-  // Xử lý thêm loại hoa mới
   const addFlower = () => {
     setFlowers([
       ...flowers,
       {
+        flowerType: 'Hoa bán theo lô',
         flowerName: '',
         quantity: '',
         status: 'Còn hàng',
         description: '',
         price: '',
-        imageUrl: '',
+        imageUrl: null,
         saleType: 'batch',
         eventType: 'Không',
-        eventName: '',
-        eventFlowerPosting: {
-          postID: postID,
-        },
-        category: {
-          categoryID: '',
-        },
+        eventName: 'Không',
+        eventFlowerPosting: { postID },
+        category: { categoryID: '' },
       },
     ]);
   };
 
-  // Xử lý xóa loại hoa
-  const removeFlower = (index) => {
-    const newFlowers = flowers.filter((_, i) => i !== index);
-    setFlowers(newFlowers);
-  };
-
-  // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/identity/flower/', flowers);
-      console.log(flowers)
-      setSuccessMessage('Đã thêm loại hoa thành công!');
-      setError('');
+        for (const flower of flowers) {
+            console.log("Submitting flower data:", flower);
+
+            // Submit flower data and retrieve flowerID
+            const flowerResponse = await axios.post('http://localhost:8080/identity/flower/', flower);
+            const flowerID = flowerResponse.data.flowerID || flowerResponse.data.id;
+
+            // Check if imageUrl is a File and upload it
+            if (flower.imageUrl instanceof File) {
+                const formData = new FormData();
+                formData.append('files', flower.imageUrl);  // Add imageUrl as 'files'
+
+                console.log("Uploading image with FormData:", formData.get('files'));
+
+                // Send the FormData with the image to the upload endpoint
+                await axios.post(
+                    `http://localhost:8080/identity/flowerImg/batch/${flowerID}/upload`,
+                    formData,
+                    { headers: { 'Content-Type': 'multipart/form-data' } }
+                );
+            }
+        }
+        setSuccessMessage('Đã thêm loại hoa thành công!');
+        setError('');
     } catch (error) {
-      console.error('Error creating flowers:', error);
-      setError('Không thể tạo loại hoa. Vui lòng thử lại.');
-      setSuccessMessage('');
+        if (error.response) {
+            console.error("Server Error:", error.response.data);
+        } else {
+            console.error("Error:", error.message);
+        }
+        setError('Không thể tạo loại hoa. Vui lòng thử lại.');
+        setSuccessMessage('');
     }
-  };
+};
+
+
+
 
   return (
     <div className="create-flower-form">
@@ -164,15 +159,14 @@ const CreateFlowerForm = ({ postID }) => {
               />
             </label>
 
-            {/* <label>
-              URL hình ảnh:
+            <label>
+              Ảnh hoa:
               <input
-                type="text"
+                type="file"
                 name="imageUrl"
-                value={flower.imageUrl}
                 onChange={(e) => handleFlowerChange(index, e)}
               />
-            </label> */}
+            </label>
 
             <label>
               Chọn loại hoa:
@@ -197,7 +191,6 @@ const CreateFlowerForm = ({ postID }) => {
                 name="eventType"
                 value={flower.eventType}
                 onChange={(e) => handleFlowerChange(index, e)}
-                required
               >
                 <option value="Không">Không</option>
                 <option value="Có">Có</option>
@@ -215,12 +208,6 @@ const CreateFlowerForm = ({ postID }) => {
                   required={flower.eventType === 'Có'}
                 />
               </label>
-            )}
-
-            {flowers.length > 1 && (
-              <button type="button" onClick={() => removeFlower(index)}>
-                Xóa Loại Hoa
-              </button>
             )}
           </div>
         ))}

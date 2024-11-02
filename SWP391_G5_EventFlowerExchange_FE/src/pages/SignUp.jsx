@@ -50,14 +50,16 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (password !== confirmPassword) {
       setErrorMessage('Mật khẩu không giống nhau !');
       return;
     } else {
       setErrorMessage('');
     }
-
+  
+    setLoading(true); // Start loading
+  
     try {
       // API request to send signup data to the server
       await api.post('http://localhost:8080/identity/users/create', {
@@ -66,20 +68,18 @@ const SignUp = () => {
         password,
         phoneNumber,
       });
-
-      // Hiển thị thông báo thành công và bật pop-up
-    setPopupMessage("Bạn đã tạo tài khoản thành công !");
-    setShowPopup(true); // Hiển thị pop-up
-
-      
-
-      // Optionally, redirect to login page or clear the form
+  
+      // Show success message and popup
+      setPopupMessage("Bạn đã tạo tài khoản thành công !");
+      setShowPopup(true); // Display the popup
     } catch (error) {
       // Handle error response
       setErrorMessage(
         error.response?.data?.message || 'Tạo tài khoản không thành công . Vui lòng thử lại .'
       );
       console.error('Signup error:', error);
+    } finally {
+      setLoading(false); // Stop loading regardless of outcome
     }
   };
 

@@ -77,12 +77,6 @@ function Menu() {
     setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
   };
 
-  // Xử lý khi nhấn vào bài viết
-  // const handlePostClick = (id) => {
-  //   navigate(`/flower/${id}`);
-
-  // };
-
   // Xử lý khi nhấn vào bài viết khi bài viết hết hạn
   const handlePostClick = (flower) => {
     if (dayjs(flower.expiryDate).isValid() && dayjs(flower.expiryDate).isBefore(dayjs())) {
