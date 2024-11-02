@@ -1,17 +1,16 @@
-/* Full page background with gradient */
+
 .login-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 125vh;
+  /* height: 125vh; */
   background-image: url('../assets/backgroundlogin.jpg');
   background-size: cover;
   background-position: center;
-  padding-top: 10px;
 }
 
-/* Centered card with white background */
+
 .login-card {
   background-color: #fff;
   padding: 30px;
@@ -19,11 +18,13 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 350px;
-  height: 100%;
-  backdrop-filter: blur(5px); /* Slight blur effect */
-  margin: 50px;
-  /* margin-bottom: 30px; */
-  ;
+  height: 65%;
+  backdrop-filter: blur(5px); 
+  margin-bottom: 30px;
+  margin-top: 10px;
+  
+
+  
 }
 
 h2 {
@@ -34,7 +35,7 @@ h2 {
   
 }
 
-/* Form input */
+
 .form-input{
   border: 1px solid #666 ;
   border-radius: 5px;
@@ -72,11 +73,7 @@ h2 {
   background-color: #fff;
   color: #999;
 }
-/*playhoder-shown*/
 
-
-
-/* "Forgot password" link */
 .forgot-password-button {
   text-align: right;
   font-size: 14px;
@@ -86,19 +83,19 @@ h2 {
 }
 
 .forgot-password-button a {
-  color: inherit; /* Kế thừa màu từ .forgot-password-button */
-  text-decoration: none; /* Xóa gạch chân */
-  transition: color 0.3s ease; /* Tạo hiệu ứng chuyển màu */
+  color: inherit;
+  text-decoration: none; 
+  transition: color 0.3s ease; 
 }
 
 .forgot-password-button:hover a {
-  color: #FFC0CB; /* Màu hồng nhạt khi di chuột */
+  color: #FFC0CB; 
   opacity: 0.9;
 }
 
-/* Gradient button with smooth transition */
+
 .login-btn {
-  background: #FFC0CB; /* Pink background */
+  background: #FFC0CB; 
   color: white;
   padding: 12px;
   width: 100%;
@@ -113,7 +110,7 @@ h2 {
   opacity: 0.9;
 }
 
-/* Social media icons styling */
+
 .social-login {
   margin: 20px 0;
   color: #777;
@@ -146,9 +143,8 @@ h2 {
   color: white;
 }
 
-/* Signup link styling */
 .signup-link {
-  margin-top: 20px;
+  margin-top: 40%;
   font-size: 14px;
   color: black;
 }
@@ -169,12 +165,19 @@ h2 {
   margin-right: 10px;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #888; /* Adjust color as needed */
+  color: #888;
   
 }
 
 .password-toggle-icon:hover {
-  color: #555; /* Darken the color on hover */
+  color: #555; 
+}
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
+  margin-left: 43px;
+  transform: scale(0.76); 
+  transform-origin: left; 
 }
 
 

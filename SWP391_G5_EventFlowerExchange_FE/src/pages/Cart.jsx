@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/Cart.css';
 import Footer from '../components/Footer';
 import '../styles/popup.css';
+import Navbar from "../components/Navbar.jsx";
 
 const Cart = ({ cartItems, setCartItems }) => {
   const navigate = useNavigate();
@@ -69,6 +70,7 @@ const Cart = ({ cartItems, setCartItems }) => {
 
   return (
     <div className="cart-page">
+    {/* <Navbar/> */}
       <div className="cart-header">
         <h2 className='cart-title'>Giỏ Hàng</h2>
       </div>

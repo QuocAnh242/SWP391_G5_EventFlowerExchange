@@ -76,12 +76,12 @@ const ManageSellerOrders = ({ userID }) => {
         {orders.map((orderItem) => (
           <div className="order-card" key={orderItem.order.orderID}>
             <div className="order-info">
-              <h3 className="order-id">Mã Đơn Hàng: #{orderItem.order.orderID}</h3>
-              <p className="order-date">Ngày Đặt: {new Date(orderItem.order.orderDate).toLocaleDateString('vi-VN')}</p>
-              <p className="order-address">Địa Chỉ: {orderItem.order.shippingAddress}</p>
-              <p className="order-total">Tổng Giá: {orderItem.order.totalPrice.toLocaleString()} VND</p>
-              <p className="order-status-text">Trạng Thái: {orderItem.order.status}</p>
-              <p className="buyer-name">Người Mua: {orderItem.order.user.username}</p>
+              <h3 className="order-id">Đơn Hàng #{orderItem.order.orderID}</h3>
+              <p className="order-date">Ngày đặt : {new Date(orderItem.order.orderDate).toLocaleDateString('vi-VN')}</p>
+              <p className="order-address">Địa chỉ : {orderItem.order.shippingAddress}</p>
+              <p className="order-total">Tổng giá : {orderItem.order.totalPrice.toLocaleString()} VND</p>
+              <p className="order-status-text">Trạng thái : {orderItem.order.status}</p>
+              <p className="buyer-name">Người mua : {orderItem.order.user.username}</p>
               <button className="details-button" onClick={() => viewOrderDetails(orderItem)}>Xem Chi Tiết</button>
             </div>
           </div>
@@ -99,7 +99,7 @@ const ManageSellerOrders = ({ userID }) => {
                 className={`tab-button ${activeTab === 'orderDetails' ? 'active' : ''}`}
                 onClick={() => setActiveTab('orderDetails')}
               >
-                Chi Tiết Đơn Hàng
+                Chi tiết đơn hàng
               </button>
               <button
                 className={`tab-button ${activeTab === 'productDetails' ? 'active' : ''}`}
@@ -117,18 +117,18 @@ const ManageSellerOrders = ({ userID }) => {
 
             {activeTab === 'orderDetails' && (
               <div className="order-details-content">
-                <h3 className="modal-title">Chi Tiết Đơn Hàng #{selectedOrder.order.orderID}</h3>
-                <p><strong>Ngày Đặt:</strong> {new Date(selectedOrder.order.orderDate).toLocaleDateString('vi-VN')}</p>
-                <p><strong>Địa Chỉ Giao Hàng:</strong> {selectedOrder.order.shippingAddress}</p>
-                <p><strong>Người Mua:</strong> {selectedOrder.order.user.username}</p>
-                <p><strong>Email Người Mua:</strong> {selectedOrder.order.user.email}</p>
-                <p><strong>Phương Thức Thanh Toán:</strong> {selectedOrder.payment.method}</p>
+                <h2 className="modal-title">Chi Tiết Đơn Hàng #{selectedOrder.order.orderID}</h2>
+                <p><strong>Ngày đặt:</strong> {new Date(selectedOrder.order.orderDate).toLocaleDateString('vi-VN')}</p>
+                {/* <p><strong>Địa chỉ giao hàng:</strong> {selectedOrder.order.shippingAddress}</p> */}
+                <p><strong>Người mua:</strong> {selectedOrder.order.user.username}</p>
+                <p><strong>Email người mua:</strong> {selectedOrder.order.user.email}</p>
+                <p><strong>Phương thức thanh toán:</strong> {selectedOrder.payment.method}</p>
               </div>
             )}
 
             {activeTab === 'productDetails' && (
               <div className="product-details-content">
-                <h4 className="product-details-title">Chi Tiết Sản Phẩm</h4>
+                <h2 className="modal-title">Chi Tiết Sản Phẩm</h2>
                 {selectedOrder.flowerBatchesWithQuantity?.map((item, index) => (
                   <div key={index} className="product-details">
                     <p><strong>Sản phẩm:</strong> {item.flowerBatch.flowerName}</p>
@@ -143,7 +143,8 @@ const ManageSellerOrders = ({ userID }) => {
             {activeTab === 'deliveryDetails' && (
               <div className="delivery-details-content">
                 <p><strong>Mã đơn hàng :#</strong>{selectedOrder.delivery.deliveryID}</p>
-                <p><strong>Trạng Thái Giao Hàng:</strong> {selectedOrder.delivery.availableStatus}</p>
+                {/* <p><strong>Trạng Thái Giao Hàng:</strong> {selectedOrder.delivery.availableStatus}</p> */}
+                <p className="order-address">Địa chỉ : {selectedOrder.order.shippingAddress}</p>
                 <p><strong>Ngày Giao Dự Kiến:</strong> {new Date(selectedOrder.delivery.deliveryDate).toLocaleDateString('vi-VN')}</p>
 
                 <button

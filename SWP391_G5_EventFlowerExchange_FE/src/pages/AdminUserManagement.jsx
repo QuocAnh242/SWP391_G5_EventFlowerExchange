@@ -5,6 +5,7 @@ import { Pie, Bar } from 'react-chartjs-2';
 import 'chart.js/auto'; // This is needed for Chart.js
 import '../styles/AdminUserManagement.css';
 import '../styles/popup.css';
+import Navbar from "../components/Navbar.jsx";
 
 const AdminUserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -200,6 +201,7 @@ const handleDeleteNotification = async (notificationID) => {
 
     return (
       <div>
+      
         <h2 className='admin-title'>Tổng quan</h2>
         <div className="dashboard">
           <div className="stat">
@@ -251,7 +253,7 @@ const handleDeleteNotification = async (notificationID) => {
               />
             </div>
             {filteredUsers.length > 0 ? (
-              <table>
+              <table className="admin-user-table">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -304,7 +306,7 @@ const handleDeleteNotification = async (notificationID) => {
           <div>
             <h2 className='admin-title'>Quản lý bài viết</h2>
             {posts.length > 0 ? (
-              <table>
+              <table className="admin-user-table">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -338,7 +340,7 @@ const handleDeleteNotification = async (notificationID) => {
           <div>
             <h2 className='admin-title'>Quản lý đơn hàng</h2>
             {orders.length > 0 ? (
-              <table>
+              <table className="admin-user-table">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -371,7 +373,7 @@ const handleDeleteNotification = async (notificationID) => {
     <div>
       <h2 className='admin-title'>Yêu cầu thành người bán hàng </h2>
       {notifications.length > 0 ? (
-        <table className="notification-table">
+        <table className="admin-user-table">
           <thead>
             <tr>
               <th>Tên người dùng</th>
@@ -407,6 +409,7 @@ const handleDeleteNotification = async (notificationID) => {
 
   return (
     <div className="admin-panel">
+    <Navbar/>
       {/* Sidebar */}
       <div className="sidebar">
         <ul>

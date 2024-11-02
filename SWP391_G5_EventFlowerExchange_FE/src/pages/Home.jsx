@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import Footer from '../components/Footer';
 import Services from '../components/homecomponents/Services';
 import NewProducts from '../components/homecomponents/NewProducts';
-
+import Navbar from "../components/Navbar.jsx";
 // Import hình ảnh banner
 import BannerImage1 from '../assets/banner/banner1.jpg';
 import BannerImage2 from '../assets/banner/banner2.jpg';
@@ -12,6 +12,7 @@ import BannerImage3 from '../assets/banner/banner3.jpg';
 
 // Import hình ảnh cho các phần khác
 import FeaturedImage from '../assets/about-img/a1.jpg';
+import FlowerLoader from '../components/FlowerLoader'; // Import FlowerLoader
 
 import '../styles/Home.css';
 import "slick-carousel/slick/slick.css";
@@ -44,9 +45,10 @@ function Home() {
   }, []);
 
   if (loading) {
-    return (
+    return (  
       <div className="loading-container">
         <div className="spinner"></div>
+        {/* <FlowerLoader />  */}
         <p className="loading-text">Đang tải dữ liệu...</p>
       </div>
     );
@@ -54,6 +56,7 @@ function Home() {
 
   return (
     <div className="home">
+    {/* <Navbar/> */}
       <div className="headerContainer">
         {/* Carousel */}
         <Slider {...settings}>

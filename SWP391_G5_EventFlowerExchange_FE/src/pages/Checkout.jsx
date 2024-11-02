@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Checkout.css';
 import Footer from '../components/Footer';
+import Navbar from "../components/Navbar.jsx";
 
 const Checkout = () => {
   const location = useLocation();
@@ -18,6 +19,7 @@ const Checkout = () => {
   };
 
   const handleConfirmCheckout = async () => {
+    setLoading(true);
     setConfirmModalVisible(false);
     await handleCheckout(); // Gọi hàm checkout khi người dùng xác nhận "Có"
   };
@@ -28,6 +30,7 @@ const Checkout = () => {
 
   const handleCheckout = async () => {
     if (!paymentMethod) {
+      setLoading(false); // Bật trạng thái loading khi bắt đầu checkout
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
@@ -63,6 +66,7 @@ const Checkout = () => {
 
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
+      setLoading(false);
       const createdOrder = response.data; // Assuming the response contains the created order details, including orderID
       console.log(createdOrder);
       if (response.status === 200 || response.status === 201) {
@@ -80,7 +84,7 @@ const Checkout = () => {
           const momoUrl = createdOrder.message.split('Payment URL: ')[2];
           window.location.href = momoUrl;
         } else {
-          alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
+          // alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
 
           localStorage.removeItem('cartItems');
           if (typeof setCartItems === 'function') {
@@ -93,6 +97,7 @@ const Checkout = () => {
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error);
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
+      setLoading(false);
     }
   };
 
@@ -116,6 +121,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout">
+    <Navbar/>
       <div className="checkout-header">
         <h2>Xác Nhận Đơn Hàng</h2>
       </div>

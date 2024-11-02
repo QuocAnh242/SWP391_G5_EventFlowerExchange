@@ -1,27 +1,26 @@
 /* Page and content layout */
-.page-container {
+.page-container-sign-up {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
   }
   
   .content-wrap {
-    flex: 1; /* Makes the content take up remaining space, pushing footer down */
+    flex: 1; 
   }
   
-  /* The rest of your existing signup styles */
   .signup-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px;
+    padding: 30px;
     background-image: url('../assets/background-hoa-hong_045205487.jpg');
    
   }
   
   .signup-form {
     background-color: #fff; 
-    padding: 40px 50px;
+    padding: 40px 40px;
     border-radius: 20px; 
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1); 
     width: fit-content; 
@@ -51,6 +50,7 @@
   
   .input-container input {
     width: 100%;
+    max-width: 1000px;
     /* padding: 12px 15px; */
     padding-left: 10px;
     font-size: 16px;
@@ -124,7 +124,7 @@
   
   .input-container input {
     width: 100%;
-    padding-right: 10px; /* Khoảng trống cho icon toggle */
+    padding-right: 30px; 
   }
   
 /* Loading container to center the spinner on the screen */

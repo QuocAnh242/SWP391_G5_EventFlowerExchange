@@ -4,6 +4,7 @@ import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
 import ManageSellerOrders from "../components/profilepagecomponent/MangeSellerOrders.jsx"; // Import the new component
 import "../styles/SellerDashboard.css";
 import { useNavigate } from 'react-router-dom';
+import Navbar from "../components/Navbar.jsx";
 
 const SellerDashboard = () => {
   const [userID, setUserID] = useState(null);
@@ -52,6 +53,7 @@ const SellerDashboard = () => {
 
   return (
     <div className="seller-dashboard">
+    <Navbar/>
       {loading ? (
         <div className="loading-spinner">
           <p>Đang tải dữ liệu...</p>

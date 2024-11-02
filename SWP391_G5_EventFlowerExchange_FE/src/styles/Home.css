@@ -269,27 +269,26 @@
   height: 100vh;
   background-color: #f0f2f5;
   text-align: center;
-  margin: 0; /* Ensure no unwanted margin */
+  margin: 0;
   padding: 0;
 }
 
-/* Spinner styling */
+
 .spinner {
-  border: 8px solid #f3f3f3; /* Light grey for the inactive parts */
-  border-top: 8px solid #FFC0CB; /* Pink for the active part */
+  border: 8px solid #f3f3f3; 
+  border-top: 8px solid #FFC0CB; 
   border-radius: 50%;
   width: 60px;
   height: 60px;
   animation: spin 1s linear infinite;
 }
 
-/* Keyframe animation for spinning effect */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Loading text styling */
+
 .loading-text {
   font-size: 18px;
   color: #333;

@@ -5,6 +5,7 @@ import OrderHistory from "../components/profilepagecomponent/OrderHistory.jsx";
 import BecomeSeller from "../components/profilepagecomponent/BecomeSeller.jsx";  
 import "../styles/ProfilePage.css";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
 
 const ProfilePage = () => {
   const [error, setError] = useState('');
@@ -85,6 +86,7 @@ const ProfilePage = () => {
 
   return (
     <div className="profile-page">
+    <Navbar/>
       {loading ? (
         <div className="loading-spinner">
           <div className="spinner"></div>

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import a2 from '../assets/about-img/a5.jpg'; // Hình ảnh mẫu
 import b1 from '../assets/banner-post.png';
 import dayjs from 'dayjs'; // if using dayjs to manage various formats
+import Navbar from "../components/Navbar.jsx";
 
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
@@ -20,6 +21,9 @@ function Menu() {
   const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
   const [flowersPerPage] = useState(16); // Số lượng hoa mỗi trang
   const postCardRef = useRef([]); // Để lưu refs cho mỗi thẻ bài viết
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState('');
+
 
   // Lấy danh sách hoa khi component được tải
   useEffect(() => {
@@ -41,7 +45,6 @@ function Menu() {
       console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
-
 
   const fetchCategoryList = async () => {
     try {
@@ -74,13 +77,23 @@ function Menu() {
     setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
   };
 
-
-
-
   // Xử lý khi nhấn vào bài viết
-  const handlePostClick = (id) => {
-    navigate(`/flower/${id}`);
+  // const handlePostClick = (id) => {
+  //   navigate(`/flower/${id}`);
+
+  // };
+
+  // Xử lý khi nhấn vào bài viết khi bài viết hết hạn
+  const handlePostClick = (flower) => {
+    if (dayjs(flower.expiryDate).isValid() && dayjs(flower.expiryDate).isBefore(dayjs())) {
+      // alert("Bài sự kiện đã hết hạn"); 
+      setPopupMessage("Bài sự kiện đã hết hạn !");
+      setShowPopup(true); // Hiển thị pop-up
+    } else {
+      navigate(`/flower/${flower.postID}`);
+    }
   };
+
 
 
   useEffect(() => {
@@ -194,7 +207,9 @@ function Menu() {
   }
 
   return (
+    // <div><Navbar/>
     <div className="shop-container">
+
       <div className="sidebar-post-exchange">
         <h3 className="sidebar-title">Danh mục hoa</h3>
         <hr className="sidebar-divider" />
@@ -266,8 +281,8 @@ function Menu() {
             <div
               className="post-card scroll-appear"
               key={index}
-              ref={(el) => postCardRef.current[index] = el}
-              onClick={() => handlePostClick(flower.postID)}
+              ref={(el) => (postCardRef.current[index] = el)}
+              onClick={() => handlePostClick(flower)} // Pass the flower object
             >
               <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
               <h3>{flower.title}</h3>
@@ -319,8 +334,26 @@ function Menu() {
           </button>
         </div>
       </div>
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">❌</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
       <Footer />
+
     </div>
+    // </div>
   );
 }
 

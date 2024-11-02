@@ -11,6 +11,7 @@ import FeedbackList from '../components/flowdetailcomponents/FeedbackList.jsx';
 import RelatedPosts from '../components/flowdetailcomponents/RelatedPosts.jsx';
 import Footer from '../components/Footer.jsx';
 import '../styles/popup.css';
+import Navbar from "../components/Navbar.jsx";
 
 
 function FlowerBatchDetail() {
@@ -121,6 +122,7 @@ function FlowerBatchDetail() {
 
   return (
     <div>
+    {/* <Navbar/> */}
       <div className="breadcrumb-flower-detail">
         <Link to="/" className="home-link-breadcrumb-flower">Trang chủ</Link>
         <span> / </span>

@@ -75,7 +75,7 @@
   left: 57%;
   transform: translate(-50%, -50%) scale(0.9);
   width: 90%;
-  height: 50%;
+  height: 70%;
   max-width: 800px;
   background-color: #fff;
   padding: 25px;
@@ -106,7 +106,8 @@
 /* Close button */
 .order-detail .close-btn {
   float: right;
-  font-size: 24px;
+  margin-left: 6px;
+  font-size: 34px;
   cursor: pointer;
   color: #999;
   transition: color 0.2s ease;
@@ -141,12 +142,69 @@
 .order-history-title {
  color: #4caf50;
  text-align: center;
- font-size: 25px;
+ font-size: 35px;
+ margin-bottom: 30px;
 }
-/* p {
+p {
+  font-size: 23px;
+  /* margin-top: 25px; */
+}
+
+.order-info-table {
+  /* margin-top: 10px; */
+  width: 100%;
+  border-collapse: collapse;
+  font-family: Arial, sans-serif;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.order-info-table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+.order-info-table tr:last-child {
+  border-bottom: none;
+}
+
+.order-info-table td {
+  padding: 12px 16px;
+}
+
+.order-info-table .label {
   font-size: 25px;
-  margin-top: 25px;
-} */
+  font-weight: bold;
+  background-color: #f8f9fa;
+  color: #333;
+  text-align: left;
+  width: 40%; 
+}
+
+.order-info-table .value {
+  color: #555;
+  text-align: left;
+  width: 60%;
+  font-size: 20px;
+}
+
+.order-info-table .order-id-row td,
+.order-info-table .total-price-row td {
+  color: #2c3e50;
+}
+
+.order-info-table .total-price-row .value {
+  color: #d9534f; /* màu đỏ nổi bật cho tổng cộng */
+  font-weight: bold;
+}
+
+
+
+
+.order-info-table tr:nth-child(even) .label {
+  background-color: #e9ecef; /* Màu nền xen kẽ cho hàng chẵn */
+}
 .order-history-title{
   margin-top: 10px;
   text-align: center;
@@ -163,74 +221,69 @@
   display: block;
   animation: fadeSlideIn 0.3s ease;
 }
-
-/* Tổng thể bảng */
+/* CSS cho bản chi tiết hoa */
 .flower-detail-table {
+  width: 100%;
   border-collapse: collapse;
-  margin-top: 40px;
-  margin-right: 40px;
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Đầu bảng */
-.flower-detail-table thead {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.flower-detail-table th {
-  padding: 12px 15px;
-  text-align: left;
-  font-weight: bold;
-}
-
-/* Hàng của bảng */
-.flower-detail-table tbody tr {
-  border-bottom: 1px solid #dddddd;
-}
-
-.flower-detail-table tbody tr:nth-of-type(even) {
-  background-color: #f2f2f2;
-}
-
-.flower-detail-table tbody tr:hover {
-  background-color: #e0f7e0;
-}
-
-/* Các ô dữ liệu */
-.flower-detail-table td {
-  padding: 12px 15px;
-  color: #333;
-}
-
-/* Các ô đặc biệt */
-.flower-name {
-  font-weight: bold;
-}
-
-.flower-total-price {
-  font-weight: bold;
-  color: #d32f2f;
-}
-
-.flower-unit-price,
-.flower-quantity,
-.flower-type {
-  color: #555;
-}
-
-/* Đường viền và bo tròn */
-.flower-detail-table th,
-.flower-detail-table td {
-  border-bottom: 1px solid #ddd;
-}
-
-.flower-detail-table {
+  margin: 20px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   overflow: hidden;
 }
+
+.flower-detail-table thead {
+  background-color: #4caf50;
+}
+
+.flower-detail-table th,
+.flower-detail-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 20px;
+}
+
+.flower-detail-table th {
+  font-weight: bold;
+  color: #333;
+}
+
+.flower-detail-table .flower-name,
+.flower-detail-table .flower-type {
+  text-align: left;
+  padding-left: 16px;
+}
+
+.flower-detail-table .flower-quantity,
+.flower-detail-table .flower-unit-price,
+.flower-detail-table .flower-total-price {
+  color: #d9534f; 
+  font-weight: bold;
+}
+
+/* .flower-detail-row:nth-child(even) {
+  background-color: #f9f9f9; 
+} */
+
+/* .flower-detail-row:hover {
+  background-color: #f1f1f1; 
+  transition: background-color 0.3s ease;
+} */
+
+
+
+/*Responesive cho mobile*/
+@media (max-width: 768px) {
+  .flower-detail-table th,
+  .flower-detail-table td {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+}
+
+
+
 
 
 

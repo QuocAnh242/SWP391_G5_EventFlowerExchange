@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import "../styles/ForgotPassword.css";
 import Footer from '../components/Footer';
+import Navbar from "../components/Navbar.jsx";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="page-container">
+    <Navbar/>
       <div className="content-wrapper forgot-password">
         <form onSubmit={handleForgotPassword}>
         <h2>Quên mật khẩu</h2>

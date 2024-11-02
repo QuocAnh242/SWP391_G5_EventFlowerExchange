@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../config/axios';
 import '../styles/Login.css';
 import Footer from '../components/Footer';
+import ReCAPTCHA from "react-google-recaptcha";
+import Navbar from "../components/Navbar.jsx";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +14,16 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [verfied, setVerfied] = useState(false);
+
+  //hảmđể set recaptcha
+  function onChange(value) {
+    console.log("Captcha value:", value);
+    setVerfied(true);
+  }
+
+
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -47,78 +59,76 @@ const Login = () => {
     const loginValues = { email, password };
 
     try {
-        const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
+      const response = await api.post("http://localhost:8080/identity/auth/token", loginValues);
 
-        if (response.data && response.data.result) {
-            const { token, isBlocked, status } = response.data.result;
+      if (response.data && response.data.result) {
+        const { token, isBlocked, status } = response.data.result;
 
-            // Log the result to confirm the structure
-            console.log("Login Response Result:", response.data.result);
+        // Log the result to confirm the structure
+        console.log("Login Response Result:", response.data.result);
 
-            // Check if account is blocked based on response before decoding the token
-            if (isBlocked || status === 'blocked') {
-                setError("Tài khoản đã bị khóa");
-                return;
-            }
-
-            if (!token) {
-                console.error("Token not found in response");
-                return;
-            }
-
-            localStorage.setItem("token", token);
-            const decodedPayload = decodeToken(token);
-
-            const user = {
-                address: decodedPayload.address,
-                email: decodedPayload.email,
-                exp: decodedPayload.exp,
-                iat: decodedPayload.iat,
-                iss: decodedPayload.iss,
-                phoneNumber: decodedPayload.phoneNumber,
-                roles: decodedPayload.roles,
-                scope: decodedPayload.scope,
-                sub: decodedPayload.sub,
-                userID: decodedPayload.userID,
-                username: decodedPayload.username,
-            };
-
-            localStorage.setItem("user", JSON.stringify(user));
-
-            const { roles } = decodedPayload;
-            if (roles.includes('ADMIN')) {
-                navigate('/admin-user-management');
-            } else if (roles.includes('BUYER')) {
-                navigate('/');  // Navigate to profile page after login
-            } else {
-                setError("Tài khoản hoặc mật khẩu sai");
-            }
-            window.location.reload();
-        } else {
-            setError("Tài khoản hoặc mật khẩu sai");
+        // Check if account is blocked based on response before decoding the token
+        if (isBlocked || status === 'blocked') {
+          setError("Tài khoản đã bị khóa");
+          return;
         }
+
+        if (!token) {
+          console.error("Token not found in response");
+          return;
+        }
+
+        localStorage.setItem("token", token);
+        const decodedPayload = decodeToken(token);
+
+        const user = {
+          address: decodedPayload.address,
+          email: decodedPayload.email,
+          exp: decodedPayload.exp,
+          iat: decodedPayload.iat,
+          iss: decodedPayload.iss,
+          phoneNumber: decodedPayload.phoneNumber,
+          roles: decodedPayload.roles,
+          scope: decodedPayload.scope,
+          sub: decodedPayload.sub,
+          userID: decodedPayload.userID,
+          username: decodedPayload.username,
+        };
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        const { roles } = decodedPayload;
+        if (roles.includes('ADMIN')) {
+          navigate('/admin-user-management');
+        } else if (roles.includes('BUYER')) {
+          navigate('/');  // Navigate to profile page after login
+        } else {
+          setError("Tài khoản hoặc mật khẩu sai");
+        }
+        window.location.reload();
+      } else {
+        setError("Tài khoản hoặc mật khẩu sai");
+      }
 
     } catch (error) {
-        // Set a specific error if the account is blocked or return a generic error
-        if (error.response && error.response.data && error.response.data.isBlocked) {
-            setError("Tài khoản đã bị khóa");
-        } else {
-            setError("Tài khoản đã bị khóa");
-        }
-        console.error("Login error:", error.response ? error.response.data : error.message);
+      // Set a specific error if the account is blocked or return a generic error
+      if (error.response && error.response.data && error.response.data.isBlocked) {
+        setError("Tài khoản đã bị khóa");
+      } else {
+        setError("Tài khoản đã bị khóa");
+      }
+      console.error("Login error:", error.response ? error.response.data : error.message);
     }
-};
-
-
-
-
-
+  };
+  //Login Google
+  
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="login-container">
+    <div className="login-container">'
+      <Navbar />
       <div className="login-card">
         <h2>Đăng nhập</h2>
         <form onSubmit={handleLogin}>
@@ -155,9 +165,14 @@ const Login = () => {
           <div className="forgot-password-button">
             <Link to="/forgot-password">Quên mật khẩu?</Link>
           </div>
+          <ReCAPTCHA className="recaptcha-container"
+            sitekey="6Lc6HXMqAAAAAM9XrwtWGbUzz_Duzhg3vQGct6gz"
+            onChange={onChange}
+          />,
           {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
 
-          <button type="submit" className="login-btn">
+          <button type="submit" className="login-btn" disabled={!verfied}>
+          {/* <button type="submit" className="login-btn" > */}
             Đăng Nhập
           </button>
         </form>

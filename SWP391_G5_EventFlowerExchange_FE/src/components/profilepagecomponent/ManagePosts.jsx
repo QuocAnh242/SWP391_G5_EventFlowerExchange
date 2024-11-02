@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './ManagePosts.css'; // Add CSS for styling
+import './ManagePosts.css'; 
 
 const ManagePosts = () => {
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [flowers, setFlowers] = useState([]);
-  const [selectedPost, setSelectedPost] = useState(null); // For editing
-  const [userID, setUserID] = useState(null); // State to hold userID
+  // const [flowers, setFlowers] = useState([]);
+  const [selectedPost, setSelectedPost] = useState(null); 
+  const [userID, setUserID] = useState(null); 
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -27,7 +27,7 @@ const ManagePosts = () => {
   const fetchPosts = async () => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/posts/api/${userID}`);
-      setPosts(response.data || []); // Đảm bảo posts là một mảng
+      setPosts(response.data || []); 
       setLoading(false);
     } catch (error) {
       console.error('Lỗi khi tải danh sách bài post:', error);
@@ -38,7 +38,7 @@ const ManagePosts = () => {
   const deletePost = async (postID) => {
     try {
       await axios.delete(`http://localhost:8080/identity/posts/${postID}`);
-      setPosts(posts.filter(post => post.postID !== postID)); // Remove deleted post from the list
+      setPosts(posts.filter(post => post.postID !== postID));
     } catch (error) {
       console.error('Error deleting post:', error);
     }
@@ -51,8 +51,8 @@ const ManagePosts = () => {
   const handleSavePost = async () => {
     try {
       await axios.put(`http://localhost:8080/identity/posts/${selectedPost.postID}`, selectedPost);
-      setSelectedPost(null); // Clear the editing form
-      fetchPosts(); // Refresh posts
+      setSelectedPost(null);
+      fetchPosts(); 
     } catch (error) {
       console.error('Error saving post:', error);
     }

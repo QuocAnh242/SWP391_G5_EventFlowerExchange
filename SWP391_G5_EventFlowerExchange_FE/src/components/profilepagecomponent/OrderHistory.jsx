@@ -81,56 +81,78 @@ const OrderHistory = () => {
             <div className={`tab-content ${activeTab === "orderInfo" ? "active" : ""}`}>
               <h3 className="order-history-title">Thông Tin Đơn Hàng</h3>
               {selectedOrderDetails && (
-                <div className="order-info">
-                  <p><strong>Mã đơn hàng:</strong> {selectedOrderDetails[0]?.order?.orderID}</p>
-                  <p><strong>Ngày đặt:</strong> {selectedOrderDetails[0]?.order?.orderDate ? new Date(selectedOrderDetails[0]?.order?.orderDate).toLocaleDateString('vi-VN') : "N/A"}</p>
-                  <p><strong>Tổng cộng:</strong> {selectedOrderDetails[0]?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</p>
-                  <p><strong>Phương thức thanh toán:</strong> {selectedOrderDetails[0]?.payment?.method || "N/A"}</p>
-                  <p><strong>Địa chỉ giao hàng:</strong> {selectedOrderDetails[0]?.order?.shippingAddress || "N/A"}</p>
-                  <p><strong>Trạng thái:</strong> {selectedOrderDetails[0]?.order?.status || "N/A"}</p>
-                </div>
+                <table className="order-info-table">
+                  <tbody>
+                    <tr className="order-id-row">
+                      <td className="label">Mã đơn hàng</td>
+                      <td className="value">{selectedOrderDetails[0]?.order?.orderID}</td>
+                    </tr>
+                    <tr className="order-date-row">
+                      <td className="label">Ngày đặt</td>
+                      <td className="value">
+                        {selectedOrderDetails[0]?.order?.orderDate
+                          ? new Date(selectedOrderDetails[0]?.order?.orderDate).toLocaleDateString('vi-VN')
+                          : "N/A"}
+                      </td>
+                    </tr>
+                    <tr className="total-price-row">
+                      <td className="label">Tổng cộng</td>
+                      <td className="value">{selectedOrderDetails[0]?.order?.totalPrice?.toLocaleString() || "0"} VNĐ</td>
+                    </tr>
+                    <tr className="payment-method-row">
+                      <td className="label">Phương thức thanh toán</td>
+                      <td className="value">{selectedOrderDetails[0]?.payment?.method || "N/A"}</td>
+                    </tr>
+                    <tr className="shipping-address-row">
+                      <td className="label">Địa chỉ giao hàng</td>
+                      <td className="value">{selectedOrderDetails[0]?.order?.shippingAddress || "N/A"}</td>
+                    </tr>
+                    <tr className="status-row">
+                      <td className="label">Trạng thái</td>
+                      <td className="value">{selectedOrderDetails[0]?.order?.status || "N/A"}</td>
+                    </tr>
+                  </tbody>
+                </table>
               )}
             </div>
 
+
             {/* Tab Chi Tiết Sản Phẩm */}
             <div className={`tab-content ${activeTab === "productDetails" ? "active" : ""}`}>
-  <h3 className='order-history-title'>Chi Tiết Sản Phẩm</h3>
-  {selectedOrderDetails && (
-    <div className="order-details">
-      {selectedOrderDetails.map((detail, index) => (
-        <div key={index} className="product-detail">
-        <table className="flower-detail-table">
-  <thead>
-    <tr>
-      <th>Sản phẩm</th>
-      <th>Loại hoa</th>
-      <th>Số lượng</th>
-      <th>Giá đơn vị</th>
-      <th>Tổng tiền</th>
-    </tr>
-  </thead>
-  <tbody>
-    {detail.flowerBatchesWithQuantity.map((batch, idx) => (
-      <tr key={idx} className="flower-detail-row">
-        <td className="flower-name">{batch.flowerBatch?.flowerName || "N/A"}</td>
-        <td className="flower-type">{batch.flowerBatch?.category?.flowerType || "N/A"}</td>
-        <td className="flower-quantity">{batch.orderQuantity || "0"}</td>
-        <td className="flower-unit-price">{batch.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</td>
-        <td className="flower-total-price">{((batch.orderQuantity || 0) * (batch.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</td>
-        {/* <td className="flower-status">{batch.flowerBatch?.status || "N/A"}</td> */}
-      </tr>
-    ))}
-  </tbody>
-</table>
+              <h3 className='order-history-title'>Chi Tiết Sản Phẩm</h3>
+              {selectedOrderDetails && (
+                <div className="order-flower-details">
+                  {selectedOrderDetails.map((detail, index) => (
+                    <div key={index} className="product-detail">
+                      <table className="flower-detail-table">
+                        <thead>
+                          <tr>
+                            <th>Sản phẩm</th>
+                            <th>Loại hoa</th>
+                            <th>Số lượng</th>
+                            <th>Giá đơn vị</th>
+                            <th>Tổng tiền</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {detail.flowerBatchesWithQuantity.map((batch, idx) => (
+                            <tr key={idx} className="flower-detail-row">
+                              <td className="flower-name">{batch.flowerBatch?.flowerName || "N/A"}</td>
+                              <td className="flower-type">{batch.flowerBatch?.category?.flowerType || "N/A"}</td>
+                              <td className="flower-quantity">{batch.orderQuantity || "0"}</td>
+                              <td className="flower-unit-price">{batch.flowerBatch?.price?.toLocaleString() || "0"} VNĐ</td>
+                              <td className="flower-total-price">{((batch.orderQuantity || 0) * (batch.flowerBatch?.price || 0)).toLocaleString() || "0"}₫</td>
+                              {/* <td className="flower-status">{batch.flowerBatch?.status || "N/A"}</td> */}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
 
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-
-
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             {/* Tab Thông Tin Giao Hàng */}
             <div className={`tab-content ${activeTab === "deliveryInfo" ? "active" : ""}`}>
               <h3 className='order-history-title'>Thông Tin Giao Hàng</h3>
