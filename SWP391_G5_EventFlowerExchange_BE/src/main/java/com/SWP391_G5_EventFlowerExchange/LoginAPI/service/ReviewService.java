@@ -10,6 +10,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,6 +33,9 @@ public class ReviewService {
         review.setRating(reviewRequest.getRating());
         review.setComment(reviewRequest.getComment());
         review.setDeliveryRating(reviewRequest.getDeliveryRating());
+        review.setCreatedAt(LocalDateTime.now());
+
+        
         return reviewRepository.save(review);
     }
 

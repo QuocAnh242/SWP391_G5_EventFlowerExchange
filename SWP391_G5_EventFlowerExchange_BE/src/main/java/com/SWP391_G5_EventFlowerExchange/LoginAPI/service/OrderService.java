@@ -118,6 +118,7 @@ public class OrderService implements IOrderService {
         notification.setNotificationType("Order Creation");
         notification.setUser(savedOrder.getUser());
         iNotificationsRepository.save(notification);
+
         // gửi mail về khi order
         emailService.sendOrderConfirmationEmail(order);
 

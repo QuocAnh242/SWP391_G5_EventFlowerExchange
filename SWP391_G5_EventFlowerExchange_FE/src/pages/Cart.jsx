@@ -4,12 +4,32 @@ import '../styles/Cart.css';
 import Footer from '../components/Footer';
 import '../styles/popup.css';
 import Navbar from "../components/Navbar.jsx";
+import axios from 'axios';
 
 const Cart = ({ cartItems, setCartItems }) => {
   const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [popupMessage, setPopupMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [imageUrls, setImageUrls] = useState({});
+
+  // Fetch image for a specific flowerID
+  const fetchImage = async (flowerID) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
+        responseType: 'blob', // Important for handling image data
+      });
+      const imageUrl = URL.createObjectURL(response.data);
+      setImageUrls((prev) => ({ ...prev, [flowerID]: imageUrl }));
+    } catch (error) {
+      console.error("Error fetching image:", error);
+    }
+  };
+
+  // Fetch images for all items in the cart
+  useEffect(() => {
+    cartItems.forEach(item => fetchImage(item.flowerID));
+  }, [cartItems]);
 
   const handleQuantityChange = async (id, delta) => {
     const updatedItems = cartItems.map((item) =>
@@ -95,7 +115,11 @@ const Cart = ({ cartItems, setCartItems }) => {
                 <tr key={item.flowerID}>
                   <td>{item.flowerName}</td>
                   <td>
-                    <img src={item.imageUrl || 'default-image-url'} alt="Product" className="cart-image" />
+                    <img 
+                      src={imageUrls[item.flowerID] || 'default-image-url'} 
+                      alt="Product" 
+                      className="cart-image" 
+                    />
                   </td>
                   <td>{item.price.toLocaleString()} VNĐ</td>
                   <td>

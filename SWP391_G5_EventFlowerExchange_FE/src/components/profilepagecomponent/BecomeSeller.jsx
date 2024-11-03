@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from 'react';
 import axios from "axios";
-
+import './BecomeSeller.css'
 const BecomeSeller = ({ setError }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
   const handleBecomeSeller = async () => {
     try {
       // Retrieve the user from localStorage and extract userID
@@ -26,7 +29,9 @@ const BecomeSeller = ({ setError }) => {
       const response = await axios.post(`http://localhost:8080/identity/noti/`, notificationData);
 
       if (response.status === 201) {
-        alert('Yêu cầu trở thành người bán hàng của bạn đã được gửi đến quản trị viên.');
+        // Display popup message upon successful request
+        setPopupMessage("Yêu cầu trở thành người bán hàng của bạn đã được gửi đến quản trị viên!");
+        setShowPopup(true); // Show the popup
       }
     } catch (error) {
       console.error('Error sending seller request notification:', error);
@@ -41,6 +46,22 @@ const BecomeSeller = ({ setError }) => {
       <button className="confirm-seller-button" onClick={handleBecomeSeller}>
         Xác nhận
       </button>
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => setShowPopup(false)} // Close the popup
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

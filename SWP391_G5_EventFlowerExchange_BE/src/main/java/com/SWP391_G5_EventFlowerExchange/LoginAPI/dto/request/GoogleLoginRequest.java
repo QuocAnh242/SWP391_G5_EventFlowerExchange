@@ -8,11 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ReviewRequest {
-   int userID; // User submitting the review
-   int flowerID; // Flower being reviewed
-   int rating; // Rating given
-   String comment; // Feedback comment
-   int deliveryRating;
+public class GoogleLoginRequest {
+    String token; // Using token is sent by Frontend
 }
-

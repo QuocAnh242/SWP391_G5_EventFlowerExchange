@@ -215,7 +215,7 @@ p {
 .order-history-deli{
   margin-top: 50px;
   text-align: center;
-  font-size: 23px;
+  font-size: 28px;
 }
 .tab-content.active {
   display: block;
@@ -270,6 +270,31 @@ p {
   background-color: #f1f1f1; 
   transition: background-color 0.3s ease;
 } */
+.review-button {
+  margin-top: 20%;
+  margin-left: 29%;
+  background-color: #4CAF50; /* Màu nền xanh lá */
+  color: white; /* Màu chữ trắng */
+  padding: 10px 20px; /* Khoảng đệm trong */
+  font-size: 20px; /* Kích thước chữ */
+  font-weight: bold; /* Độ đậm của chữ */
+  border: none; /* Loại bỏ viền mặc định */
+  border-radius: 8px; /* Bo góc */
+  cursor: pointer; /* Con trỏ chuột chỉ tay */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2); /* Bóng mờ */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển động */
+}
+
+.review-button:hover {
+  background-color: #45a049; /* Màu nền khi hover */
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3); /* Tăng độ đậm của bóng mờ */
+}
+
+.review-button:active {
+  background-color: #3e8e41; /* Màu khi nút được nhấn */
+  transform: translateY(2px); /* Hiệu ứng nhấn xuống */
+  box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+}
 
 
 

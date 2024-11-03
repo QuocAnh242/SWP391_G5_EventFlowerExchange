@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './OrderHistory.css';
-
+import { useNavigate } from 'react-router-dom';
 const OrderHistory = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrderDetails, setSelectedOrderDetails] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [activeTab, setActiveTab] = useState("orderInfo");
   const user = JSON.parse(localStorage.getItem('user'));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -159,17 +160,27 @@ const OrderHistory = () => {
               {selectedOrderDetails && (
                 <div className="delivery-info">
                   <p className="order-history-deli"><strong>Ngày giao hàng dự kiến:</strong> {selectedOrderDetails[0]?.delivery?.deliveryDate ? new Date(selectedOrderDetails[0]?.delivery?.deliveryDate).toLocaleDateString('vi-VN') : "N/A"}</p>
-                  {/* <p><strong>Đánh giá:</strong> {selectedOrderDetails[0]?.delivery?.rating || "Chưa có"}</p> */}
+
                   <p className="order-history-deli">
                     <strong>Trạng thái giao hàng : </strong>
                     {selectedOrderDetails[0]?.delivery?.availableStatus === "Delivered"
-                      ? " Đơn hàng của bạn đã giao thành công. Vui lòng nhấn nút bên dưới để xác nhận đơn hàng và chuyến sang trang review !"
+                      ? "Đơn hàng của bạn đã giao thành công. Vui lòng nhấn nút bên dưới để xác nhận đơn hàng và review sản phẩm !"
                       : selectedOrderDetails[0]?.delivery?.availableStatus || "N/A"}
                   </p>
 
+                  {/* Hiển thị nút nếu trạng thái là "Delivered" */}
+                  {selectedOrderDetails[0]?.delivery?.availableStatus === "Delivered" && (
+  <button
+    className="review-button"
+    onClick={() => navigate(`/review/${selectedOrderDetails[0]?.order?.orderID}`)}
+  >
+    Xác nhận đơn hàng và review
+  </button>
+)}
                 </div>
               )}
             </div>
+
           </div>
         </>
       )}

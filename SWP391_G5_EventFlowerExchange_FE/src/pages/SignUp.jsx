@@ -70,7 +70,7 @@ const SignUp = () => {
       });
   
       // Show success message and popup
-      setPopupMessage("Bạn đã tạo tài khoản thành công !");
+      setPopupMessage("Bạn đã tạo tài khoản thành công! Vui lòng vào email để xác thực tài khoản ");
       setShowPopup(true); // Display the popup
     } catch (error) {
       // Handle error response

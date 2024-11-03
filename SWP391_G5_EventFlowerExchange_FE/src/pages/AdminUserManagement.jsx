@@ -189,7 +189,7 @@ const handleDeleteNotification = async (notificationID) => {
 
     // Bar Chart data for users and posts
     const barData = {
-      labels: ['TTổng số người dùng', 'Tổng số bài viết'],
+      labels: ['Tổng số người dùng', 'Tổng số bài viết'],
       datasets: [
         {
           label: 'Statistics',

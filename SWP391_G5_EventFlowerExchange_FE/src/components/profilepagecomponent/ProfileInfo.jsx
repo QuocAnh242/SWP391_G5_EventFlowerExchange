@@ -29,7 +29,7 @@ const ProfileInfo = () => {
     <div className="profile-info-component">
       <h2>Thông tin của bạn</h2>
         <label>
-          Họ và Tên  :
+          <strong>Họ và Tên</strong>
           <input className='name'
             type="text"
             name="username"
@@ -39,7 +39,7 @@ const ProfileInfo = () => {
         </label>
 
         <label>
-          Email:
+          <strong>Email</strong>
           <input className='mail'
             type="email"
             name="email"
@@ -49,7 +49,7 @@ const ProfileInfo = () => {
         </label>
 
         <label>
-          Số điện thoại :
+          <strong>Số điện thoại</strong>
           <input className='phone'
             type="text"
             name="phoneNumber"
@@ -60,7 +60,7 @@ const ProfileInfo = () => {
         </label>
 
         <label>
-          Địa chỉ:
+          <strong>Địa chỉ</strong>
           <input className='address'
             type="text"
             name="address"

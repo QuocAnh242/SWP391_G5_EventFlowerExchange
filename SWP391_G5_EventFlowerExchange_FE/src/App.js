@@ -22,6 +22,7 @@ import BlogPage from "./pages/Blog";
 import Checkout from './pages/Checkout';
 import SuccessPage from './pages/SuccessPage';
 import ForgotPassword from './pages/ForgotPassword';
+import ReviewPage from "./pages/ReviewPage.jsx";
 
 function App() {
   // State quản lý giỏ hàng toàn cục
@@ -63,6 +64,8 @@ function App() {
           <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
           <Route path="/seller-dashboard" element={<SellerDashboard />} /> {/* Fix: Add this route */}
           <Route path="/success-page" element={<SuccessPage />} />
+          <Route path="/review/:orderID" element={<ReviewPage />} />
+
         </Routes>
 
         {/* Footer hiển thị dưới cùng */}

@@ -104,21 +104,82 @@ const Login = () => {
       if (error.response && error.response.data && error.response.data.isBlocked) {
         setError("Tài khoản đã bị khóa");
       } else {
-        setError("Đã xảy ra lỗi. Vui lòng thử lại.");
+        setError("Tài khoản hoặc mật khẩu sai . Vui lòng thử lại !");
       }
       console.error("Login error:", error.response ? error.response.data : error.message);
     }
   };
 
-  const handleGoogleLoginSuccess = (credentialResponse) => {
-    const token = credentialResponse.credential;
+  const handleGoogleLoginSuccess = async (credentialResponse) => {
+    const token = credentialResponse.credential; // Extract the token from the response
 
-    // Decode and store the Google token or handle accordingly
-    localStorage.setItem("googleToken", token);
+    try {
+      // Send the token in the body of the request to your backend
+      const response = await api.post("http://localhost:8080/identity/auth/google/login", { token });
 
-    // Use token to authenticate with your server if needed
-    // Example: navigate('/profile');
+      if (response.data && response.data.result) {
+        const { token: userToken, isBlocked, status } = response.data.result;
+
+        // Check if the account is blocked
+        if (isBlocked || status === 'blocked') {
+          setError("Tài khoản đã bị khóa");
+          return;
+        }
+
+        // Check if the token is present
+        if (!userToken) {
+          console.error("Token not found in response");
+          return;
+        }
+
+        // Store the token in localStorage
+        localStorage.setItem("token", userToken);
+        const decodedPayload = decodeToken(userToken); // Decode the token
+
+        // Create a user object from the decoded payload
+        const user = {
+          address: decodedPayload.address,
+          email: decodedPayload.email,
+          exp: decodedPayload.exp,
+          iat: decodedPayload.iat,
+          iss: decodedPayload.iss,
+          phoneNumber: decodedPayload.phoneNumber,
+          roles: decodedPayload.roles,
+          scope: decodedPayload.scope,
+          sub: decodedPayload.sub,
+          userID: decodedPayload.userID,
+          username: decodedPayload.username,
+        };
+
+        // Store user information in localStorage
+        localStorage.setItem("user", JSON.stringify(user));
+
+        // Redirect based on user role
+        const { roles } = decodedPayload;
+        if (roles.includes('ADMIN')) {
+          navigate('/admin-user-management');
+        } else if (roles.includes('BUYER')) {
+          navigate('/');
+        } else {
+          setError("Tài khoản hoặc mật khẩu sai");
+        }
+
+        window.location.reload(); // Refresh the page
+
+      } else {
+        setError("Đăng nhập Google thất bại. Vui lòng thử lại.");
+      }
+    } catch (error) {
+      // Handle error responses
+      if (error.response && error.response.data && error.response.data.isBlocked) {
+        setError("Tài khoản đã bị khóa");
+      } else {
+        setError("Đăng nhập Google thất bại. Vui lòng thử lại.");
+      }
+      console.error("Error during Google login:", error);
+    }
   };
+
 
   const handleGoogleLoginFailure = () => {
     setError("Đăng nhập Google thất bại. Vui lòng thử lại.");
@@ -129,7 +190,7 @@ const Login = () => {
   };
 
   return (
-    <GoogleOAuthProvider clientId="1011859525016-ejlmipu8v5ev756nfgu3ar4tbl61s57q.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="23148986973-0btj17vsb3gflkboj6h73pbs3ejjnhq6.apps.googleusercontent.com">
       <div className="login-container">
         <Navbar />
         <div className="login-card">
@@ -184,7 +245,7 @@ const Login = () => {
 
           {/* Google Login Button */}
           <div className="google-login-container">
-          <p className="alternate-login-text"><strong>Hoặc đăng kí bằng</strong></p>
+            <p className="alternate-login-text"><strong>Hoặc đăng kí bằng</strong></p>
             <GoogleLogin
               onSuccess={handleGoogleLoginSuccess}
               onError={handleGoogleLoginFailure}

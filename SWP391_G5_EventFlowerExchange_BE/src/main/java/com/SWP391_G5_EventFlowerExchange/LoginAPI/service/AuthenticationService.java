@@ -1,13 +1,18 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.AuthenticationRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.GoogleLoginRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.AuthenticationResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.IntrospectRequest;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.GoogleLoginResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.IntrospectResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.enums.Role;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.AppException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ErrorCode;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -24,19 +29,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.StringJoiner;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@CrossOrigin("http://localhost:3000")
 public class AuthenticationService {
-    private static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
-    IUserRepository IUserRepository;
+    static final Logger log = LoggerFactory.getLogger(AuthenticationService.class);
+    final GoogleIdTokenVerifier verifier; // Ensure you initialize this verifier properly
+    final IUserRepository IUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @NonFinal
     @Value("${jwt.signerKey}")
@@ -83,6 +94,60 @@ public class AuthenticationService {
                 .authenticated(true)
                 .build();
     }
+
+    public GoogleLoginResponse authenticateWithGoogle(GoogleLoginRequest request) {
+        // Verify the Google ID token
+        log.info("Starting Google login authentication");
+        try {
+            GoogleIdToken idToken = verifier.verify(request.getToken());
+            if (idToken == null) {
+                log.warn("ID token verification failed");
+                throw new AppException(ErrorCode.UNAUTHENTICATED);
+            }
+
+            // Get user information from the token
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+
+            // Check if the user already exists
+            User user = IUserRepository.findByEmail(email).orElseGet(() -> {
+                // If the user does not exist, create one
+                User newUser = new User();
+                newUser.setEmail(email);
+                newUser.setUsername(payload.get("name").toString()); // Set username or any other necessary fields
+                newUser.setAvailableStatus("available");// Set initial status
+                newUser.setPassword(passwordEncoder.encode("12345"));// default password
+                newUser.setEmailVerified(true); // Consider that Google verifies the email
+                Set<String> roles = new HashSet<>();
+                roles.add(Role.BUYER.name());
+                newUser.setRoles(roles);
+                // Set other necessary fields if needed
+                return IUserRepository.save(newUser);
+            });
+
+            // Check if user is email verified (if applicable)
+            if (!user.isEmailVerified()) {
+                throw new AppException(ErrorCode.USER_NOT_VERIFIED);
+            }
+
+            // Check user availability status
+            if (!"available".equals(user.getAvailableStatus())) {
+                throw new AppException(ErrorCode.USER_NOT_AVAILABLE);
+            }
+
+            // Generate a JWT token for the user
+            var token = generateToken(user);
+
+            return GoogleLoginResponse.builder()
+                    .token(token)
+                    .authenticated(true)
+                    .build();
+        } catch (Exception e) {
+            log.error("Error during Google login authentication", e);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
+        }
+    }
+
 
     private String generateToken(User user) {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
