@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PizzaLeft from "../assets/background-hoa-hong_045205487.jpg";
 import "../styles/Contact.css";
 import Footer from "../components/Footer";
-import Navbar from "../components/Navbar.jsx";
+// import Navbar from "../components/Navbar.jsx";
 
 function Contact() {
   const [name, setName] = useState("");
@@ -44,7 +44,7 @@ function Contact() {
 
   return (
     <div className="contact">
-      <Navbar />
+      {/* <Navbar /> */}
       <div
         className="leftSide"
         style={{ backgroundImage: `url(${PizzaLeft})` }}

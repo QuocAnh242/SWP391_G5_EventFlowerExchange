@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Thêm axios để gọi API
 import '../styles/Blog.css';
 import Footer from '../components/Footer';
-import Navbar from "../components/Navbar.jsx";
+// import Navbar from "../components/Navbar.jsx";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]); // Khởi tạo state cho danh sách blog
@@ -36,7 +36,7 @@ const BlogPage = () => {
 
   return (
     <div className="blog-page">
-    <Navbar/>
+    {/* <Navbar/> */}
       <h1 className='blog-header'>Các Bài Blog</h1>
       <div className="blog-list">
         {blogs.slice(0, visibleBlogs).map((blog) => ( // Chỉ hiển thị số lượng bài viết cần thiết

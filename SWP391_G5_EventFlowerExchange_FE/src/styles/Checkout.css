@@ -1,5 +1,3 @@
-/* Checkout.css */
-
 /* Toàn bộ trang Checkout */
 .checkout {
   font-family: 'Roboto', sans-serif;
@@ -24,35 +22,55 @@
   gap: 20px;
 }
 
-/* Cột bên trái - Tóm tắt đơn hàng */
-.order-summary {
-  flex: 1;
+/* Cột bên trái - Tóm tắt đơn hàng và Thông tin người dùng */
+.order-summary, .user-info {
+  flex: 2;
+}
+
+.order-summary, .user-info {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
-.order-summary h3 {
+.order-summary h3,
+.user-info h3 {
   font-size: 22px;
-  color: #e76f51;
+  color: #2a9d8f;
   margin-bottom: 15px;
+  text-align: center;
 }
 
 .order-item {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #eee;
+}
+
+.order-item:last-child {
+  border-bottom: none;
+}
+
+.order-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 4px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.order-item-details {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .order-item span {
   font-size: 16px;
   color: #555;
-}
-
-.order-item:last-child {
-  border-bottom: none;
 }
 
 .total-price {
@@ -65,49 +83,9 @@
   color: #264653;
 }
 
-/* Cột bên phải - Thông tin người dùng */
-.user-info {
-  flex: 1;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.user-info h3 {
-  font-size: 22px;
-  margin-bottom: 15px;
-  color: #2a9d8f;
-}
-
-.user-details p {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 10px;
-}
-
-.user-details strong {
-  color: #333;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px 0;
-  background-color: #264653;
-  color: white;
-  margin-top: 40px;
-  border-radius: 10px;
-}
-
-footer p {
-  font-size: 14px;
-  margin: 0;
-}
-
-
-/* Phần chọn phương thức thanh toán */
+/* Cột bên phải - Phương thức thanh toán */
 .payment-method {
+  flex: 1;
   margin-top: 30px;
   background-color: #fff;
   padding: 20px;
@@ -117,7 +95,7 @@ footer p {
 
 .payment-method h3 {
   font-size: 22px;
-  color: #2a9d8f;
+  color: #e76f51;
   margin-bottom: 15px;
 }
 
@@ -149,6 +127,11 @@ footer p {
   transition: background-color 0.3s;
 }
 
+.checkout-btn:hover {
+  background-color: #d75d42;
+}
+
+/* Modal Styles */
 .confirm-modal-overlay {
   position: fixed;
   top: 0;
@@ -206,10 +189,21 @@ footer p {
   background-color: #d32f2f;
 }
 
-
-.checkout-btn:hover {
-  background-color: #d75d42;
+/* Footer */
+footer {
+  text-align: center;
+  padding: 20px 0;
+  background-color: #264653;
+  color: white;
+  margin-top: 40px;
+  border-radius: 10px;
 }
+
+footer p {
+  font-size: 14px;
+  margin: 0;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .checkout-content {

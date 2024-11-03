@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import missionImage from "../assets/hoaback3.png"; // Replace with your actual image path
 import visionImage from "../assets/hoaback3.png"; // Replace with your actual image path
-import Navbar from "../components/Navbar.jsx";
+// import Navbar from "../components/Navbar.jsx";
 
 const About = () => {
   const [loading, setLoading] = useState(true);
@@ -32,7 +32,7 @@ const About = () => {
 
   return (
     <div className="about">
-    <Navbar/>
+    {/* <Navbar/> */}
       {/* Banner Section */}
       <div className="about-banner">
         <img

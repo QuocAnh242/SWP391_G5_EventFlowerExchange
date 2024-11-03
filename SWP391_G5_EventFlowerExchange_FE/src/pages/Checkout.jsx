@@ -3,16 +3,17 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Checkout.css';
 import Footer from '../components/Footer';
-import Navbar from "../components/Navbar.jsx";
+// import Navbar from "../components/Navbar.jsx";
 
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => { }, totalPrice: 0 };
+  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => {}, totalPrice: 0 };
   const user = JSON.parse(localStorage.getItem('user'));
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(true);
+  const [imageUrls, setImageUrls] = useState({});
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -21,16 +22,32 @@ const Checkout = () => {
   const handleConfirmCheckout = async () => {
     setLoading(true);
     setConfirmModalVisible(false);
-    await handleCheckout(); // Gọi hàm checkout khi người dùng xác nhận "Có"
+    await handleCheckout();
   };
 
   const handleShowConfirmModal = () => {
-    setConfirmModalVisible(true); // Hiển thị modal khi người dùng nhấn nút
+    setConfirmModalVisible(true);
   };
+
+  const fetchImage = async (flowerID) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
+        responseType: 'blob',
+      });
+      const imageUrl = URL.createObjectURL(response.data);
+      setImageUrls((prev) => ({ ...prev, [flowerID]: imageUrl }));
+    } catch (error) {
+      console.error("Error fetching image:", error);
+    }
+  };
+
+  useEffect(() => {
+    cartItems.forEach(item => fetchImage(item.flowerID));
+  }, [cartItems]);
 
   const handleCheckout = async () => {
     if (!paymentMethod) {
-      setLoading(false); // Bật trạng thái loading khi bắt đầu checkout
+      setLoading(false);
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
@@ -59,7 +76,7 @@ const Checkout = () => {
       },
       payment: {
         paymentID: paymentMethod === 'vnpay' ? 1 : paymentMethod === 'momo' ? 2 : 3,
-        paymentMethodName: paymentMethodName,  // Add this line
+        paymentMethodName: paymentMethodName,
       },
       orderDetails: orderDetails,
     };
@@ -67,10 +84,9 @@ const Checkout = () => {
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
       setLoading(false);
-      const createdOrder = response.data; // Assuming the response contains the created order details, including orderID
+      const createdOrder = response.data;
       console.log(createdOrder);
       if (response.status === 200 || response.status === 201) {
-        // Add the orderID to the local order object
         if (createdOrder.orderID) {
           const orderWithID = { ...order, orderID: createdOrder.orderID };
           localStorage.setItem('order', JSON.stringify(orderWithID));
@@ -84,13 +100,10 @@ const Checkout = () => {
           const momoUrl = createdOrder.message.split('Payment URL: ')[2];
           window.location.href = momoUrl;
         } else {
-          // alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
-
           localStorage.removeItem('cartItems');
           if (typeof setCartItems === 'function') {
             setCartItems([]);
           }
-
           navigate('/success-page');
         }
       }
@@ -100,7 +113,6 @@ const Checkout = () => {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -121,7 +133,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout">
-    <Navbar/>
+      {/* <Navbar/> */}
       <div className="checkout-header">
         <h2>Xác Nhận Đơn Hàng</h2>
       </div>
@@ -132,6 +144,11 @@ const Checkout = () => {
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
               <div className="order-item" key={item.flowerID}>
+                <img 
+                  src={imageUrls[item.flowerID] || 'default-image-url'} 
+                  alt="Flower" 
+                  className="order-image" 
+                />
                 <span>{item.flowerName}</span>
                 <span>{item.quantity} x {item.price.toLocaleString()} VNĐ</span>
               </div>
@@ -189,7 +206,6 @@ const Checkout = () => {
         <button className="checkout-btn" onClick={handleShowConfirmModal}>
           Xác Nhận Thanh Toán
         </button>
-
       </div>
 
       <Footer />
@@ -204,7 +220,6 @@ const Checkout = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

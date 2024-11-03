@@ -4,10 +4,9 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
-import a2 from '../assets/about-img/a5.jpg'; // Hình ảnh mẫu
 import b1 from '../assets/banner-post.png';
 import dayjs from 'dayjs'; // if using dayjs to manage various formats
-import Navbar from "../components/Navbar.jsx";
+// import Navbar from "../components/Navbar.jsx";
 
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
@@ -214,12 +213,13 @@ function Menu() {
           </li>
 
           {categoryList
-            .filter((category) => category.eventName) // Lọc các danh mục có eventName
+            .filter((category) => category.eventName && category.eventName !== "Không") // Lọc các danh mục có eventName và không phải "Không"
             .map((category, index) => (
               <li key={index} onClick={() => filterByCategory(category.eventName)}>
                 <span>{category.eventName}</span>
               </li>
             ))}
+
 
           {/* Hiển thị danh sách tên các loài hoa duy nhất */}
           <h3 className="sidebar-title">Tên hoa</h3>
@@ -296,9 +296,6 @@ function Menu() {
             </div>
           ))}
         </div>
-
-
-
         {/* Phân trang */}
         <div className="pagination">
           <button
@@ -308,7 +305,6 @@ function Menu() {
           >
             &laquo;
           </button>
-
           {pageNumbers.map((number) => (
             <button
               key={number}
@@ -318,7 +314,6 @@ function Menu() {
               {number}
             </button>
           ))}
-
           <button
             onClick={handleNextPage}
             disabled={currentPage === Math.ceil(filteredFlowers.length / flowersPerPage)}
@@ -345,7 +340,6 @@ function Menu() {
         </div>
       )}
       <Footer />
-
     </div>
     // </div>
   );
