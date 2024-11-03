@@ -6,24 +6,21 @@ import '../styles/Login.css';
 import Footer from '../components/Footer';
 import ReCAPTCHA from "react-google-recaptcha";
 import Navbar from "../components/Navbar.jsx";
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [captchaError, setCaptchaError] = useState('');
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [verfied, setVerfied] = useState(false);
+  const [verified, setVerified] = useState(false);
 
-  //hảmđể set recaptcha
-  function onChange(value) {
-    console.log("Captcha value:", value);
-    setVerfied(true);
-  }
-
-
-
+  const onChange = (value) => {
+    setVerified(true);
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -31,15 +28,6 @@ const Login = () => {
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
-
-  if (loading) {
-    return (
-      <div className="loading-container">
-        <div className="spinner"></div>
-        <p className="loading-text">Đang tải dữ liệu...</p>
-      </div>
-    );
-  }
 
   const decodeToken = (token) => {
     const base64Url = token.split('.')[1];
@@ -56,6 +44,12 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (!verified) {
+      setCaptchaError('Bạn phải xác thực trước khi đăng nhập');
+      return;
+    }
+
+    setCaptchaError('');
     const loginValues = { email, password };
 
     try {
@@ -64,10 +58,6 @@ const Login = () => {
       if (response.data && response.data.result) {
         const { token, isBlocked, status } = response.data.result;
 
-        // Log the result to confirm the structure
-        console.log("Login Response Result:", response.data.result);
-
-        // Check if account is blocked based on response before decoding the token
         if (isBlocked || status === 'blocked') {
           setError("Tài khoản đã bị khóa");
           return;
@@ -101,7 +91,7 @@ const Login = () => {
         if (roles.includes('ADMIN')) {
           navigate('/admin-user-management');
         } else if (roles.includes('BUYER')) {
-          navigate('/');  // Navigate to profile page after login
+          navigate('/');
         } else {
           setError("Tài khoản hoặc mật khẩu sai");
         }
@@ -111,77 +101,103 @@ const Login = () => {
       }
 
     } catch (error) {
-      // Set a specific error if the account is blocked or return a generic error
       if (error.response && error.response.data && error.response.data.isBlocked) {
         setError("Tài khoản đã bị khóa");
       } else {
-        setError("Tài khoản đã bị khóa");
+        setError("Đã xảy ra lỗi. Vui lòng thử lại.");
       }
       console.error("Login error:", error.response ? error.response.data : error.message);
     }
   };
-  //Login Google
-  
+
+  const handleGoogleLoginSuccess = (credentialResponse) => {
+    const token = credentialResponse.credential;
+
+    // Decode and store the Google token or handle accordingly
+    localStorage.setItem("googleToken", token);
+
+    // Use token to authenticate with your server if needed
+    // Example: navigate('/profile');
+  };
+
+  const handleGoogleLoginFailure = () => {
+    setError("Đăng nhập Google thất bại. Vui lòng thử lại.");
+  };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="login-container">'
-      <Navbar />
-      <div className="login-card">
-        <h2>Đăng nhập</h2>
-        <form onSubmit={handleLogin}>
-          <div className="form-field">
-            <input
-              className="form-input"
-              placeholder=" "
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+    <GoogleOAuthProvider clientId="1011859525016-ejlmipu8v5ev756nfgu3ar4tbl61s57q.apps.googleusercontent.com">
+      <div className="login-container">
+        <Navbar />
+        <div className="login-card">
+          <h2>Đăng nhập</h2>
+          <form onSubmit={handleLogin}>
+            <div className="form-field">
+              <input
+                className="form-input"
+                placeholder=" "
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <label htmlFor="email" className="form-label">Email</label>
+            </div>
+
+            <div className="form-field password-field">
+              <input
+                className="form-input"
+                placeholder=" "
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <label htmlFor="password" className="form-label">Mật khẩu</label>
+              <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
+
+            <div className="forgot-password-button">
+              <Link to="/forgot-password">Quên mật khẩu?</Link>
+            </div>
+
+            <ReCAPTCHA
+              className="recaptcha-container"
+              sitekey="6Lc6HXMqAAAAAM9XrwtWGbUzz_Duzhg3vQGct6gz"
+              onChange={onChange}
             />
-            <label htmlFor="email" className="form-label">Email</label>
-          </div>
 
-          <div className="form-field password-field">
-            <input
-              className="form-input"
-              placeholder=" "
-              id="password"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
+            {captchaError && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{captchaError}</div>}
+            {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
+
+            <button type="submit" className="login-btn">
+              Đăng Nhập
+            </button>
+          </form>
+
+          {/* Google Login Button */}
+          <div className="google-login-container">
+          <p className="alternate-login-text"><strong>Hoặc đăng kí bằng</strong></p>
+            <GoogleLogin
+              onSuccess={handleGoogleLoginSuccess}
+              onError={handleGoogleLoginFailure}
             />
-            <label htmlFor="password" className="form-label">Mật khẩu</label>
-            <span className="password-toggle-icon" onClick={togglePasswordVisibility}>
-              {showPassword ? <FaEyeSlash /> : <FaEye />}
-            </span>
           </div>
 
-          {/* <div className="forgot-password">Quên mật khẩu?</div> */}
-          <div className="forgot-password-button">
-            <Link to="/forgot-password">Quên mật khẩu?</Link>
+          <div className="signup-link">
+            Bạn chưa có tài khoản? <Link to="/signup">Đăng kí tại đây</Link>
           </div>
-          <ReCAPTCHA className="recaptcha-container"
-            sitekey="6Lc6HXMqAAAAAM9XrwtWGbUzz_Duzhg3vQGct6gz"
-            onChange={onChange}
-          />,
-          {error && <div className="error-message" style={{ color: "red", marginTop: "10px" }}>{error}</div>}
-
-          <button type="submit" className="login-btn" disabled={!verfied}>
-          {/* <button type="submit" className="login-btn" > */}
-            Đăng Nhập
-          </button>
-        </form>
-        <div className="signup-link">
-          Bạn chưa có tài khoản? <Link to="/signup">Đăng kí tại đây</Link>
         </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </GoogleOAuthProvider>
   );
 };
 

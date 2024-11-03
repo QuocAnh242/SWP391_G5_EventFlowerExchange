@@ -117,7 +117,7 @@ const ManageSellerOrders = ({ userID }) => {
 
             {activeTab === 'orderDetails' && (
               <div className="order-details-content">
-                <h2 className="modal-title">Chi Tiết Đơn Hàng #{selectedOrder.order.orderID}</h2>
+                <h2 className="modal-title">Chi Tiết Đơn Hàng</h2>
                 <p><strong>Ngày đặt:</strong> {new Date(selectedOrder.order.orderDate).toLocaleDateString('vi-VN')}</p>
                 {/* <p><strong>Địa chỉ giao hàng:</strong> {selectedOrder.order.shippingAddress}</p> */}
                 <p><strong>Người mua:</strong> {selectedOrder.order.user.username}</p>
@@ -142,7 +142,7 @@ const ManageSellerOrders = ({ userID }) => {
 
             {activeTab === 'deliveryDetails' && (
               <div className="delivery-details-content">
-                <p><strong>Mã đơn hàng :#</strong>{selectedOrder.delivery.deliveryID}</p>
+                <p><strong>Mã đơn hàng #</strong>{selectedOrder.delivery.deliveryID}</p>
                 {/* <p><strong>Trạng Thái Giao Hàng:</strong> {selectedOrder.delivery.availableStatus}</p> */}
                 <p className="order-address">Địa chỉ : {selectedOrder.order.shippingAddress}</p>
                 <p><strong>Ngày Giao Dự Kiến:</strong> {new Date(selectedOrder.delivery.deliveryDate).toLocaleDateString('vi-VN')}</p>

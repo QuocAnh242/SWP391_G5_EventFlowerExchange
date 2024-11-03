@@ -161,9 +161,9 @@ const OrderHistory = () => {
                   <p className="order-history-deli"><strong>Ngày giao hàng dự kiến:</strong> {selectedOrderDetails[0]?.delivery?.deliveryDate ? new Date(selectedOrderDetails[0]?.delivery?.deliveryDate).toLocaleDateString('vi-VN') : "N/A"}</p>
                   {/* <p><strong>Đánh giá:</strong> {selectedOrderDetails[0]?.delivery?.rating || "Chưa có"}</p> */}
                   <p className="order-history-deli">
-                    <strong>Trạng thái giao hàng:</strong>
+                    <strong>Trạng thái giao hàng : </strong>
                     {selectedOrderDetails[0]?.delivery?.availableStatus === "Delivered"
-                      ? " Đơn hàng của bạn đã giao thành công. Vui lòng để lại feedback!"
+                      ? " Đơn hàng của bạn đã giao thành công. Vui lòng nhấn nút bên dưới để xác nhận đơn hàng và chuyến sang trang review !"
                       : selectedOrderDetails[0]?.delivery?.availableStatus || "N/A"}
                   </p>
 

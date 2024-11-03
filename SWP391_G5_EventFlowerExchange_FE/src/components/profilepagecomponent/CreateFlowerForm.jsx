@@ -26,6 +26,7 @@ const CreateFlowerForm = ({ postID }) => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
 
   // Fetch categories from API
   useEffect(() => {
@@ -100,12 +101,22 @@ const CreateFlowerForm = ({ postID }) => {
     setFlowerIDs(flowerIDs.filter((_, i) => i !== index));
   };
 
-  // Handle form submission
+  // Open confirmation modal
+  const openConfirmationModal = () => {
+    setConfirmModalVisible(true);
+  };
+
+  // Handle form submission with confirmation
   const handleSubmit = async (e) => {
     e.preventDefault();
+    openConfirmationModal();
+  };
+
+  const confirmSubmit = async () => {
+    setConfirmModalVisible(false);
     try {
       const response = await axios.post('http://localhost:8080/identity/flower/', flowers);
-      const createdFlowerIDs = response.data.map(flower => flower.flowerID); // Assuming API returns IDs
+      const createdFlowerIDs = response.data.map(flower => flower.flowerID);
       setFlowerIDs(createdFlowerIDs);
       setSuccessMessage('Đã thêm loại hoa thành công!');
       setError('');
@@ -116,8 +127,13 @@ const CreateFlowerForm = ({ postID }) => {
     }
   };
 
-   // Handle image upload for a specific flower
-   const handleImageUpload = async (flowerID, file) => {
+  // Cancel the submission
+  const cancelSubmit = () => {
+    setConfirmModalVisible(false);
+  };
+
+  // Handle image upload for a specific flower
+  const handleImageUpload = async (flowerID, file) => {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -225,8 +241,8 @@ const CreateFlowerForm = ({ postID }) => {
                 />
               </label>
             )}
-  
-             {flowerIDs[index] && (
+
+            {flowerIDs[index] && (
               <div>
                 <label>Thêm ảnh cho hoa :</label>
                 <input
@@ -235,7 +251,7 @@ const CreateFlowerForm = ({ postID }) => {
                 />
               </div>
             )}
-            
+
             {flowers.length > 1 && (
               <button type="button" onClick={() => removeFlower(index)}>
                 Xóa Loại Hoa
@@ -248,10 +264,24 @@ const CreateFlowerForm = ({ postID }) => {
           Thêm Loại Hoa Khác
         </button>
 
-        <button type="submit">Xác Nhận</button>
+        <button type="submit">Tạo hoa</button>
         {error && <p className="error-message-post">{error}</p>}
         {successMessage && <p className="success-message-post">{successMessage}</p>}
       </form>
+
+     
+      {isConfirmModalVisible && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal">
+            <p>Bạn có chắc chắn muốn tạo loại hoa này không?</p>
+            <div className="confirm-modal-buttons">
+              <button onClick={confirmSubmit} className="confirm-btn">Xác nhận</button>
+              <button onClick={cancelSubmit} className="cancel-btn">Hủy</button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

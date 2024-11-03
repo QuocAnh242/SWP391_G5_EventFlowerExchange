@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import CreateFlowerForm from './CreateFlowerForm'; // Import the CreateFlowerForm component
-import './CreatePos.css'; // Import file CSS
+import CreateFlowerForm from './CreateFlowerForm';
+import './CreatePos.css';
 
 const CreatePostComponent = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -9,7 +9,7 @@ const CreatePostComponent = () => {
     title: '',
     description: '',
     price: '',
-    expiryDate: '', // New field for expiration date
+    expiryDate: '',
     user: {
       userID: user ? user.userID : '',
     },
@@ -19,6 +19,7 @@ const CreatePostComponent = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -31,43 +32,50 @@ const CreatePostComponent = () => {
     setSelectedFile(e.target.files[0]);
   };
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // Open confirmation modal
+  const openConfirmationModal = () => {
+    setConfirmModalVisible(true);
+  };
+
+  // Handle form submission when the user confirms
+  const confirmSubmit = async () => {
+    setConfirmModalVisible(false);
     try {
-      // Set expiryDate to midnight of the selected day
       const date = new Date(post.expiryDate);
-      date.setUTCHours(0, 0, 0, 0); // Set hours, minutes, seconds, milliseconds to zero
-  
-      const expiryDateMidnight = date.toISOString(); // Convert to ISO format with 0 time
-  
+      date.setUTCHours(0, 0, 0, 0);
+      const expiryDateMidnight = date.toISOString();
+
       const formattedPost = {
         ...post,
-        expiryDate: expiryDateMidnight, // Set the expiryDate in the desired format
+        expiryDate: expiryDateMidnight,
       };
-  
-      // Send the formatted post data
+
       const response = await axios.post('http://localhost:8080/identity/posts/', formattedPost);
       const createdPostID = response.data.postID;
       setPostID(createdPostID);
-  
-      // Upload image if selected
+
       if (selectedFile) {
         const formData = new FormData();
         formData.append('image', selectedFile);
-  
+
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
         setSuccessMessage('Đã tạo bài đăng thành công');
       } else {
         setSuccessMessage('Đã tạo bài đăng thành công!');
       }
-  
+
       setError('');
     } catch (error) {
       console.error('Error creating post or uploading image:', error);
       setError('Không thể tạo bài đăng hoặc upload ảnh. Vui lòng thử lại.');
       setSuccessMessage('');
     }
+  };
+
+  // Handle submit button click to open the confirmation modal
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    openConfirmationModal();
   };
 
   return (
@@ -135,6 +143,19 @@ const CreatePostComponent = () => {
 
       {/* Show form to add flowers if the post is successfully created */}
       {postID && <CreateFlowerForm postID={postID} />}
+
+      {/* Confirmation Modal */}
+      {isConfirmModalVisible && (
+        <div className="confirm-modal-overlay">
+          <div className="confirm-modal">
+            <p>Bạn có chắc chắn muốn tạo bài viết này không?</p>
+            <div className="confirm-modal-buttons">
+              <button onClick={confirmSubmit} className="confirm-btn">Có</button>
+              <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
