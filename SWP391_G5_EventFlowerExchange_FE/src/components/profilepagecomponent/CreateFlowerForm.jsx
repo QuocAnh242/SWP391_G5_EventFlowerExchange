@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const CreateFlowerForm = ({ postID }) => {
+  // State for flower list
   const [flowers, setFlowers] = useState([
     {
       flowerType: 'Hoa bán theo lô',
@@ -10,18 +11,23 @@ const CreateFlowerForm = ({ postID }) => {
       status: 'Còn hàng',
       description: '',
       price: '',
-      imageUrl: null, // Store file as null initially
       saleType: 'batch',
       eventType: 'Không',
       eventName: 'Không',
-      eventFlowerPosting: { postID },
-      category: { categoryID: '' },
+      eventFlowerPosting: {
+        postID: postID,
+      },
+      category: {
+        categoryID: '',
+      },
     },
   ]);
+  const [flowerIDs, setFlowerIDs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+  // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -34,21 +40,37 @@ const CreateFlowerForm = ({ postID }) => {
     fetchCategories();
   }, []);
 
+  // Handle change in flower form
   const handleFlowerChange = (index, e) => {
-    const { name, value, files } = e.target;
+    const { name, value } = e.target;
     const newFlowers = [...flowers];
 
-    if (name === 'imageUrl' && files.length > 0) {
-      newFlowers[index].imageUrl = files[0]; // Set file object directly
+    if (name === 'flowerType') {
+      newFlowers[index] = {
+        ...newFlowers[index],
+        flowerType: value,
+        eventType: value === 'Hoa sự kiện' ? 'Có' : 'Không',
+        eventName: value === 'Hoa sự kiện' ? '' : 'Không',
+      };
     } else if (name === 'categoryID') {
-      newFlowers[index].category = { ...newFlowers[index].category, categoryID: value };
+      newFlowers[index] = {
+        ...newFlowers[index],
+        category: {
+          ...newFlowers[index].category,
+          categoryID: value,
+        },
+      };
     } else {
-      newFlowers[index][name] = value;
+      newFlowers[index] = {
+        ...newFlowers[index],
+        [name]: value,
+      };
     }
 
     setFlowers(newFlowers);
   };
 
+  // Add new flower form group
   const addFlower = () => {
     setFlowers([
       ...flowers,
@@ -59,56 +81,58 @@ const CreateFlowerForm = ({ postID }) => {
         status: 'Còn hàng',
         description: '',
         price: '',
-        imageUrl: null,
         saleType: 'batch',
         eventType: 'Không',
         eventName: 'Không',
-        eventFlowerPosting: { postID },
-        category: { categoryID: '' },
+        eventFlowerPosting: {
+          postID: postID,
+        },
+        category: {
+          categoryID: '',
+        },
       },
     ]);
   };
 
+  const removeFlower = (index) => {
+    const newFlowers = flowers.filter((_, i) => i !== index);
+    setFlowers(newFlowers);
+    setFlowerIDs(flowerIDs.filter((_, i) => i !== index));
+  };
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        for (const flower of flowers) {
-            console.log("Submitting flower data:", flower);
-
-            // Submit flower data and retrieve flowerID
-            const flowerResponse = await axios.post('http://localhost:8080/identity/flower/', flower);
-            const flowerID = flowerResponse.data.flowerID || flowerResponse.data.id;
-
-            // Check if imageUrl is a File and upload it
-            if (flower.imageUrl instanceof File) {
-                const formData = new FormData();
-                formData.append('files', flower.imageUrl);  // Add imageUrl as 'files'
-
-                console.log("Uploading image with FormData:", formData.get('files'));
-
-                // Send the FormData with the image to the upload endpoint
-                await axios.post(
-                    `http://localhost:8080/identity/flowerImg/batch/${flowerID}/upload`,
-                    formData,
-                    { headers: { 'Content-Type': 'multipart/form-data' } }
-                );
-            }
-        }
-        setSuccessMessage('Đã thêm loại hoa thành công!');
-        setError('');
+      const response = await axios.post('http://localhost:8080/identity/flower/', flowers);
+      const createdFlowerIDs = response.data.map(flower => flower.flowerID); // Assuming API returns IDs
+      setFlowerIDs(createdFlowerIDs);
+      setSuccessMessage('Đã thêm loại hoa thành công!');
+      setError('');
     } catch (error) {
-        if (error.response) {
-            console.error("Server Error:", error.response.data);
-        } else {
-            console.error("Error:", error.message);
-        }
-        setError('Không thể tạo loại hoa. Vui lòng thử lại.');
-        setSuccessMessage('');
+      console.error('Error creating flowers:', error);
+      setError('Không thể tạo loại hoa. Vui lòng thử lại.');
+      setSuccessMessage('');
     }
-};
+  };
 
+   // Handle image upload for a specific flower
+   const handleImageUpload = async (flowerID, file) => {
+    const formData = new FormData();
+    formData.append('file', file);
 
-
+    try {
+      await axios.post(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      alert('Image uploaded successfully!');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('Failed to upload image. Please try again.');
+    }
+  };
 
   return (
     <div className="create-flower-form">
@@ -160,15 +184,6 @@ const CreateFlowerForm = ({ postID }) => {
             </label>
 
             <label>
-              Ảnh hoa:
-              <input
-                type="file"
-                name="imageUrl"
-                onChange={(e) => handleFlowerChange(index, e)}
-              />
-            </label>
-
-            <label>
               Chọn loại hoa:
               <select
                 name="categoryID"
@@ -191,6 +206,7 @@ const CreateFlowerForm = ({ postID }) => {
                 name="eventType"
                 value={flower.eventType}
                 onChange={(e) => handleFlowerChange(index, e)}
+                disabled={flower.flowerType === 'Hoa sự kiện'}
               >
                 <option value="Không">Không</option>
                 <option value="Có">Có</option>
@@ -208,6 +224,22 @@ const CreateFlowerForm = ({ postID }) => {
                   required={flower.eventType === 'Có'}
                 />
               </label>
+            )}
+  
+             {flowerIDs[index] && (
+              <div>
+                <label>Thêm ảnh cho hoa :</label>
+                <input
+                  type="file"
+                  onChange={(e) => handleImageUpload(flowerIDs[index], e.target.files[0])}
+                />
+              </div>
+            )}
+            
+            {flowers.length > 1 && (
+              <button type="button" onClick={() => removeFlower(index)}>
+                Xóa Loại Hoa
+              </button>
             )}
           </div>
         ))}
