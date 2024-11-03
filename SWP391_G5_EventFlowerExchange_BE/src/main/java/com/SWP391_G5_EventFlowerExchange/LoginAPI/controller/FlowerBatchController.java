@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -56,6 +57,18 @@ public class FlowerBatchController {
         // Gọi phương thức createFlower với đối tượng FlowerBatch
         FlowerBatch createdFlower = flowerBatchService.createFlower(flowerBatch, postID);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFlower);
+    }
+    @GetMapping("/most-purchased")
+    public ResponseEntity<?> getMostPurchasedFlower() {
+        Optional<FlowerBatch> mostPurchasedFlower = flowerBatchService.getMostPurchasedFlowerBatch();
+
+        if (mostPurchasedFlower.isPresent()) {
+            return ResponseEntity.ok(mostPurchasedFlower.get());
+        } else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Không tìm thấy lô hoa nào được mua.");
+            return ResponseEntity.status(404).body(response);
+        }
     }
 
 }

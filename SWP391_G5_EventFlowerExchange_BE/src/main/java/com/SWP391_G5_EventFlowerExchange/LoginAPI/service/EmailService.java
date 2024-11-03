@@ -42,7 +42,6 @@ public class EmailService {
 
         // Lấy danh sách OrderDetail dựa trên orderID
         List<OrderDetail> orderDetails = orderDetailRepository.findByOrder_OrderID(order.getOrderID());
-        System.out.println("Danh sách OrderDetail: " + orderDetails);
 
         // Tạo nội dung chi tiết đơn hàng
         StringBuilder orderDetailsHtml = new StringBuilder();

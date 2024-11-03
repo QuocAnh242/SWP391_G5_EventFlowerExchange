@@ -13,5 +13,9 @@ import java.util.List;
 public interface IOrderDetailRepository extends JpaRepository<OrderDetail, OrderDetailKey> {
     List<OrderDetail> findByOrder_OrderID(int orderID);
     List<OrderDetail> findByFlowerBatchIn(List<FlowerBatch> flowerBatches);
+    @Query("SELECT o.flowerBatch, SUM(o.quantity) as totalQuantity FROM OrderDetail o " +
+            "GROUP BY o.flowerBatch " +
+            "ORDER BY totalQuantity DESC")
+    List<Object[]> findMostPurchasedFlowerBatch();
 
 }

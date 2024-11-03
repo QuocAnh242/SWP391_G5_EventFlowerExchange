@@ -6,6 +6,7 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ResourceNotFoundException;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IEventFlowerPostingRepository;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFlowerBatchRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IOrderDetailRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class FlowerBatchService implements IFlowerBatchService{
 
     IFlowerBatchRepository flowerBatchRepository;
     IEventFlowerPostingRepository eventFlowerPostingRepository;
+    IOrderDetailRepository orderDetailRepository;
 
     @Override
     public FlowerBatch findById(int flowerID) {
@@ -103,6 +105,13 @@ public class FlowerBatchService implements IFlowerBatchService{
 
         // Lưu flowerBatch mới vào repository
         return flowerBatchRepository.save(flowerBatch);
+    }
+    public Optional<FlowerBatch> getMostPurchasedFlowerBatch() {
+        List<Object[]> result = orderDetailRepository.findMostPurchasedFlowerBatch();
+        if (!result.isEmpty()) {
+            return Optional.of((FlowerBatch) result.get(0)[0]); // The flower batch with the highest quantity
+        }
+        return Optional.empty();
     }
 
 
