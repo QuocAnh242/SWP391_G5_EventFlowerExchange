@@ -222,11 +222,19 @@ public class UserService implements IUserService {
         //gửi email với định dạng (HTML, hình ảnh, tệp đính kèm)
         MimeMessage message = mailSender.createMimeMessage();
         // Nội dung email dưới dạng HTML
-        String body = "<h2>Xin chào!</h2>" +
-                "<p>Vui lòng nhấn vào liên kết dưới đây để xác nhận email của bạn:</p>" +
-                "<a href=\"" + verificationLink + "\" style=\"font-size: 16px; color: #007BFF; text-decoration: none;\">" +
+        String body = "<div style=\"font-family: Arial, sans-serif; background-color: #f3f4f6; padding: 20px;\">" +
+                "<div style=\"max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\">" +
+                "<h2 style=\"color: #333333; text-align: center;\">Xin chào!</h2>" +
+                "<p style=\"color: #555555; font-size: 16px; line-height: 1.6;\">" +
+                "Cảm ơn bạn đã quan tâm đến sản phẩm hoa của chúng tôi! Để hoàn tất đăng ký, vui lòng nhấn vào liên kết dưới đây để xác nhận email của bạn:</p>" +
+                "<div style=\"text-align: center; margin: 20px 0;\">" +
+                "<a href=\"" + verificationLink + "\" style=\"display: inline-block; font-size: 16px; color: #ffffff; background-color: #FFC0CB; padding: 12px 24px; text-decoration: none; border-radius: 6px;\">" +
                 "Xác nhận email của tôi</a>" +
-                "<p>Cảm ơn bạn!</p>";
+                "</div>" +
+                "<p style=\"color: #555555; font-size: 16px; line-height: 1.6;\">Cảm ơn bạn đã tin tưởng lựa chọn dịch vụ của chúng tôi. Chúng tôi hy vọng có thể giúp bạn tạo nên những khoảnh khắc đẹp với hoa.</p>" +
+                "<p style=\"text-align: center; color: #777777; font-size: 14px;\">&copy; 2024 Website Bán Hoa Sự Kiện. All rights reserved.</p>" +
+                "</div>" +
+                "</div>";
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true); // true = multipart, false nếu gửi mỗi text
             helper.setTo(to);
