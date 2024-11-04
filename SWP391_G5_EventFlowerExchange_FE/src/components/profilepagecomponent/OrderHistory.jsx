@@ -29,6 +29,8 @@ const OrderHistory = () => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/order-details/by-order/${orderID}`);
       setSelectedOrderDetails(response.data);
+      localStorage.setItem('orderHistoryDetail', JSON.stringify(response.data));
+      console.log("Order History Detail:", JSON.parse(localStorage.getItem('orderHistoryDetail')));
       setModalVisible(true);
       setActiveTab("orderInfo");
     } catch (error) {
@@ -170,13 +172,13 @@ const OrderHistory = () => {
 
                   {/* Hiển thị nút nếu trạng thái là "Delivered" */}
                   {selectedOrderDetails[0]?.delivery?.availableStatus === "Delivered" && (
-  <button
-    className="review-button"
-    onClick={() => navigate(`/review/${selectedOrderDetails[0]?.order?.orderID}`)}
-  >
-    Xác nhận đơn hàng và review
-  </button>
-)}
+                    <button
+                      className="review-button"
+                      onClick={() => navigate(`/review/${selectedOrderDetails[0]?.order?.orderID}`)}
+                    >
+                      Xác nhận đơn hàng và review
+                    </button>
+                  )}
                 </div>
               )}
             </div>

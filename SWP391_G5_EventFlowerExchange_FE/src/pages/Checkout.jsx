@@ -28,7 +28,7 @@ const Checkout = () => {
   const handleShowConfirmModal = () => {
     setConfirmModalVisible(true);
   };
-
+// Hàm dow ảnh theo flowerID
   const fetchImage = async (flowerID) => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
