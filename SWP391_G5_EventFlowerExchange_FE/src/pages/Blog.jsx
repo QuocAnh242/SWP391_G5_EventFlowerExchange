@@ -5,20 +5,20 @@ import Footer from '../components/Footer';
 // import Navbar from "../components/Navbar.jsx";
 
 const BlogPage = () => {
-  const [blogs, setBlogs] = useState([]); // Khởi tạo state cho danh sách blog
-  const [loading, setLoading] = useState(true); // Để hiển thị loading
-  const [visibleBlogs, setVisibleBlogs] = useState(5); // State cho số lượng bài viết hiển thị
+  const [blogs, setBlogs] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [visibleBlogs, setVisibleBlogs] = useState(5); 
 
   useEffect(() => {
     // Gọi API để lấy dữ liệu blog
     const fetchBlogs = async () => {
       try {
         const response = await axios.get('http://localhost:8080/identity/blog/');
-        setBlogs(response.data); // Cập nhật state với dữ liệu blog nhận được
-        setLoading(false); // Tắt loading sau khi dữ liệu được tải xong
+        setBlogs(response.data); 
+        setLoading(false);
       } catch (error) {
         console.error("Có lỗi xảy ra khi lấy dữ liệu blog:", error);
-        setLoading(false); // Tắt loading ngay cả khi gặp lỗi
+        setLoading(false); 
       }
     };
 

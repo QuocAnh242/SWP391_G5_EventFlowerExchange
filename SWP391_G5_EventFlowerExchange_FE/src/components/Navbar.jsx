@@ -11,11 +11,11 @@ function Navbar({ cartCount }) {
   const [notifications, setNotifications] = useState([]);
   const [user, setUser] = useState(null);
   const [showNotificationPanel, setShowNotificationPanel] = useState(false);
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const notificationRef = useRef(null);
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]); 
 
-  // Load user data from localStorage on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -31,18 +31,19 @@ function Navbar({ cartCount }) {
   // Fetch notifications on mount
   useEffect(() => {
     axios.get('http://localhost:8080/identity/noti/')
-      .then((response) => setNotifications(response.data))
+      .then((response) => {
+        setNotifications(response.data);
+        if (response.data.length > 0) setHasNewNotifications(true);
+      })
       .catch((error) => console.error('Error fetching notifications:', error));
   }, []);
 
-  // Fetch posts on mount
   useEffect(() => {
     axios.get('http://localhost:8080/identity/posts/')
       .then((response) => setPosts(response.data))
       .catch((error) => console.error('Error fetching posts:', error));
   }, []);
 
-  // Handle search input change and filter posts based on search term
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -54,9 +55,11 @@ function Navbar({ cartCount }) {
   };
 
   // Toggle notification panel visibility
-  const toggleNotificationPanel = () => setShowNotificationPanel(prev => !prev);
+  const toggleNotificationPanel = () => {
+    setShowNotificationPanel(prev => !prev);
+    if (hasNewNotifications) setHasNewNotifications(false); // Mark notifications as viewed
+  };
 
-  // Auto-close notification panel after 5 seconds
   useEffect(() => {
     if (showNotificationPanel) {
       const timer = setTimeout(() => setShowNotificationPanel(false), 5000);
@@ -64,7 +67,6 @@ function Navbar({ cartCount }) {
     }
   }, [showNotificationPanel]);
 
-  // Close notification panel when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target)) {
@@ -75,7 +77,6 @@ function Navbar({ cartCount }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle logout
   const handleLogout = () => {
     localStorage.clear();
     setUser(null);
@@ -141,6 +142,7 @@ function Navbar({ cartCount }) {
         {/* Notification bell */}
         <div className="notification-icon-wrapper" onClick={toggleNotificationPanel} ref={notificationRef}>
           <FaBell className="navbar-icon" />
+          {hasNewNotifications && <span className="notification-dot"></span>}
           {showNotificationPanel && (
             <div className="notification-panel">
               <h4>Thông báo</h4>

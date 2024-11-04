@@ -28,7 +28,7 @@ const Checkout = () => {
   const handleShowConfirmModal = () => {
     setConfirmModalVisible(true);
   };
-
+// Hàm dow ảnh theo flowerID
   const fetchImage = async (flowerID) => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
@@ -213,6 +213,7 @@ const Checkout = () => {
         <div className="confirm-modal-overlay">
           <div className="confirm-modal">
             <p>Bạn có chắc chắn muốn mua hàng?</p>
+            <p style={{ color: "red" }}>[Sao khi đã đặt hàng, bạn sẽ không được hủy đơn hàng này]</p>
             <div className="confirm-modal-buttons">
               <button onClick={handleConfirmCheckout} className="confirm-btn">Có</button>
               <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>

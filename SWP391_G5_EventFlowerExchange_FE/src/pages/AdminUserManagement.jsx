@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { FaTachometerAlt, FaUsers, FaClipboardList, FaShoppingCart, FaBell } from 'react-icons/fa';
 import { Pie, Bar } from 'react-chartjs-2';
-import 'chart.js/auto'; // This is needed for Chart.js
+import 'chart.js/auto'; 
 import '../styles/AdminUserManagement.css';
 import '../styles/popup.css';
 import Navbar from "../components/Navbar.jsx";
@@ -20,10 +20,8 @@ const AdminUserManagement = () => {
   const [totalPosts, setTotalPosts] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
   const [activeUsers, setActiveUsers] = useState(0);
-  const [blockedUsers, setBlockedUsers] = useState(0);
+  // const [blockedUsers, setBlockedUsers] = useState(0);
   const [notifications, setNotifications] = useState([]);
-
-
 
   useEffect(() => {
     fetchUsers();
@@ -87,9 +85,6 @@ const AdminUserManagement = () => {
     }
   };
 
-
-
-
   // Xóa post
   const handleDeletePost = async (postID) => {
     try {
@@ -101,7 +96,7 @@ const AdminUserManagement = () => {
       console.error('Error deleting post:', error);
     }
   };
-// Bloc người dùng
+  // Block người dùng
   const handleBlockUser = async (userID, isBlocked) => {
     try {
       const availableStatus = isBlocked ? 'available' : 'blocked'; // Đặt trạng thái dựa trên isBlocked
@@ -113,7 +108,7 @@ const AdminUserManagement = () => {
       console.error(`Error ${isBlocked ? 'unblocking' : 'blocking'} user:`, error);
     }
   };
-// Xóa người dùng
+  // Xóa người dùng
   const handleDeleteUser = async (userID) => {
     try {
       await axios.delete(`http://localhost:8080/identity/users/${userID}`);
@@ -124,25 +119,24 @@ const AdminUserManagement = () => {
       console.error('Error deleting user:', error);
     }
   };
-  
-// Xóa thông báo yêu cầu thành seller
-const handleDeleteNotification = async (notificationID) => {
-  try {
-    await axios.delete(`http://localhost:8080/identity/noti/${notificationID}`);
-    setNotifications(notifications.filter((noti) => noti.notificationID !== notificationID));
-  } catch (error) {
-    console.error('Error deleting notification:', error);
-  }
-};
 
-
+  // Xóa thông báo yêu cầu thành seller
+  const handleDeleteNotification = async (notificationID) => {
+    try {
+      await axios.delete(`http://localhost:8080/identity/noti/${notificationID}`);
+      setNotifications(notifications.filter((noti) => noti.notificationID !== notificationID));
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
+  };
+  //Hàm để set Seller
   const handleSetSeller = async (userID) => {
     try {
       await axios.put(`http://localhost:8080/identity/users/seller/${userID}`);
       setUsers(users.map(user =>
         user.userID === userID ? { ...user, roles: [...user.roles, 'SELLER'] } : user
       ));
-      // Update local storage for the logged-in user if their role has changed
+      //sau khi update thì sẽ lưu trong localStorage cho user
       const currentUser = JSON.parse(localStorage.getItem('user'));
       if (currentUser && currentUser.userID === userID) {
         localStorage.setItem('user', JSON.stringify({
@@ -157,7 +151,7 @@ const handleDeleteNotification = async (notificationID) => {
     }
   };
 
-
+  //Tìm user
   const filteredUsers = users.filter(
     (user) =>
       user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -201,7 +195,7 @@ const handleDeleteNotification = async (notificationID) => {
 
     return (
       <div>
-      
+
         <h2 className='admin-title'>Tổng quan</h2>
         <div className="dashboard">
           <div className="stat">
@@ -368,48 +362,45 @@ const handleDeleteNotification = async (notificationID) => {
             )}
           </div>
         );
-        case 'seller-requests': // Make sure this case matches
-  return (
-    <div>
-      <h2 className='admin-title'>Yêu cầu thành người bán hàng </h2>
-      {notifications.length > 0 ? (
-        <table className="admin-user-table">
-          <thead>
-            <tr>
-              <th>Tên người dùng</th>
-              <th>Email</th>
-              <th>Ngày nhận đơn</th>
-              <th></th> {/* New column for action buttons */}
-            </tr>
-          </thead>
-          <tbody>
-            {notifications.map((noti) => (
-              <tr key={noti.notificationID}>
-                <td><strong>{noti.user.username}</strong></td>
-                <td>{noti.user.email}</td>
-                <td>{new Date(noti.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
-                <td>
-                  <button className="button-delete" onClick={() => handleDeleteNotification(noti.notificationID)}>Xóa</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>Không có yêu cầu thành người bán hàng.</p>
-      )}
-    </div>
-  );
-      
-
+      case 'seller-requests': // Make sure this case matches
+        return (
+          <div>
+            <h2 className='admin-title'>Yêu cầu thành người bán hàng </h2>
+            {notifications.length > 0 ? (
+              <table className="admin-user-table">
+                <thead>
+                  <tr>
+                    <th>Tên người dùng</th>
+                    <th>Email</th>
+                    <th>Ngày nhận đơn</th>
+                    <th></th> {/* New column for action buttons */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {notifications.map((noti) => (
+                    <tr key={noti.notificationID}>
+                      <td><strong>{noti.user.username}</strong></td>
+                      <td>{noti.user.email}</td>
+                      <td>{new Date(noti.createdAt).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' })}</td>
+                      <td>
+                        <button className="button-delete" onClick={() => handleDeleteNotification(noti.notificationID)}>Xóa</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>Không có yêu cầu thành người bán hàng.</p>
+            )}
+          </div>
+        );
       default:
         return null;
     }
   };
-
   return (
     <div className="admin-panel">
-    <Navbar/>
+      <Navbar />
       {/* Sidebar */}
       <div className="sidebar">
         <ul>
@@ -431,15 +422,12 @@ const handleDeleteNotification = async (notificationID) => {
               <span className="seller-requests">{notifications.length}</span>
             )} */}
           </li>
-
         </ul>
       </div>
-
       {/* Main Content */}
       <div className="main-content">
         {renderContent()}
       </div>
-
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-container">
@@ -455,12 +443,7 @@ const handleDeleteNotification = async (notificationID) => {
             </button>
           </div>
         </div>
-
       )}
-
-
-
-
     </div>
   );
 

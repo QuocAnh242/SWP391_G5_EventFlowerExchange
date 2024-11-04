@@ -31,20 +31,12 @@ const SuccessPage = () => {
     } 
   }, [isCod, vnp_TxnRef, vnp_ResponseCode, vnp_TransactionStatus]);
 
-  // useEffect(() => {
-  //   if (isCod) {
-  //     // Handle COD success directly
-  //     console.log("COD Payment Successful");
-  //   } else if (vnp_TransactionStatus === "00") {
-  //     // Handle online payment success
-  //     updateOrderStatus();
-  //   } else {
-  //     navigate('/payment-failed');
-  //   }
-  // }, [isCod, vnp_TxnRef, vnp_ResponseCode, vnp_TransactionStatus]);
-
   const handleGoHome = () => {
     navigate('/');
+  };
+
+  const handleTrackOrder = () => {
+    navigate('/profile-page');
   };
 
   return (
@@ -62,6 +54,7 @@ const SuccessPage = () => {
           </svg>
         </div>
         <button className="go-home-btn" onClick={handleGoHome}>Quay về trang chủ</button>
+        <button className="track-order-btn" onClick={handleTrackOrder}>Theo dõi đơn hàng của bạn</button>
       </div>
     </div>
   );

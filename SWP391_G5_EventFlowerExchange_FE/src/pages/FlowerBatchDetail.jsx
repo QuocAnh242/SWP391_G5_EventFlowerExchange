@@ -42,8 +42,14 @@ function FlowerBatchDetail() {
   const fetchPost = async (id) => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/posts/${id}`);
-      setPost(response.data);
+      const postData = response.data;
+      
+      setPost(postData);
       setCurrentBatchIndex(0); // Reset to the first batch
+    
+      // Save the post data to localStorage
+      localStorage.setItem("postDetails", JSON.stringify(postData));
+      console.log("Fetched post data:", postData);
     } catch (error) {
       setError("Lỗi khi lấy chi tiết lô hoa. Vui lòng thử lại.");
       console.error("Lỗi khi lấy chi tiết lô hoa: ", error);
@@ -153,7 +159,6 @@ function FlowerBatchDetail() {
       </div>
     );
   }
-  //Hiệu ứng khi đóng popup thì loading để refresh trang 
   const handleClosePopup = () => {
     setLoading(true); // Bắt đầu hiển thị loading
     setTimeout(() => {
@@ -183,7 +188,6 @@ function FlowerBatchDetail() {
           {currentBatch ? (
             <div key={currentBatch.flowerID}>
               <h2>{currentBatch.flowerName}</h2>
-              <p className="flower-description">{currentBatch.description}</p>
               <p><strong>Giá:</strong> <span className="price">{currentBatch.price.toLocaleString()} VNĐ</span></p>
               <p>
                 <strong>Số lượng còn lại:</strong>
@@ -199,8 +203,9 @@ function FlowerBatchDetail() {
               </p>
 
               <div className="stock-availability">
-                <p><strong>Tình trạng:</strong> <span className="in-stock">{currentBatch.status}</span></p>
+                <p><strong>Tình trạng : </strong> <span className="in-stock">{currentBatch.status}</span></p>
               </div>
+              <p><strong>Mô tả hoa : </strong><span className="flower-description">{currentBatch.description}</span></p>
             </div>
           ) : (
             <p>Không có thông tin về lô hoa.</p>
@@ -232,9 +237,7 @@ function FlowerBatchDetail() {
       <div className="related-posts-section">
         <RelatedPosts currentProductId={id} />
       </div>
-
       <Footer />
-
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-container">

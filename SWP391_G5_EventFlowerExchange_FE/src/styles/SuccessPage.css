@@ -55,6 +55,22 @@
     fill: #28a745; /* Green color */
   }
   
+  .track-order-btn {
+    margin-top: 20px;
+    padding: 12px 30px;
+    font-size: 16px;
+    background-color: #da6b11;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .track-order-btn:hover {
+    background-color: #3d1c01;
+  }
+
   .footer {
     position: relative;  
     width: 100vw;        
