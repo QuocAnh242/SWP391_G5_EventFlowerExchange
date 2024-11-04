@@ -64,4 +64,12 @@ public class ReviewService {
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
+
+    public void deleteReview(int reviewID) {
+        if (!reviewRepository.existsById(reviewID)) {
+            throw new RuntimeException("Review not found");
+        }
+        reviewRepository.deleteById(reviewID);
+    }
+
 }

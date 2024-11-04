@@ -61,12 +61,12 @@ function ReviewPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     if (!userID) {
       setError("User ID is required.");
       return;
     }
-  
+
     // Structure the request body as needed
     const requestData = {
       userID,
@@ -77,11 +77,11 @@ function ReviewPage() {
         deliveryRating: flower.deliveryRating,
       })),
     };
-  
+
     try {
       const response = await axios.post("http://localhost:8080/identity/reviews/", requestData);
       setSuccessMessage("Cảm ơn bạn đã đánh giá!");
-  
+
       // Reset flower details after successful submission
       setFlowerDetails(flowerDetails.map(flower => ({
         ...flower,
@@ -89,29 +89,29 @@ function ReviewPage() {
         deliveryRating: 5,
         comment: ""
       })));
-  
+
       // Handle the response if necessary
       const createdReviews = response.data.result; // Adjust based on actual response structure
       setReviews(createdReviews);
-  
+
       console.log("Reviews created successfully:", response.data);
     } catch (err) {
       setError("Gửi đánh giá thất bại. Vui lòng thử lại sau.");
       console.error(err);
     }
   };
-  
+
 
   return (
-    <div className="review-page">
-      <h2>Đánh Giá Sản Phẩm</h2>
-      {successMessage && <p className="success-message">{successMessage}</p>}
-      {error && <p className="error-message">{error}</p>}
+      <div className="review-page">
+        <h2>Đánh Giá Sản Phẩm</h2>
+        {successMessage && <p className="success-message">{successMessage}</p>}
+        {error && <p className="error-message">{error}</p>}
 
-      <div className="product-details">
-        <h3>Thông Tin Sản Phẩm Đã Mua:</h3>
-        <table>
-          <thead>
+        <div className="product-details">
+          <h3>Thông Tin Sản Phẩm Đã Mua:</h3>
+          <table>
+            <thead>
             <tr>
               <th>Ảnh hoa</th>
               <th>Tên hoa</th>
@@ -122,68 +122,68 @@ function ReviewPage() {
               <th>Đánh Giá Giao Hàng</th>
               <th>Bình Luận</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {flowerDetails.map((flower, index) => (
-              <tr key={flower.flowerID}>
-                <td>
-                  {imageUrls[flower.flowerID] ? (
-                    <img src={imageUrls[flower.flowerID]} alt={flower.flowerName} className="flower-image" />
-                  ) : (
-                    "Loading..."
-                  )}
-                </td>
-                <td>{flower.flowerName}</td>
-                <td>{flower.quantity}</td>
-                <td>{flower.price} VND</td>
-                <td>{flower.flowerType}</td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={flower.rating}
-                    onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
-                  />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={flower.deliveryRating}
-                    onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
-                  />
-                </td>
-                <td>
+                <tr key={flower.flowerID}>
+                  <td>
+                    {imageUrls[flower.flowerID] ? (
+                        <img src={imageUrls[flower.flowerID]} alt={flower.flowerName} className="flower-image" />
+                    ) : (
+                        "Loading..."
+                    )}
+                  </td>
+                  <td>{flower.flowerName}</td>
+                  <td>{flower.quantity}</td>
+                  <td>{flower.price} VND</td>
+                  <td>{flower.flowerType}</td>
+                  <td>
+                    <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={flower.rating}
+                        onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
+                    />
+                  </td>
+                  <td>
+                    <input
+                        type="number"
+                        min="1"
+                        max="5"
+                        value={flower.deliveryRating}
+                        onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
+                    />
+                  </td>
+                  <td>
                   <textarea
-                    value={flower.comment}
-                    onChange={(e) => handleInputChange(index, "comment", e.target.value)}
-                    placeholder="Viết đánh giá của bạn ở đây..."
+                      value={flower.comment}
+                      onChange={(e) => handleInputChange(index, "comment", e.target.value)}
+                      placeholder="Viết đánh giá của bạn ở đây..."
                   ></textarea>
-                </td>
-              </tr>
+                  </td>
+                </tr>
             ))}
-          </tbody>
-        </table>
-      </div>
-
-      <button onClick={handleSubmit}>Gửi Đánh Giá</button>
-
-      {/* Display created reviews if needed */}
-      {reviews.length > 0 && (
-        <div className="created-reviews">
-          <h3>Đánh Giá Đã Tạo:</h3>
-          <ul>
-            {reviews.map(review => (
-              <li key={review.reviewID}>
-                <p><strong>{review.user.username}:</strong> {review.comment} (Đánh giá: {review.rating}⭐)</p>
-              </li>
-            ))}
-          </ul>
+            </tbody>
+          </table>
         </div>
-      )}
-    </div>
+
+        <button onClick={handleSubmit}>Gửi Đánh Giá</button>
+
+        {/* Display created reviews if needed */}
+        {reviews.length > 0 && (
+            <div className="created-reviews">
+              <h3>Đánh Giá Đã Tạo:</h3>
+              <ul>
+                {reviews.map(review => (
+                    <li key={review.reviewID}>
+                      <p><strong>{review.user.username}:</strong> {review.comment} (Đánh giá: {review.rating}⭐)</p>
+                    </li>
+                ))}
+              </ul>
+            </div>
+        )}
+      </div>
   );
 }
 

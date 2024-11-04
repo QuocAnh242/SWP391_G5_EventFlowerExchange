@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface IReviewRepository extends JpaRepository<Review, Integer> {
     List<Review> findByFlowerBatch_FlowerID(int flowerID);
+    boolean existsById(Integer id);
+
 }
 
