@@ -52,5 +52,17 @@ public class ReviewController {
                 .message("Review updated successfully")
                 .build());
     }
+
+    @DeleteMapping("/{reviewID}")
+    public ResponseEntity<ApiResponse<String>> deleteReview(@PathVariable int reviewID) {
+        reviewService.deleteReview(reviewID);
+        // Chỉ cần một thông báo duy nhất
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .code(1000)
+                .message("Deleted successfully") // Thông báo ngắn gọn hơn
+                .build());
+    }
+
+
 }
 
