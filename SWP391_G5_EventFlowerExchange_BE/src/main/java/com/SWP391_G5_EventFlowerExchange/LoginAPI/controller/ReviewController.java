@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.MultiReviewRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.ReviewRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.response.ApiResponse;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Review;
@@ -20,12 +21,12 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping("/")
-    public ResponseEntity<ApiResponse<Review>> createReview(@RequestBody ReviewRequest reviewRequest) {
-        Review review = reviewService.createReview(reviewRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<Review>builder()
-                .result(review)
+    public ResponseEntity<ApiResponse<List<Review>>> createReviews(@RequestBody MultiReviewRequest multiReviewRequest) {
+        List<Review> reviews = reviewService.createReviews(multiReviewRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<List<Review>>builder()
+                .result(reviews)
                 .code(1000)
-                .message("Review created successfully")
+                .message("Reviews created successfully")
                 .build());
     }
 

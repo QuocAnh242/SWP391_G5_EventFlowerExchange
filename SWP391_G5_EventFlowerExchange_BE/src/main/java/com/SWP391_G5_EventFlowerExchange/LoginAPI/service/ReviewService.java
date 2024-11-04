@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.MultiReviewRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.ReviewRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Review;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,23 +23,28 @@ public class ReviewService {
     private final IUserRepository userRepository;
     private final IFlowerBatchRepository flowerBatchRepository;
 
-    public Review createReview(ReviewRequest reviewRequest) {
-        User user = userRepository.findById(reviewRequest.getUserID())
+    public List<Review> createReviews(MultiReviewRequest multiReviewRequest) {
+        List<Review> createdReviews = new ArrayList<>();
+        User user = userRepository.findById(multiReviewRequest.getUserID())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        FlowerBatch flowerBatch = flowerBatchRepository.findById(reviewRequest.getFlowerID())
-                .orElseThrow(() -> new RuntimeException("FlowerBatch not found"));
 
-        Review review = new Review();
-        review.setUser(user);
-        review.setFlowerBatch(flowerBatch);
-        review.setRating(reviewRequest.getRating());
-        review.setComment(reviewRequest.getComment());
-        review.setDeliveryRating(reviewRequest.getDeliveryRating());
-        review.setCreatedAt(LocalDateTime.now());
+        for (ReviewRequest flowerReview : multiReviewRequest.getFlowerReviews()) {
+            FlowerBatch flowerBatch = flowerBatchRepository.findById(flowerReview.getFlowerID())
+                    .orElseThrow(() -> new RuntimeException("FlowerBatch not found"));
 
-        
-        return reviewRepository.save(review);
+            Review review = new Review();
+            review.setUser(user);
+            review.setFlowerBatch(flowerBatch);
+            review.setRating(flowerReview.getRating());
+            review.setComment(flowerReview.getComment());
+            review.setDeliveryRating(flowerReview.getDeliveryRating());
+            review.setCreatedAt(LocalDateTime.now());
+
+            createdReviews.add(reviewRepository.save(review));
+        }
+        return createdReviews;
     }
+
 
     public List<Review> getReviewsByFlowerId(int flowerID) {
         return reviewRepository.findByFlowerBatch_FlowerID(flowerID);
