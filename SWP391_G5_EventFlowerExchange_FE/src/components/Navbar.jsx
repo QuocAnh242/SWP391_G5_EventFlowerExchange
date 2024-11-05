@@ -25,9 +25,10 @@ function Navbar({ cartCount }) {
         setUser(parsedUser);
 
         // Gọi API lấy thông báo theo userID
+        // Fetch notifications based on userID
         if (parsedUser.userID) {
           axios
-            .get(`http://localhost:8080/identity/noti/?userID=${parsedUser.userID}`)
+            .get(`http://localhost:8080/identity/noti/user/${parsedUser.userID}`)
             .then((response) => {
               const userNotifications = response.data;
               setNotifications(userNotifications);
@@ -35,6 +36,7 @@ function Navbar({ cartCount }) {
             })
             .catch((error) => console.error('Lỗi khi lấy thông báo:', error));
         }
+
       } catch (error) {
         console.error("Lỗi khi phân tích dữ liệu người dùng:", error);
         localStorage.removeItem('user');
