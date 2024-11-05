@@ -231,8 +231,10 @@ function FlowerBatchDetail() {
       </div>
 
       <div className="feedback-section">
-        <FeedbackList productId={id} />
-      </div>
+  {currentBatch && <FeedbackList flowerID={currentBatch.flowerID} />}
+</div>
+
+
 
       <div className="related-posts-section">
         <RelatedPosts currentProductId={id} />

@@ -1,113 +1,73 @@
-/* ReviewPage.css */
-
-.review-page {
+.review-page-container {
   font-family: Arial, sans-serif;
- 
 }
 
-.review-page h2 {
+.review-title {
   text-align: center;
-  color: #333;
-  margin-bottom: 20px;
+  margin: 30px 0;
+  color: #FFC0CB;
+  font-size: 28px; /* Larger title */
 }
 
-.success-message,
-.error-message {
+.review-page-success, .review-page-error {
   text-align: center;
-  font-weight: bold;
-  color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px 0;
+  font-size: 18px;
+  color: #e76f51;
 }
 
-.success-message {
-  background-color: #28a745;
+.review-product-details {
+  /* background: #f9f9f9; */
+  padding: 20px;
+  border-radius: 8px;
 }
 
-.error-message {
-  background-color: #dc3545;
-}
-
-.product-details {
-  margin-bottom: 20px;
-}
-
-.product-details h3 {
-  color: #555;
-  margin-bottom: 10px;
-}
-
-table {
+.review-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 20px;
-  font-size: 0.95rem;
+  margin-top: 20px;
+  font-size: 18px; /* Larger font for table content */
 }
 
-thead {
-  background-color: #007bff;
-  color: #fff;
+.review-table th, .review-table td {
+  padding: 15px; /* More padding for table cells */
+  text-align: left;
+  border: 1px solid #ddd;
 }
 
-thead th {
-  padding: 10px;
-}
-
-tbody tr:nth-child(even) {
-  background-color: #f1f1f1;
-}
-
-tbody td,
-thead th {
-  padding: 12px;
-  text-align: center;
-}
-
-tbody td {
-  border-bottom: 1px solid #ddd;
-}
-
-.flower-image {
-  width: 80px;
-  height: auto;
-  border-radius: 8px;
+.review-flower-image {
+  width: 70px; /* Larger image size */
+  height: 70px;
   object-fit: cover;
-  border: 1px solid #ddd;
 }
 
-input[type="number"] {
-  width: 60px;
-  padding: 5px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  text-align: center;
-}
-
-textarea {
-  width: 100%;
-  height: 50px;
+.review-rating-input, .review-delivery-rating-input {
+  width: 60px; /* Increase width of rating inputs */
   padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  resize: vertical;
-  font-family: Arial, sans-serif;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
-button {
+.review-comment-input {
+  width: 100%;
+  height: 80px; /* Increase height for comment input */
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: none;
+}
+
+.review-submit-button {
   display: block;
-  margin: 0 auto;
-  padding: 10px 20px;
-  background-color: #007bff;
+  margin: 30px auto; /* Increase margin for spacing */
+  padding: 12px 25px;
+  font-size: 18px; /* Larger button font size */
+  background-color: #FFC0CB;
   color: #fff;
   border: none;
   border-radius: 5px;
-  font-size: 1rem;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-button:hover {
-  background-color: #0056b3;
+.review-submit-button:hover {
+  background-color: #FFC0CB;
 }

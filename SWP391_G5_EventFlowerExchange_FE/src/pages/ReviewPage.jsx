@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/ReviewPage.css";
+import Footer from "../components/Footer";
 
 function ReviewPage() {
   const [reviews, setReviews] = useState([]);
@@ -10,7 +11,6 @@ function ReviewPage() {
   const [flowerDetails, setFlowerDetails] = useState([]);
   const [imageUrls, setImageUrls] = useState({});
 
-  // Fetch userID, flowerID, and product details
   useEffect(() => {
     const orderHistoryDetailArray = JSON.parse(localStorage.getItem("orderHistoryDetail") || "[]");
     if (orderHistoryDetailArray.length > 0) {
@@ -33,7 +33,6 @@ function ReviewPage() {
     }
   }, []);
 
-  // Fetch and set image for each flower
   useEffect(() => {
     flowerDetails.forEach((flower) => {
       fetchImage(flower.flowerID);
@@ -67,7 +66,6 @@ function ReviewPage() {
       return;
     }
 
-    // Structure the request body as needed
     const requestData = {
       userID,
       flowerReviews: flowerDetails.map((flower) => ({
@@ -82,7 +80,6 @@ function ReviewPage() {
       const response = await axios.post("http://localhost:8080/identity/reviews/", requestData);
       setSuccessMessage("Cảm ơn bạn đã đánh giá!");
 
-      // Reset flower details after successful submission
       setFlowerDetails(flowerDetails.map(flower => ({
         ...flower,
         rating: 5,
@@ -90,10 +87,8 @@ function ReviewPage() {
         comment: ""
       })));
 
-      // Handle the response if necessary
-      const createdReviews = response.data.result; // Adjust based on actual response structure
+      const createdReviews = response.data.result;
       setReviews(createdReviews);
-
       console.log("Reviews created successfully:", response.data);
     } catch (err) {
       setError("Gửi đánh giá thất bại. Vui lòng thử lại sau.");
@@ -101,17 +96,16 @@ function ReviewPage() {
     }
   };
 
-
   return (
-      <div className="review-page">
-        <h2>Đánh Giá Sản Phẩm</h2>
-        {successMessage && <p className="success-message">{successMessage}</p>}
-        {error && <p className="error-message">{error}</p>}
+    <div className="review-page-container">
+      <h2 className="review-title">Đánh Giá Sản Phẩm</h2>
+      {successMessage && <p className="review-page-success">{successMessage}</p>}
+      {error && <p className="review-page-error">{error}</p>}
 
-        <div className="product-details">
-          <h3>Thông Tin Sản Phẩm Đã Mua:</h3>
-          <table>
-            <thead>
+      <div className="review-product-details">
+        <h3>Thông Tin Sản Phẩm Đã Mua</h3>
+        <table className="review-table">
+          <thead>
             <tr>
               <th>Ảnh hoa</th>
               <th>Tên hoa</th>
@@ -122,68 +116,58 @@ function ReviewPage() {
               <th>Đánh Giá Giao Hàng</th>
               <th>Bình Luận</th>
             </tr>
-            </thead>
-            <tbody>
+          </thead>
+          <tbody>
             {flowerDetails.map((flower, index) => (
-                <tr key={flower.flowerID}>
-                  <td>
-                    {imageUrls[flower.flowerID] ? (
-                        <img src={imageUrls[flower.flowerID]} alt={flower.flowerName} className="flower-image" />
-                    ) : (
-                        "Loading..."
-                    )}
-                  </td>
-                  <td>{flower.flowerName}</td>
-                  <td>{flower.quantity}</td>
-                  <td>{flower.price} VND</td>
-                  <td>{flower.flowerType}</td>
-                  <td>
-                    <input
-                        type="number"
-                        min="1"
-                        max="5"
-                        value={flower.rating}
-                        onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
-                    />
-                  </td>
-                  <td>
-                    <input
-                        type="number"
-                        min="1"
-                        max="5"
-                        value={flower.deliveryRating}
-                        onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
-                    />
-                  </td>
-                  <td>
+              <tr key={flower.flowerID} className="review-row">
+                <td>
+                  {imageUrls[flower.flowerID] ? (
+                    <img src={imageUrls[flower.flowerID]} alt={flower.flowerName} className="review-flower-image" />
+                  ) : (
+                    "Loading..."
+                  )}
+                </td>
+                <td>{flower.flowerName}</td>
+                <td>{flower.quantity}</td>
+                <td>{flower.price} VND</td>
+                <td>{flower.flowerType}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={flower.rating}
+                    onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
+                    className="review-rating-input"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    max="5"
+                    value={flower.deliveryRating}
+                    onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
+                    className="review-delivery-rating-input"
+                  />
+                </td>
+                <td>
                   <textarea
-                      value={flower.comment}
-                      onChange={(e) => handleInputChange(index, "comment", e.target.value)}
-                      placeholder="Viết đánh giá của bạn ở đây..."
+                    value={flower.comment}
+                    onChange={(e) => handleInputChange(index, "comment", e.target.value)}
+                    placeholder="Viết đánh giá của bạn ở đây..."
+                    className="review-comment-input"
                   ></textarea>
-                  </td>
-                </tr>
+                </td>
+              </tr>
             ))}
-            </tbody>
-          </table>
-        </div>
-
-        <button onClick={handleSubmit}>Gửi Đánh Giá</button>
-
-        {/* Display created reviews if needed */}
-        {reviews.length > 0 && (
-            <div className="created-reviews">
-              <h3>Đánh Giá Đã Tạo:</h3>
-              <ul>
-                {reviews.map(review => (
-                    <li key={review.reviewID}>
-                      <p><strong>{review.user.username}:</strong> {review.comment} (Đánh giá: {review.rating}⭐)</p>
-                    </li>
-                ))}
-              </ul>
-            </div>
-        )}
+          </tbody>
+        </table>
       </div>
+
+      <button onClick={handleSubmit} className="review-submit-button">Gửi Đánh Giá</button>
+      <Footer/>
+    </div>
   );
 }
 

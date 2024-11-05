@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/Checkout.css';
 import Footer from '../components/Footer';
-// import Navbar from "../components/Navbar.jsx";
 
 const Checkout = () => {
   const location = useLocation();
@@ -14,9 +13,14 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState({});
+  const [address, setAddress] = useState(user?.address || ''); // New state for address
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
+  };
+
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
   };
 
   const handleConfirmCheckout = async () => {
@@ -26,9 +30,13 @@ const Checkout = () => {
   };
 
   const handleShowConfirmModal = () => {
+    if (!address) {
+      alert('Vui lòng nhập địa chỉ giao hàng.');
+      return;
+    }
     setConfirmModalVisible(true);
   };
-// Hàm dow ảnh theo flowerID
+
   const fetchImage = async (flowerID) => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
@@ -52,6 +60,12 @@ const Checkout = () => {
       return;
     }
 
+    if (!address) {
+      setLoading(false);
+      alert('Vui lòng nhập địa chỉ giao hàng');
+      return;
+    }
+
     const orderDetails = cartItems.map(item => ({
       flowerID: item.flowerID,
       quantity: item.quantity,
@@ -67,7 +81,7 @@ const Checkout = () => {
     const order = {
       orderDate: vnDate.toISOString(),
       totalPrice: totalPrice,
-      shippingAddress: user?.address || 'Địa chỉ mặc định',
+      shippingAddress: address,
       user: { userID: user?.userID },
       delivery: {
         deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(),
@@ -133,7 +147,6 @@ const Checkout = () => {
 
   return (
     <div className="checkout">
-      {/* <Navbar/> */}
       <div className="checkout-header">
         <h2>Xác Nhận Đơn Hàng</h2>
       </div>
@@ -162,14 +175,27 @@ const Checkout = () => {
         </div>
 
         <div className="user-info">
-          <h3>Thông Tin Người Dùng</h3>
-          <div className="user-details">
-            <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
-            <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
-            <p><strong>Số điện thoại:</strong> {user?.phoneNumber || 'N/A'}</p>
-            <p><strong>Địa chỉ:</strong> {user?.address || 'N/A'}</p>
-          </div>
-        </div>
+  <h3>Thông Tin Người Dùng</h3>
+  <div className="user-details">
+    <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
+    <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
+    <p><strong>Số điện thoại:</strong> {user?.phoneNumber || 'N/A'}</p>
+
+    {/* Nếu có address của user thì hiển thị, ngược lại hiển thị ô input */}
+    {user?.address ? (
+      <p><strong>Địa chỉ: </strong> {user.address}</p>
+    ) : (
+      
+      <input
+        type="text"
+        placeholder="Nhập địa chỉ giao hàng"
+        value={address}
+        onChange={handleAddressChange}
+        className="address-input"
+      />
+    )}
+  </div>
+</div>
       </div>
 
       <div className="payment-method">
@@ -213,7 +239,7 @@ const Checkout = () => {
         <div className="confirm-modal-overlay">
           <div className="confirm-modal">
             <p>Bạn có chắc chắn muốn mua hàng?</p>
-            <p style={{ color: "red" }}>[Sao khi đã đặt hàng, bạn sẽ không được hủy đơn hàng này]</p>
+            <p style={{ color: "red" }}>[Sau khi đã đặt hàng, bạn sẽ không được hủy đơn hàng này]</p>
             <div className="confirm-modal-buttons">
               <button onClick={handleConfirmCheckout} className="confirm-btn">Có</button>
               <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>
