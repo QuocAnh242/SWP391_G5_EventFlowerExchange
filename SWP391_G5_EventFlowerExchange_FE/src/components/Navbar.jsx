@@ -27,7 +27,7 @@ function Navbar({ cartCount }) {
         // Gọi API lấy thông báo theo userID
         if (parsedUser.userID) {
           axios
-            .get(`http://localhost:8080/identity/noti/?userID=${parsedUser.userID}`)
+          .get(`http://localhost:8080/identity/noti/user/${parsedUser.userID}`)
             .then((response) => {
               const userNotifications = response.data;
               setNotifications(userNotifications);
