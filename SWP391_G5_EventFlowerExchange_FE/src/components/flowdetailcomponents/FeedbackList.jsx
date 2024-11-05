@@ -2,26 +2,16 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./FeedbackList.css";
 
-function FeedbackList() {
+function FeedbackList({ flowerID }) { // Receive flowerID as a prop
   const [reviews, setReviews] = useState([]);
-  const [flowerID, setFlowerID] = useState(null);
-  const [showAll, setShowAll] = useState(false); // Track if all reviews should be shown
-
-  useEffect(() => {
-    // Retrieve post data from localStorage
-    const postData = JSON.parse(localStorage.getItem("postDetails"));
-    if (postData?.flowerBatches?.length > 0) {
-      // Set flowerID from the first flowerBatch if available
-      setFlowerID(postData.flowerBatches[0].flowerID);
-    }
-  }, []);
+  const [showAll, setShowAll] = useState(false);
 
   const fetchReviews = useCallback(async () => {
     if (!flowerID) return;
     try {
       console.log("Fetching reviews for flowerID:", flowerID);
       const response = await axios.get(`http://localhost:8080/identity/reviews/flower/${flowerID}`);
-      console.log("Full response:", response); // Log the entire response to check data structure
+      console.log("Full response:", response);
       setReviews(response.data);
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -35,7 +25,7 @@ function FeedbackList() {
   }, [fetchReviews, flowerID]);
 
   const handleToggleShowAll = () => {
-    setShowAll((prevShowAll) => !prevShowAll); // Toggle between showing all reviews and only one
+    setShowAll((prevShowAll) => !prevShowAll);
   };
 
   return (
@@ -55,7 +45,6 @@ function FeedbackList() {
       ) : (
         <p>Chưa có phản hồi nào.</p>
       )}
-      {/* Show "See More" or "Close" button based on the showAll state */}
       {reviews.length > 1 && (
         <button onClick={handleToggleShowAll} className="see-more-btn">
           {showAll ? "Đóng" : "Xem thêm"}

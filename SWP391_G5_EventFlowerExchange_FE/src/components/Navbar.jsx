@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import '../styles/Navbar.css';
-import Logo from '../assets/Flower_preview_rev_1.png';
+import Logo from '../assets/Flower.png';
 import { FaUser, FaShoppingBag, FaSignOutAlt, FaBell } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -14,50 +14,53 @@ function Navbar({ cartCount }) {
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const notificationRef = useRef(null);
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]); 
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
+    // Lấy thông tin user từ localStorage
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       try {
-        setUser(JSON.parse(storedUser));
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser);
+
+        // Gọi API lấy thông báo theo userID
+        if (parsedUser.userID) {
+          axios
+            .get(`http://localhost:8080/identity/noti/?userID=${parsedUser.userID}`)
+            .then((response) => {
+              const userNotifications = response.data;
+              setNotifications(userNotifications);
+              if (userNotifications.length > 0) setHasNewNotifications(true);
+            })
+            .catch((error) => console.error('Lỗi khi lấy thông báo:', error));
+        }
       } catch (error) {
-        console.error("Error parsing user data:", error);
+        console.error("Lỗi khi phân tích dữ liệu người dùng:", error);
         localStorage.removeItem('user');
       }
     }
   }, []);
 
-  // Fetch notifications on mount
-  useEffect(() => {
-    axios.get('http://localhost:8080/identity/noti/')
-      .then((response) => {
-        setNotifications(response.data);
-        if (response.data.length > 0) setHasNewNotifications(true);
-      })
-      .catch((error) => console.error('Error fetching notifications:', error));
-  }, []);
-
   useEffect(() => {
     axios.get('http://localhost:8080/identity/posts/')
       .then((response) => setPosts(response.data))
-      .catch((error) => console.error('Error fetching posts:', error));
+      .catch((error) => console.error('Lỗi khi lấy bài viết:', error));
   }, []);
 
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
     setSearchResults(
-      value ? posts.filter(post => 
+      value ? posts.filter(post =>
         post.title.toLowerCase().includes(value) || post.content?.toLowerCase().includes(value)
       ) : []
     );
   };
 
-  // Toggle notification panel visibility
   const toggleNotificationPanel = () => {
-    setShowNotificationPanel(prev => !prev);
-    if (hasNewNotifications) setHasNewNotifications(false); // Mark notifications as viewed
+    setShowNotificationPanel((prev) => !prev);
+    if (hasNewNotifications) setHasNewNotifications(false);
   };
 
   useEffect(() => {
