@@ -21,7 +21,7 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/")
+    @PostMapping("/")   
     public ResponseEntity<ApiResponse<List<Review>>> createReviews(@RequestBody MultiReviewRequest multiReviewRequest) {
         List<Review> reviews = reviewService.createReviews(multiReviewRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.<List<Review>>builder()
