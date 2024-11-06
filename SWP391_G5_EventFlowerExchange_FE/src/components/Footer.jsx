@@ -3,8 +3,12 @@ import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-
+import visa from "../assets/payment-img/visa.png";
+import master from "../assets/payment-img/master.png";
+import vnpay from "../assets/payment-img/vnpay.png";
+import momo from "../assets/payment-img/momo.png";
 import "../styles/Footer.css";
+import { color } from "chart.js/helpers";
 
 function Footer() {
   return (
@@ -33,22 +37,11 @@ function Footer() {
         </div>
 
         <div className="footer-section">
-          <h3>CÁC CHI NHÁNH CỦA CHÚNG TÔI</h3>
-          <ul>
-            <li>Laos</li>
-            <li>Thái Lan</li>
-            <li>Nhật Bản</li>
-            <li>Canada</li>
-            <li>Hoa Kỳ</li>
-          </ul>
-        </div>
-
-        <div className="footer-section">
           <h3>PHƯƠNG THỨC THANH TOÁN</h3>
-          <img src="../assets/payment-img/visa.png" alt="Visa" />
-          <img src="mastercard.png" alt="MasterCard" />
-          <img src="paypal.png" alt="VNPAY" />
-          <img src="paypal.png" alt="Momo" />
+          <img src= {visa}alt="Visa" />
+          <img src={master} alt="MasterCard" />
+          <img src={vnpay} alt="VNPAYs" />
+          <img src={momo}alt="Momo" />
         </div>
 
         <div className="footer-section contact-us">
@@ -59,7 +52,7 @@ function Footer() {
         </div>
       </div>
       <div className="footer-bottom">
-        <p> &copy; 2024 flower-paradise.com</p>
+        <p> &copy; 2024 flower-event-exchange-website.com</p>
       </div>
     </div>
   );

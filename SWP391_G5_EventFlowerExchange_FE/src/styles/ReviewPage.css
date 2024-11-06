@@ -30,7 +30,7 @@
 
 .review-table th, .review-table td {
   padding: 15px; /* More padding for table cells */
-  text-align: left;
+  text-align: center;
   border: 1px solid #ddd;
 }
 
@@ -40,27 +40,40 @@
   object-fit: cover;
 }
 
-.review-rating-input, .review-delivery-rating-input {
-  width: 60px; /* Increase width of rating inputs */
+.review-rating-input, 
+.review-delivery-rating-input {
+  width: 60px;
   padding: 8px;
   border-radius: 4px;
   font-size: 16px;
+  text-align: center;
+  /* display: block;  */
+  margin: 0 auto; 
 }
 
 .review-comment-input {
   width: 100%;
-  height: 80px; /* Increase height for comment input */
+  height: 80px; 
   padding: 10px;
   border-radius: 4px;
   font-size: 16px;
   resize: none;
 }
+.rating-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rating-icon {
+  color: #ffd700; 
+  /* margin-right: 30px;  */
+}
 
 .review-submit-button {
   display: block;
-  margin: 30px auto; /* Increase margin for spacing */
-  padding: 12px 25px;
-  font-size: 18px; /* Larger button font size */
+  margin: 30px auto;
+  font-size: 18px;
   background-color: #FFC0CB;
   color: #fff;
   border: none;

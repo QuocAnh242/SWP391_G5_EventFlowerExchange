@@ -1,60 +1,79 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin("http://localhost:3000")
 @RequestMapping("/api/feedback")
+@RequiredArgsConstructor
 public class FeedbackController {
 
     @Autowired
     private FeedbackService feedbackService;
 
-    @PostMapping
-    public ResponseEntity<Feedback> createFeedback(@RequestBody Feedback feedback) {
-        Feedback createdFeedback = feedbackService.createFeedback(feedback);
-        return ResponseEntity.ok(createdFeedback);
+    // Create feedback
+    @PostMapping("/add")
+    public ResponseEntity<Feedback> addFeedback(@RequestBody FeedbackRequest feedbackRequest) {
+        Feedback feedback = feedbackService.saveFeedback(feedbackRequest.getUserID(),
+                feedbackRequest.getComment(),
+                feedbackRequest.getRating(),
+                feedbackRequest.isAnonymous());
+        return ResponseEntity.ok(feedback);
     }
 
-    @GetMapping("/post/{postID}")
-    public ResponseEntity<List<Feedback>> getFeedbacksByPostId(@PathVariable int postID) {
-        List<Feedback> feedbacks = feedbackService.getFeedbacksByPostId(postID);
-        return ResponseEntity.ok(feedbacks);
-    }
 
-    @PostMapping("/{feedbackID}/like")
-    public ResponseEntity<Void> likeFeedback(@PathVariable int feedbackID) {
-        feedbackService.likeFeedback(feedbackID);
-        return ResponseEntity.ok().build();
-    }
-
-    // Existing endpoints...
-
-    @PutMapping("/{feedbackID}")
-    public ResponseEntity<Feedback> updateFeedback(
-            @PathVariable int feedbackID,
-            @RequestBody Feedback feedbackDetails) {
-        Feedback updatedFeedback = feedbackService.updateFeedback(feedbackID, feedbackDetails);
-        return ResponseEntity.ok(updatedFeedback);
-    }
-
-    @DeleteMapping("/{feedbackID}")
-    public ResponseEntity<Void> deleteFeedback(@PathVariable int feedbackID) {
-        feedbackService.deleteFeedback(feedbackID);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @GetMapping
+    // Retrieve all feedback
+    @GetMapping("/all")
     public ResponseEntity<List<Feedback>> getAllFeedback() {
         List<Feedback> feedbackList = feedbackService.getAllFeedback();
         return ResponseEntity.ok(feedbackList);
     }
 
+    // Retrieve feedback by ID
+    @GetMapping("/{feedbackID}")
+    public ResponseEntity<Feedback> getFeedbackByID(@PathVariable int feedbackID) {
+        return feedbackService.getFeedbackByID(feedbackID)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 
+    // Retrieve feedback by user ID
+    @GetMapping("/user/{userID}")
+    public ResponseEntity<List<Feedback>> getFeedbackByUserID(@PathVariable int userID) {
+        List<Feedback> feedbackList = feedbackService.getFeedbackByUserID(userID);
+        return ResponseEntity.ok(feedbackList);
+    }
+
+    // Update feedback
+    @PutMapping("/{feedbackID}")
+    public ResponseEntity<Feedback> updateFeedback(@PathVariable int feedbackID,
+                                                   @RequestParam String comment,
+                                                   @RequestParam int rating,
+                                                   @RequestParam(defaultValue = "false") boolean anonymous) {
+        try {
+            Feedback updatedFeedback = feedbackService.updateFeedback(feedbackID, comment, rating, anonymous);
+            return ResponseEntity.ok(updatedFeedback);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Delete feedback
+    @DeleteMapping("/{feedbackID}")
+    public ResponseEntity<Void> deleteFeedback(@PathVariable int feedbackID) {
+        try {
+            feedbackService.deleteFeedback(feedbackID);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
