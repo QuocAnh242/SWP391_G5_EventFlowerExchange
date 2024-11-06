@@ -10,6 +10,9 @@ function ReviewPage() {
   const [userID, setUserID] = useState(null);
   const [flowerDetails, setFlowerDetails] = useState([]);
   const [imageUrls, setImageUrls] = useState({});
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [isReviewed, setIsReviewed] = useState(false); // New state to track review submission
 
   useEffect(() => {
     const orderHistoryDetailArray = JSON.parse(localStorage.getItem("orderHistoryDetail") || "[]");
@@ -52,9 +55,11 @@ function ReviewPage() {
   };
 
   const handleInputChange = (index, field, value) => {
-    const updatedReviews = [...flowerDetails];
-    updatedReviews[index][field] = value;
-    setFlowerDetails(updatedReviews);
+    if (!isReviewed) { // Prevent input changes if already reviewed
+      const updatedReviews = [...flowerDetails];
+      updatedReviews[index][field] = value;
+      setFlowerDetails(updatedReviews);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -77,19 +82,10 @@ function ReviewPage() {
     };
 
     try {
-      const response = await axios.post("http://localhost:8080/identity/reviews/", requestData);
-      setSuccessMessage("Cảm ơn bạn đã đánh giá!");
-
-      setFlowerDetails(flowerDetails.map(flower => ({
-        ...flower,
-        rating: 5,
-        deliveryRating: 5,
-        comment: ""
-      })));
-
-      const createdReviews = response.data.result;
-      setReviews(createdReviews);
-      console.log("Reviews created successfully:", response.data);
+      await axios.post("http://localhost:8080/identity/reviews/", requestData);
+      setPopupMessage("Cảm ơn bạn đã đánh giá sản phẩm của chúng tôi. Rất mong gặp lại bạn trong thời gian sớm nhất !");
+      setShowPopup(true);
+      setIsReviewed(true); // Set as reviewed after successful submission
     } catch (err) {
       setError("Gửi đánh giá thất bại. Vui lòng thử lại sau.");
       console.error(err);
@@ -124,7 +120,7 @@ function ReviewPage() {
                   {imageUrls[flower.flowerID] ? (
                     <img src={imageUrls[flower.flowerID]} alt={flower.flowerName} className="review-flower-image" />
                   ) : (
-                    "Loading..."
+                    "Đang tải dữ liệu..."
                   )}
                 </td>
                 <td>{flower.flowerName}</td>
@@ -132,31 +128,41 @@ function ReviewPage() {
                 <td>{flower.price} VND</td>
                 <td>{flower.flowerType}</td>
                 <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={flower.rating}
-                    onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
-                    className="review-rating-input"
-                  />
+                  <div className="rating-input-wrapper">
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={flower.rating}
+                      onChange={(e) => handleInputChange(index, "rating", Number(e.target.value))}
+                      className="review-rating-input"
+                      disabled={isReviewed} // Disable input if reviewed
+                    />
+                    <i className="fas fa-star rating-icon"></i>
+                  </div>
                 </td>
                 <td>
-                  <input
-                    type="number"
-                    min="1"
-                    max="5"
-                    value={flower.deliveryRating}
-                    onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
-                    className="review-delivery-rating-input"
-                  />
+                  <div className="rating-input-wrapper">
+                    <input
+                      type="number"
+                      min="1"
+                      max="5"
+                      value={flower.deliveryRating}
+                      onChange={(e) => handleInputChange(index, "deliveryRating", Number(e.target.value))}
+                      className="review-delivery-rating-input"
+                      disabled={isReviewed} // Disable input if reviewed
+                    />
+                    <i className="fas fa-star rating-icon"></i>
+                  </div>
                 </td>
+
                 <td>
                   <textarea
                     value={flower.comment}
                     onChange={(e) => handleInputChange(index, "comment", e.target.value)}
                     placeholder="Viết đánh giá của bạn ở đây..."
                     className="review-comment-input"
+                    disabled={isReviewed} // Disable input if reviewed
                   ></textarea>
                 </td>
               </tr>
@@ -165,8 +171,32 @@ function ReviewPage() {
         </table>
       </div>
 
-      <button onClick={handleSubmit} className="review-submit-button">Gửi Đánh Giá</button>
-      <Footer/>
+      <button
+        onClick={handleSubmit}
+        className="review-submit-button"
+        disabled={isReviewed} // Disable button if reviewed
+      >
+        {isReviewed ? "Đã đánh giá" : "Gửi Đánh Giá"}
+      </button>
+      <Footer />
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false);
+              }}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

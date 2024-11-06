@@ -7,13 +7,14 @@ import Footer from '../components/Footer';
 const Checkout = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => {}, totalPrice: 0 };
+  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => { }, totalPrice: 0 };
   const user = JSON.parse(localStorage.getItem('user'));
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState({});
   const [address, setAddress] = useState(user?.address || ''); // New state for address
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
 
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
@@ -21,6 +22,9 @@ const Checkout = () => {
 
   const handleAddressChange = (e) => {
     setAddress(e.target.value);
+  };
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
   };
 
   const handleConfirmCheckout = async () => {
@@ -157,10 +161,10 @@ const Checkout = () => {
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
               <div className="order-item" key={item.flowerID}>
-                <img 
-                  src={imageUrls[item.flowerID] || 'default-image-url'} 
-                  alt="Flower" 
-                  className="order-image" 
+                <img
+                  src={imageUrls[item.flowerID] || 'default-image-url'}
+                  alt="Flower"
+                  className="order-image"
                 />
                 <span>{item.flowerName}</span>
                 <span>{item.quantity} x {item.price.toLocaleString()} VNĐ</span>
@@ -175,27 +179,40 @@ const Checkout = () => {
         </div>
 
         <div className="user-info">
-  <h3>Thông Tin Người Dùng</h3>
-  <div className="user-details">
-    <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
-    <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
-    <p><strong>Số điện thoại:</strong> {user?.phoneNumber || 'N/A'}</p>
+          <h3>Thông Tin Người Dùng</h3>
+          <div className="user-details">
+            <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
+            <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
 
-    {/* Nếu có address của user thì hiển thị, ngược lại hiển thị ô input */}
-    {user?.address ? (
-      <p><strong>Địa chỉ: </strong> {user.address}</p>
-    ) : (
-      
-      <input
-        type="text"
-        placeholder="Nhập địa chỉ giao hàng"
-        value={address}
-        onChange={handleAddressChange}
-        className="address-input"
-      />
-    )}
-  </div>
-</div>
+
+            {user?.phoneNumber ? (
+              <p><strong>Số điện thoại : </strong> {user.phoneNumber}</p>
+            ) : (
+
+              <input
+                type="number"
+                placeholder="Nhập số điện thoại của bạn"
+                value={phoneNumber}
+                onChange={handlePhoneNumberChange}
+                className="address-input"
+              />
+            )}
+
+            {/* Nếu có address của user thì hiển thị, ngược lại hiển thị ô input */}
+            {user?.address ? (
+              <p><strong>Địa chỉ: </strong> {user.address}</p>
+            ) : (
+
+              <input
+                type="text"
+                placeholder="Nhập địa chỉ giao hàng"
+                value={address}
+                onChange={handleAddressChange}
+                className="address-input"
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="payment-method">
