@@ -30,7 +30,6 @@ public class EventFlowerPosting {
     BigDecimal price;
 
     String imageUrl;
-
     String status="Còn Hàng";
 
     @Column(nullable = false)
