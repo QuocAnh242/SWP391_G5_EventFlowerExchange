@@ -5,7 +5,10 @@ import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,14 +23,22 @@ public class FeedbackController {
     private FeedbackService feedbackService;
 
     // Create feedback
-    @PostMapping("/add")
-    public ResponseEntity<Feedback> addFeedback(@RequestBody FeedbackRequest feedbackRequest) {
+    @PostMapping("/create")
+    public ResponseEntity<Feedback> addFeedback(@RequestBody FeedbackRequest feedbackRequest,
+                                                @AuthenticationPrincipal UserDetails userDetails) {
+        // Check user role or authentication
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }
+
+        // Trường hợp cả buyer và user đều có thể gửi feedback
         Feedback feedback = feedbackService.saveFeedback(feedbackRequest.getUserID(),
                 feedbackRequest.getComment(),
                 feedbackRequest.getRating(),
                 feedbackRequest.isAnonymous());
         return ResponseEntity.ok(feedback);
     }
+
 
 
     // Retrieve all feedback

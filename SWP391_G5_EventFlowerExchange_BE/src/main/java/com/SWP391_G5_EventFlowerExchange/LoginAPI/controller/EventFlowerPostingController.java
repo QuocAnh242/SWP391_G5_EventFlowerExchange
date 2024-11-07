@@ -86,6 +86,14 @@
             List<EventFlowerPosting> posts = eventFlowerPostingService.getPostsByUserId(userID);
             return ResponseEntity.ok(posts);
         }
+        @GetMapping("/visible-postings")
+        public List<EventFlowerPosting> getVisiblePostings() {
+            return eventFlowerPostingService.getVisiblePostings();
+        }
+        @PutMapping("/{postID}/hide")
+        public EventFlowerPosting autoHidePosting(@PathVariable int postID) {
+            return eventFlowerPostingService.updateStatusToHidden(postID);
+        }
 
 
     }

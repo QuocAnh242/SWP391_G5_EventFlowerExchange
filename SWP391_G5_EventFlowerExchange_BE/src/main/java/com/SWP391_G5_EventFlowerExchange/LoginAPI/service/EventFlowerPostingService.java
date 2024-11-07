@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,9 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
         List<EventFlowerPosting> posts = iEventFlowerPostingRepository.findAll();
 
         for (EventFlowerPosting post : posts) {
+            if ("hidden".equals(post.getStatus())) {
+                continue; // Skip this post and move to the next one
+            }
             if (post.getExpiryDate() != null && post.getExpiryDate().isBefore(LocalDateTime.now())) {
                 try {
                     post.setStatus("Hết hạn");
@@ -161,5 +165,15 @@ public class EventFlowerPostingService implements IEventFlowerPostingService {
             return iEventFlowerPostingRepository.findByUser(user);
         }
         return Collections.emptyList();
+    }
+    public List<EventFlowerPosting> getVisiblePostings() {
+        return iEventFlowerPostingRepository.findByStatusNot("hidden", Sort.by(Sort.Order.desc("createdAt")));
+    }
+    public EventFlowerPosting updateStatusToHidden(int postID) {
+        EventFlowerPosting eventFlowerPosting = iEventFlowerPostingRepository.findById(postID)
+                .orElseThrow(() -> new RuntimeException("EventFlowerPosting not found with id: " + postID));
+
+        eventFlowerPosting.setStatus("hidden");  // Set status to 'hidden' automatically
+        return iEventFlowerPostingRepository.save(eventFlowerPosting);  // Save updated entity
     }
 }
