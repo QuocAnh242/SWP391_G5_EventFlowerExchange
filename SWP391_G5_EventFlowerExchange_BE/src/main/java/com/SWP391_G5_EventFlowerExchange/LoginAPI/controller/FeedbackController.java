@@ -26,18 +26,27 @@ public class FeedbackController {
     @PostMapping("/create")
     public ResponseEntity<Feedback> addFeedback(@RequestBody FeedbackRequest feedbackRequest,
                                                 @AuthenticationPrincipal UserDetails userDetails) {
-        // Check user role or authentication
+        // Check if user is authenticated (could be buyer or seller)
         if (userDetails == null) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        // Trường hợp cả buyer và user đều có thể gửi feedback
-        Feedback feedback = feedbackService.saveFeedback(feedbackRequest.getUserID(),
+        // Check if the feedback contains all necessary fields
+        if (feedbackRequest.getName() == null || feedbackRequest.getEmail() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);  // Missing name or email
+        }
+
+        // Create feedback with additional details
+        Feedback feedback = feedbackService.saveFeedback(feedbackRequest.getName(),
+                feedbackRequest.getEmail(),
                 feedbackRequest.getComment(),
                 feedbackRequest.getRating(),
                 feedbackRequest.isAnonymous());
+
         return ResponseEntity.ok(feedback);
     }
+
 
 
 

@@ -9,43 +9,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeedbackRequest {
-   int userID;
-    String comment;
-    int rating;
-    boolean anonymous;
-
-    // Getters and Setters
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public void setUserID(int userID) {
-        this.userID = userID;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public void setRating(int rating) {
-        this.rating = rating;
-    }
-
-    public boolean isAnonymous() {
-        return anonymous;
-    }
-
-    public void setAnonymous(boolean anonymous) {
-        this.anonymous = anonymous;
-    }
+    String name;      // Tên người gửi feedback
+    String email;     // Email người gửi feedback
+    String comment;   // Nội dung feedback
+    int rating;       // Đánh giá (rating)
+    boolean anonymous; // Cờ ẩn danh
 }
+
 

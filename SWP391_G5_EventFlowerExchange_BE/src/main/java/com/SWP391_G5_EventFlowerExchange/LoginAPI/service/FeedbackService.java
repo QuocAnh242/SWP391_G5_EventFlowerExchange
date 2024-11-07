@@ -24,20 +24,29 @@ public class FeedbackService {
     IUserRepository userRepository;
 
     // Create or save new feedback
-    public Feedback saveFeedback(int userID, String comment, int rating, boolean anonymous) {
-        Optional<User> userOptional = userRepository.findById(userID);
+    public Feedback saveFeedback(String name, String email, String comment, int rating, boolean anonymous) {
+        // Kiểm tra xem email có tồn tại trong hệ thống hay không
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
+            User user = userOptional.get();  // Lấy đối tượng User từ Optional
+
+            // Tạo feedback với các thông tin
             Feedback feedback = Feedback.builder()
-                    .user(user)
+                    .user(user)  // Liên kết feedback với user
                     .comment(comment)
                     .rating(rating)
                     .anonymous(anonymous)
                     .build();
+
+            // Lưu feedback vào database và trả về
             return feedbackRepository.save(feedback);
+        } else {
+            // Nếu không tìm thấy người dùng với email đó, bạn có thể xử lý tùy theo yêu cầu
+            throw new RuntimeException("User not found");
         }
-        throw new RuntimeException("User not found");
     }
+
 
     // Retrieve feedback by user ID
     public List<Feedback> getFeedbackByUserID(int userID) {
