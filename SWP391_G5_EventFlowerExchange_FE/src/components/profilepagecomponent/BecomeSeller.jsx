@@ -19,10 +19,10 @@ const BecomeSeller = ({ setError }) => {
 
       // Send notification to admin about the seller request
       const notificationData = {
-        content: "Tôi muốn làm seller, bạn hãy thêm role cho tôi",
-        notificationType: "admin",
+        content: "UserID: "+user.userID+" muốn thành seller",
+        notificationType: "setSeller",
         user: {
-          userID: userID
+          userID: 1
         }
       };
 

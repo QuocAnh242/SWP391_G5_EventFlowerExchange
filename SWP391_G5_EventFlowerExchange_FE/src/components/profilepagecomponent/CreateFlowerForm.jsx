@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const CreateFlowerForm = ({ postID }) => {
-  // State for flower list
   const [flowers, setFlowers] = useState([
     {
       flowerType: 'Hoa bán theo lô',
@@ -24,16 +23,31 @@ const CreateFlowerForm = ({ postID }) => {
   ]);
   const [flowerIDs, setFlowerIDs] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [eventOptions, setEventOptions] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
+ 
 
-  // Fetch categories from API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get('http://localhost:8080/identity/category/');
-        setCategories(response.data);
+
+        // Filter for unique "Hoa bán theo lô" and "Hoa sự kiện" types only
+        const uniqueCategories = response.data.filter((category, index, self) =>
+          ["Hoa bán theo lô", "Hoa Sự Kiện"].includes(category.flowerType) &&
+          index === self.findIndex(c => c.flowerType === category.flowerType)
+        );
+
+        // Set filtered categories and unique event names for selection
+        setCategories(uniqueCategories);
+        const events = response.data
+          .filter(category => category.eventType === "Có")
+          .map(category => category.eventName);
+        setEventOptions([...new Set(events)]);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -41,17 +55,17 @@ const CreateFlowerForm = ({ postID }) => {
     fetchCategories();
   }, []);
 
-  // Handle change in flower form
   const handleFlowerChange = (index, e) => {
     const { name, value } = e.target;
     const newFlowers = [...flowers];
 
     if (name === 'flowerType') {
+      // Reset eventType and eventName only when flowerType changes
       newFlowers[index] = {
         ...newFlowers[index],
         flowerType: value,
-        eventType: value === 'Hoa sự kiện' ? 'Có' : 'Không',
-        eventName: value === 'Hoa sự kiện' ? '' : 'Không',
+        eventType: 'Không', // Default to 'Không', but allow changing it in the form
+        eventName: 'Không',
       };
     } else if (name === 'categoryID') {
       newFlowers[index] = {
@@ -71,7 +85,7 @@ const CreateFlowerForm = ({ postID }) => {
     setFlowers(newFlowers);
   };
 
-  // Add new flower form group
+
   const addFlower = () => {
     setFlowers([
       ...flowers,
@@ -101,12 +115,10 @@ const CreateFlowerForm = ({ postID }) => {
     setFlowerIDs(flowerIDs.filter((_, i) => i !== index));
   };
 
-  // Open confirmation modal
   const openConfirmationModal = () => {
     setConfirmModalVisible(true);
   };
 
-  // Handle form submission with confirmation
   const handleSubmit = async (e) => {
     e.preventDefault();
     openConfirmationModal();
@@ -127,12 +139,10 @@ const CreateFlowerForm = ({ postID }) => {
     }
   };
 
-  // Cancel the submission
   const cancelSubmit = () => {
     setConfirmModalVisible(false);
   };
 
-  // Handle image upload for a specific flower
   const handleImageUpload = async (flowerID, file) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -143,7 +153,9 @@ const CreateFlowerForm = ({ postID }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      alert('Image uploaded successfully!');
+      // alert('Image uploaded successfully!');
+      setPopupMessage("Bạn đã thêm ảnh vào hoa thành công!");
+      setShowPopup(true); // Hiển thị pop-up
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Failed to upload image. Please try again.');
@@ -222,7 +234,6 @@ const CreateFlowerForm = ({ postID }) => {
                 name="eventType"
                 value={flower.eventType}
                 onChange={(e) => handleFlowerChange(index, e)}
-                disabled={flower.flowerType === 'Hoa sự kiện'}
               >
                 <option value="Không">Không</option>
                 <option value="Có">Có</option>
@@ -232,15 +243,22 @@ const CreateFlowerForm = ({ postID }) => {
             {flower.eventType === 'Có' && (
               <label>
                 Tên sự kiện:
-                <input
-                  type="text"
+                <select
                   name="eventName"
                   value={flower.eventName}
                   onChange={(e) => handleFlowerChange(index, e)}
-                  required={flower.eventType === 'Có'}
-                />
+                  required
+                >
+                  <option value="">Chọn sự kiện</option>
+                  {eventOptions.map((eventName, i) => (
+                    <option key={i} value={eventName}>
+                      {eventName}
+                    </option>
+                  ))}
+                </select>
               </label>
             )}
+
 
             {flowerIDs[index] && (
               <div>
@@ -269,7 +287,6 @@ const CreateFlowerForm = ({ postID }) => {
         {successMessage && <p className="success-message-post">{successMessage}</p>}
       </form>
 
-     
       {isConfirmModalVisible && (
         <div className="confirm-modal-overlay">
           <div className="confirm-modal">
@@ -278,6 +295,23 @@ const CreateFlowerForm = ({ postID }) => {
               <button onClick={confirmSubmit} className="confirm-btn">Xác nhận</button>
               <button onClick={cancelSubmit} className="cancel-btn">Hủy</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">✅</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+              }}>
+              Đóng
+            </button>
           </div>
         </div>
       )}
