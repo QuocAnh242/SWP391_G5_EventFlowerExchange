@@ -22,7 +22,7 @@ function NewProducts() {
 
   return (
     <div className="newProducts">
-      <h2>Các loại hoa được mua nhiều nhất </h2>
+      <h2>Các loại hoa được tìm kiếm nhiều nhất</h2>
       <div className="productContainer">
         {mostPurchasedFlowers.map((flower, index) => (
           <div className="productItem" key={index}>

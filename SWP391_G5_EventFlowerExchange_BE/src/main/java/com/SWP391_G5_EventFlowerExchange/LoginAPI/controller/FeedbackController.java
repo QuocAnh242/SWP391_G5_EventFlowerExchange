@@ -1,6 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackDTO;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.FeedbackDTO;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;

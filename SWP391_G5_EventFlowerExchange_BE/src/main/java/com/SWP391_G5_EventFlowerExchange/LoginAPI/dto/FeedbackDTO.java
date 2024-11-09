@@ -1,4 +1,4 @@
-package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request;
+package com.SWP391_G5_EventFlowerExchange.LoginAPI.dto;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,6 +9,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeedbackDTO {
-    private String feedback;  // Nội dung feedback
+    private String comment;  // Nội dung feedback
     private String name;      // Tên người gửi feedback
 }

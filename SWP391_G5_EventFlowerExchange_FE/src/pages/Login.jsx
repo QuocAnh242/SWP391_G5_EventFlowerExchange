@@ -151,10 +151,8 @@ const Login = () => {
           username: decodedPayload.username,
         };
 
-        // Store user information in localStorage
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Redirect based on user role
         const { roles } = decodedPayload;
         if (roles.includes('ADMIN')) {
           navigate('/admin-user-management');
@@ -164,13 +162,12 @@ const Login = () => {
           setError("Tài khoản hoặc mật khẩu sai");
         }
 
-        window.location.reload(); // Refresh the page
+        window.location.reload(); 
 
       } else {
         setError("Đăng nhập Google thất bại. Vui lòng thử lại.");
       }
     } catch (error) {
-      // Handle error responses
       if (error.response && error.response.data && error.response.data.isBlocked) {
         setError("Tài khoản đã bị khóa");
       } else {
