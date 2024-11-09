@@ -11,8 +11,10 @@
 .checkout-header h2 {
   font-size: 28px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
+  color: #9F484C;
+  margin: 30px 0;
+  font-family: 'Playfair Display', serif; 
+  
 }
 
 /* Bố cục 2 cột cho thông tin người dùng và tóm tắt đơn hàng */
@@ -38,9 +40,10 @@
 .order-summary h3,
 .user-info h3 {
   font-size: 22px;
-  color: #2a9d8f;
+  color: #9F484C;
   margin-bottom: 15px;
   text-align: center;
+  font-family: 'Playfair Display', serif;
 }
 
 .order-item {
@@ -73,6 +76,48 @@
   color: #555;
 }
 
+.user-info {
+  margin-top: 10px;
+}
+
+.user-info-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.user-info-tbody .user-info-row {
+  border-bottom: 1px solid #ddd;
+}
+
+.user-info-label {
+  font-weight: bold;
+  color: #9F484C;
+  width: 30%;
+  padding: 10px;
+}
+
+.user-info-value {
+  padding: 10px;
+}
+
+.user-info-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+
+.address-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+
 .total-price {
   text-align: right;
   margin-top: 15px;
@@ -80,7 +125,7 @@
 
 .total-price strong {
   font-size: 20px;
-  color: #264653;
+  color: black;
 }
 
 /* Cột bên phải - Phương thức thanh toán */
@@ -95,7 +140,7 @@
 
 .payment-method h3 {
   font-size: 22px;
-  color: #e76f51;
+  color: #9F484C;
   margin-bottom: 15px;
 }
 
@@ -115,21 +160,26 @@
 .payment-options input {
   margin-right: 10px;
 }
+.payment-options input[type="radio"] {
+  accent-color: #9F484C; /* Áp dụng màu cho radio button */
+}
 
 .checkout-btn {
   margin-top: 20px;
   padding: 10px 15px;
-  background-color: #e76f51;
+  background-color: #9F484C;
   color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, transform 0.2s ease;
 }
 
 .checkout-btn:hover {
-  background-color: #d75d42;
+  background-color: #872E32; 
+  transform: scale(1.05); 
 }
+
 
 /* Modal Styles */
 .confirm-modal-overlay {
@@ -216,12 +266,12 @@ footer p {
 }
 
 .address-input:focus {
-  border-color: #007bff; /* Change to primary color on focus */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Soft blue glow on focus */
+  border-color: #FFC0CB; 
+
 }
 
 .address-input::placeholder {
-  color: #999; /* Placeholder text color */
+  color: #999; 
   opacity: 0.7;
 }
 
