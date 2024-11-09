@@ -16,16 +16,23 @@ function Testimonials() {
   ]);
 
   // Fetch and display the latest feedback from your API
-  useEffect(() => {
-    fetch("http://localhost:8080/identity/api/feedback/getAll")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.length > 0) {
-          setTestimonials(data);
-        }
-      })
-      .catch((error) => console.error("Lỗi khi tải phản hồi:", error));
-  }, []);
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/identity/api/feedback/all");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Lỗi khi tải phản hồi:", error);
+      return [];
+    }
+};
+
+useEffect(() => {
+    fetchFeedbacks().then((data) => {
+        setTestimonials(data);
+    });
+}, []);
+
 
   const settings = {
     dots: false,
