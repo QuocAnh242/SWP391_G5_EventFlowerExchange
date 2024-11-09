@@ -1,16 +1,14 @@
 /* Cấu trúc lưới chính */
 .shop-container {
   display: flex;
-  min-height: 100vh; /* Chiếm toàn bộ chiều cao của màn hình */
-  flex-direction: column; /* Đảm bảo các phần tử bên trong theo cột */
-  margin : 0 20px;
-  /* overflow-x: hidden; */
-  
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0 10px;
 }
 /* Container chung cho sidebar */
 .sidebar-post-exchange {
   width: 250px;
-  height: 100vh; /* Full viewport height */
+  height: 100vh; 
   position: fixed;
   left: 0;
   top: 0;
@@ -18,7 +16,7 @@
   padding: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   padding-top: 100px;
-  overflow-y: auto; /* Enable vertical scrolling if content overflows */
+  overflow-y: auto; 
 }
 
 .sidebar-title {
@@ -26,8 +24,6 @@
   margin-bottom: 20px;
   color: #333;
 }
-
-
 
 /* Danh sách các loại hoa */
 .category-list {
@@ -92,7 +88,7 @@
   margin-top : 10px
 }
 .home-link-breadcrumb{
-  text-decoration: none; /* Remove underline */
+  text-decoration: none;
   color: #000;
 }
 .home-link-breadcrumb:hover {
@@ -184,12 +180,12 @@
   color: #555;
   margin-top: 12px;
   line-height: 1.8;
-  text-align: justify; /* Align text evenly on both sides */
+  text-align: justify; 
   overflow: hidden;
   transition: color 0.3s ease, transform 0.3s ease;
   transform-origin: left;
   opacity: 0.9;
-  max-height: 70px; /* Limit the height for a cleaner look */
+  max-height: 70px; 
   position: relative;
 }
 
@@ -212,9 +208,6 @@
   transform: scale(1.05);
 }
 
-
-
-
 .footer {
   position: relative;  
   width: 100vw;        
@@ -222,13 +215,13 @@
   text-align: center;  
 
 }
-/*nút chuyển trang*/
+
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 30px;
-  gap: 10px; /* Thêm khoảng cách giữa các nút */
+  gap: 10px; 
 }
 
 .pagination button {
@@ -284,3 +277,108 @@
 }
 
 
+/* Sidebar adjustments for smartphones */
+@media (max-width: 768px) {
+  .sidebar-post-exchange {
+    display: none; /* Hide sidebar on smaller screens */
+  }
+
+  .main-content, .banner-post, .breadcrumb {
+    margin-left: 0; 
+    
+  }
+
+
+ .main-content {
+  margin-left: 0;
+  padding: 10px;
+}
+
+
+.banner-post {
+  width: 100%;
+  height: 150px;
+}
+
+
+.breadcrumb {
+  margin-left: 0;
+  margin-top: 5px;
+  font-size: 12px;
+  text-align: left;
+}
+
+
+.filter-sort-bar {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+
+.post-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-left: 0;
+  padding: 0;
+}
+
+
+.post-card {
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+
+.post-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+
+.post-card h3 {
+  font-size: 16px;
+  margin-top: 8px;
+}
+
+.discount-price {
+  font-size: 14px;
+  color: #e60000;
+}
+
+.feature-content {
+  font-size: 13px;
+  line-height: 1.4;
+  max-height: 60px;
+  overflow: hidden;
+  text-align: justify;
+}
+
+/* Detail button styling */
+.feature-detail-button {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 20px;
+  background-color: #FFC0CB;
+  margin-top: 10px;
+}
+
+/* Pagination for mobile */
+.pagination {
+  font-size: 12px;
+  gap: 5px;
+}
+
+.pagination button {
+  padding: 6px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+}

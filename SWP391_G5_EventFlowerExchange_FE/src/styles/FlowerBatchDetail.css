@@ -1,4 +1,4 @@
-/* General styling */
+
 .flower-detail-container {
   display: flex;
   gap: 30px;
@@ -27,7 +27,7 @@
 }
 
 .left-detail-flowerbatch .image:hover {
-  transform: scale(1.05); /* Hover effect on image */
+  transform: scale(1.05);
 }
 
 .bottom-img {
@@ -88,7 +88,7 @@
 
 .star-rating .stars {
   font-size: 18px;
-  color: #facc15; /* Bright yellow stars */
+  color: #facc15; 
 }
 
 .flower-type-selection {
@@ -109,95 +109,62 @@
   border-color: #FFC0CB;
 }
 
-/* Container for buttons in the post detail */
 .button-container-post-detail {
-  margin-top: 200px; /* Tạo khoảng cách trên */
+  margin-top: 200px; 
   display: flex;
-  justify-content: center; /* Căn giữa các nút */
-  gap: 25px; /* Khoảng cách giữa các nút */ 
+  justify-content: center; 
+  gap: 25px; 
  
   position: relative;
 }
 
-/* Common styles for both buttons */
 .buy-now-button-detail, .add-cart-button-detail {
-  padding: 15px 40px; /* Tăng kích thước để tạo cảm giác nút lớn và dễ bấm hơn */
+  padding: 15px 40px; 
   border: none;
   border-radius: 8px;
-  font-size: 18px; /* Font chữ lớn hơn tạo điểm nhấn */
+  font-size: 18px; 
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ giúp nút nổi bật */
-  font-weight: 600; /* Font chữ đậm hơn */
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1); 
+  font-weight: 600; 
 }
 
 /* Styles for the "Mua Ngay" button */
 .buy-now-button-detail {
-  background-color: #ff6b6b; /* Màu đỏ tươi tạo sự nổi bật */
+  background-color: #ff6b6b; 
   color: #fff;
 }
 
 .buy-now-button-detail:hover {
-  background-color: #e04848; /* Màu đậm hơn khi hover */
-  transform: translateY(-4px); /* Hiệu ứng nâng nút khi hover */
+  background-color: #e04848; 
+  transform: translateY(-4px); 
 }
 
 /* Styles for the "Thêm vào giỏ hàng" button */
 .add-cart-button-detail {
-  background-color: #34d399; /* Màu xanh lá tươi sáng */
+  background-color: #34d399; 
   color: #fff;
 }
 
 .add-cart-button-detail:hover {
-  background-color: #10b981; /* Màu xanh đậm hơn khi hover */
-  transform: translateY(-4px); /* Hiệu ứng nâng nút khi hover */
+  background-color: #10b981; 
+  transform: translateY(-4px); 
 }
 
 .buy-all-event-flowers-button {
-  background-color: #e04848; /* Màu xanh lá tươi sáng */
+  background-color: #e04848; 
   color: #fff;
 }
 .buy-all-event-flowers-button {
-  background-color: #e04848; /* Màu xanh đậm hơn khi hover */
-  transform: translateY(-4px); /* Hiệu ứng nâng nút khi hover */
+  background-color: #e04848; 
+  transform: translateY(-4px); 
 }
 
-
-/* Responsive design: Adjust button sizes on smaller screens */
-@media (max-width: 768px) {
-  .buy-now-button-detail, .add-cart-button-detail {
-    padding: 12px 30px; /* Giảm kích thước nút trên màn hình nhỏ */
-    font-size: 16px; /* Font nhỏ hơn cho thiết bị di động */
-  }
-
-  .button-container-post-detail {
-    gap: 15px; /* Giảm khoảng cách giữa các nút trên màn hình nhỏ */
-  }
-}
-
-
-
-
-
-
-
-/* Feedback Section */
-/* .feedback-section {
-  margin-top: 50px;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-} */
-
-/* Related Posts Section */
 .related-posts-section {
   margin: 30px 0;
   padding: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-
-
 
 .pagination-controls {
   display: flex;
@@ -242,9 +209,63 @@
   margin-bottom: 10px;
 }
 .home-link-breadcrumb-flower{
-  text-decoration: none; /* Remove underline */
+  text-decoration: none; 
   color: #000;
 }
 .home-link-breadcrumb-flower:hover {
   color: #FFC0CB; 
+}
+
+/* Responsive Design for Mobile Screens */
+@media (max-width: 768px) {
+  .flower-detail-container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .left-detail-flowerbatch .image {
+    height: 400px;
+  }
+
+  .right-detail-flowerbatch h2 {
+    font-size: 24px;
+  }
+
+  .flower-description {
+    font-size: 18px;
+  }
+
+  .price {
+    font-size: 18px;
+  }
+
+  .button-container-post-detail {
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 50px;
+  }
+
+  .buy-now-button-detail, .add-cart-button-detail {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .left-detail-flowerbatch .image {
+    height: 300px;
+  }
+
+  .flower-description, .price, .stock-availability {
+    font-size: 16px;
+  }
+
+  .pagination-controls button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .breadcrumb-flower-detail {
+    margin-left: 10%;
+  }
 }

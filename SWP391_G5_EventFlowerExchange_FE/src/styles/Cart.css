@@ -1,5 +1,4 @@
 .cart-page {
-    /* background-color: #f5f5f5; */
     background-image: url('../assets/hoaback1.png'); 
     background-size: cover; 
     background-position: center; 
@@ -13,16 +12,15 @@
 
 .cart-title {
     margin-top: 30px;
-    font-size: 3rem; /* Kích thước lớn để tiêu đề nổi bật */
-    color: black; /* Màu sắc đậm, phù hợp với giao diện sang trọng */
-    text-align: center; /* Canh giữa */
-    font-weight: bold; /* Chữ đậm để nhấn mạnh */
-    text-transform: uppercase; /* Chuyển đổi chữ thường thành in hoa */
-    letter-spacing: 2px; /* Tăng khoảng cách giữa các ký tự */
-    margin-bottom: 20px; /* Thêm khoảng cách dưới */
-    position: relative; /* Cần thiết cho việc sử dụng ::after */
+    font-size: 3rem; 
+    color: black; 
+    text-align: center; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    letter-spacing: 2px; 
+    margin-bottom: 20px; 
+    position: relative; 
 }
-
 
 /* Cart Content */
 .cart-content {
@@ -39,7 +37,7 @@
 
 /* Cart Table Styling */
 .cart-table {
-    width: 100%; /* Make sure the table takes the full width of the container */
+    width: 100%; 
     border-collapse: collapse;
     margin-top: 30px;
     margin-left: 100px;
@@ -115,26 +113,25 @@
 }
 
 /* Footer Section */
-/* Footer Section Styling */
 .cart-footer {
-    margin-top: 50px; /* Tăng khoảng cách trên để footer thoáng hơn */
+    margin-top: 50px;
     text-align: center;
     font-size: 1.2rem;
-    color: #777; /* Màu xám nhạt hơn để trông nhẹ nhàng */
+    color: #777; 
     padding: 20px;
     background-color: #f9f9f9;
     border-top: 2px solid #e0e0e0; 
     width: 100%;
-    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05); /* Thêm shadow mờ để tạo cảm giác nổi khối */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05); 
 }
 
 .total-price {
-    font-weight: 700; /* Tăng độ đậm của chữ để nổi bật hơn */
-    margin-bottom: 20px; /* Thêm khoảng cách dưới */
-    font-size: 1.6rem; /* Tăng kích thước để gây ấn tượng hơn */
-    color: #2c3e50; /* Đổi màu thành tông tối hơn để nhấn mạnh */
-    letter-spacing: 1px; /* Thêm khoảng cách giữa các ký tự để dễ đọc */
-    text-transform: uppercase; /* Chuyển thành chữ in hoa để tạo sự nổi bật */
+    font-weight: 700;
+    margin-bottom: 20px; 
+    font-size: 1.6rem; 
+    color: #2c3e50; 
+    letter-spacing: 1px; 
+    text-transform: uppercase; 
 }
 
 .empty-cart-message {
@@ -171,4 +168,105 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
 }
 
+/*Responsive */
 
+@media (max-width: 768px) {
+    .cart-page {
+      padding: 20px;
+      align-items: flex-start;
+    }
+  
+    .cart-title {
+      font-size: 2rem;
+      margin-top: 20px;
+      margin-bottom: 10px;
+      padding: 0 10px;
+    }
+  
+    .cart-content {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      padding: 20px;
+    }
+  
+    .cart-table {
+      margin-left: 0;
+      margin-top: 20px;
+      width: 100%;
+    }
+  
+    .cart-table th, .cart-table td {
+      padding: 10px;
+      font-size: 0.9rem;
+    }
+  
+    .cart-image {
+      width: 50px;
+      margin-right: 10px;
+    }
+  
+    .quantity-btn {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+  
+    .quantity-input {
+      width: 40px;
+      padding: 5px;
+    }
+  
+    .delete-button {
+      padding: 8px 12px;
+      font-size: 0.8rem;
+    }
+  
+    .total-price {
+      font-size: 1.4rem;
+      margin-bottom: 10px;
+    }
+  
+    .purchase-button {
+      padding: 12px 30px;
+      font-size: 1rem;
+      margin-bottom: 15px;
+    }
+  
+    .cart-footer {
+      font-size: 1rem;
+      padding: 15px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .cart-title {
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
+  
+    .cart-content {
+      padding: 15px;
+    }
+  
+    .cart-table th, .cart-table td {
+      font-size: 0.8rem;
+      padding: 8px;
+    }
+  
+    .total-price {
+      font-size: 1.2rem;
+    }
+  
+    .purchase-button {
+      padding: 10px 25px;
+      font-size: 0.9rem;
+    }
+  
+    .empty-cart-message {
+      font-size: 18px;
+      text-align: center;
+      margin-left: 0;
+      padding: 10px;
+    }
+  }
+  

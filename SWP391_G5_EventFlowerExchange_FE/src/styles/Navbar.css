@@ -283,7 +283,7 @@ body {
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 100;
-  animation: fadeIn 0.5s ease forwards; /* Thêm hiệu ứng fade-in khi xuất hiện */
+  animation: fadeIn 0.5s ease forwards; 
 }
 
 .notification-panel h4 {
@@ -382,7 +382,6 @@ body {
   text-decoration: none;
 }
 
-/* Fade-in Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;

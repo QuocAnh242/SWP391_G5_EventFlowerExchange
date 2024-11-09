@@ -328,17 +328,133 @@
 }
 
 /* Responsive adjustments */
+/* General adjustments for mobile responsiveness */
 @media (max-width: 768px) {
+  /* General layout */
+  .about {
+    padding: 20px 10px;
+  }
+
+  /* About Header */
+  .about-header {
+    padding: 40px 10px;
+    margin: 20px 0;
+  }
+
+  .about-header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 15px;
+  }
+
+  .about-header p {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  /* Banner Section */
+  .about-banner {
+    height: 300px;
+  }
+
+  .banner-text h1 {
+    font-size: 2.5rem;
+  }
+
+  .banner-text p {
+    font-size: 1rem;
+    max-width: 90%;
+  }
+
+  /* Cards Section */
+  .about-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .about-card {
+    padding: 20px;
+  }
+
+  /* Featured Section */
+  .featured-banner {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .featured-banner img {
+    width: 100%;
+    height: auto;
+  }
+
+  .featured-text h3 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+  }
+
+  .featured-text p {
+    font-size: 1rem;
+  }
+
+  .featured-text button {
+    padding: 8px 16px;
+  }
+
+  /* Blog Section */
+  .blog-posts {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .blog-card img {
+    height: 180px;
+  }
+
+  .blog-card h3 {
+    font-size: 1.2rem;
+  }
+
+  /* Testimonials Section */
+  .testimonial h4 {
+    font-size: 1rem;
+  }
+
+  /* Mission & Vision Section */
+  .mission,
+  .vision {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .mission img,
+  .vision img {
+    width: 100px;
+  }
+
+  .mission-content,
+  .vision-content {
+    text-align: center;
+  }
+
+  /* Map Section */
   .map-section {
     padding: 1rem;
   }
+
   .map-section h2 {
     font-size: 1.5rem;
   }
+
   .map-container {
-    width: 100%; /* Full-width on small screens */
+    width: 100%;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 1rem;
+    font-size: 0.9rem;
   }
 }
+
 
 
 
