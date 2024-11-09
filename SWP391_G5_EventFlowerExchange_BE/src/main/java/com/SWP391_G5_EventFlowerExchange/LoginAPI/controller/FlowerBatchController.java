@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.FlowerBatchWithQuantity;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FlowerBatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,16 +60,15 @@ public class FlowerBatchController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdFlower);
     }
     @GetMapping("/most-purchased")
-    public ResponseEntity<?> getMostPurchasedFlower() {
-        Optional<FlowerBatch> mostPurchasedFlower = flowerBatchService.getMostPurchasedFlowerBatch();
+    public ResponseEntity<?> getMostPurchasedFlowerBatches() {
+        List<FlowerBatchWithQuantity> mostPurchasedFlowers = flowerBatchService.getMostPurchasedFlowerBatches();
 
-        if (mostPurchasedFlower.isPresent()) {
-            return ResponseEntity.ok(mostPurchasedFlower.get());
+        if (!mostPurchasedFlowers.isEmpty()) {
+            return ResponseEntity.ok(mostPurchasedFlowers);
         } else {
             Map<String, String> response = new HashMap<>();
             response.put("message", "Không tìm thấy lô hoa nào được mua.");
             return ResponseEntity.status(404).body(response);
         }
     }
-
 }

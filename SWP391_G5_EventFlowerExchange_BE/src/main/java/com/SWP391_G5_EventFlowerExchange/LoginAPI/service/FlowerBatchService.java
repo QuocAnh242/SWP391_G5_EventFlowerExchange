@@ -1,6 +1,7 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.FlowerBatchWithQuantity;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.EventFlowerPosting;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.FlowerBatch;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ResourceNotFoundException;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -106,12 +109,16 @@ public class FlowerBatchService implements IFlowerBatchService{
         // Lưu flowerBatch mới vào repository
         return flowerBatchRepository.save(flowerBatch);
     }
-    public Optional<FlowerBatch> getMostPurchasedFlowerBatch() {
+    public List<FlowerBatchWithQuantity> getMostPurchasedFlowerBatches() {
         List<Object[]> result = orderDetailRepository.findMostPurchasedFlowerBatch();
-        if (!result.isEmpty()) {
-            return Optional.of((FlowerBatch) result.get(0)[0]); // The flower batch with the highest quantity
-        }
-        return Optional.empty();
+        return result.stream()
+                .map(row -> {
+                    FlowerBatch flowerBatch = (FlowerBatch) row[0];
+                    int orderQuantity = ((Number) row[1]).intValue(); // Convert the total quantity to int
+
+                    return new FlowerBatchWithQuantity(flowerBatch, orderQuantity);
+                })
+                .collect(Collectors.toList());
     }
 
 
