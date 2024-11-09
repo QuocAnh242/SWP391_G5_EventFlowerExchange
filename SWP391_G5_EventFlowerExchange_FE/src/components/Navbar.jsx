@@ -15,6 +15,8 @@ function Navbar({ cartCount }) {
   const notificationRef = useRef(null);
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+
 
   useEffect(() => {
     // Lấy thông tin user từ localStorage
@@ -84,6 +86,11 @@ function Navbar({ cartCount }) {
     localStorage.clear();
     setUser(null);
     navigate("/login");
+    setShowDropdown(false);
+  };
+
+  const toggleDropdown = () => {
+    setShowDropdown((prev) => !prev);
   };
 
   return (
@@ -123,11 +130,28 @@ function Navbar({ cartCount }) {
 
         {user ? (
           <>
-            <span className="navbar-user">Xin chào, {user.username || 'User'}</span>
-            <Link to={user?.roles?.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}>
-              <FaUser className="navbar-icon" />
-            </Link>
-            <FaSignOutAlt className="navbar-icon" onClick={handleLogout} />
+            <div className="navbar-infor" onClick={toggleDropdown}>
+              <span className="navbar-user">Xin chào, {user.username || 'User'}</span>
+              {/* <FaUser className="navbar-icon" /> */}
+            </div>
+
+            {showDropdown && (
+              <div className="dropdown-menu">
+                <div className="dropdown-item" onClick={() => setShowDropdown(false)}>
+                  <Link
+                    to={user?.roles?.includes('ADMIN') ? '/admin-user-management' : '/profile-page'}
+                    className="account-link-nav"
+                  >
+                    <FaUser className="navbar-icon-dropdown" style={{ marginRight: '8px' }} />
+                    Thông tin tài khoản
+                  </Link>
+                </div>
+
+                <div className="dropdown-item" onClick={handleLogout}>
+                  <FaSignOutAlt className="dropdown-icon" /> Đăng xuất
+                </div>
+              </div>
+            )}
           </>
         ) : (
           <Link to="/login">

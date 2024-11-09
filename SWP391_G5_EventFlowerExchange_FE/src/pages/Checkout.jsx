@@ -180,41 +180,52 @@ const Checkout = () => {
 
         <div className="user-info">
           <h3>Thông Tin Người Dùng</h3>
-          <div className="user-details">
-            <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
-            <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
-
-
-            {user?.phoneNumber ? (
-              <p><strong>Số điện thoại : </strong> {user.phoneNumber}</p>
-            ) : (
-
-              <input
-                type="number"
-                placeholder="Nhập số điện thoại của bạn"
-                value={phoneNumber}
-                onChange={handlePhoneNumberChange}
-                className="address-input"
-              />
-            )}
-
-            {/* Nếu có address của user thì hiển thị, ngược lại hiển thị ô input */}
-            {user?.address ? (
-              <p><strong>Địa chỉ: </strong> {user.address}</p>
-            ) : (
-
-              <input
-                type="text"
-                placeholder="Nhập địa chỉ giao hàng"
-                value={address}
-                onChange={handleAddressChange}
-                className="address-input"
-              />
-            )}
-          </div>
+          <table className="user-info-table">
+            <tbody className="user-info-tbody">
+              <tr className="user-info-row">
+                <td className="user-info-label"><strong>Họ và tên</strong></td>
+                <td className="user-info-value">{user?.username || 'N/A'}</td>
+              </tr>
+              <tr className="user-info-row">
+                <td className="user-info-label"><strong>Email</strong></td>
+                <td className="user-info-value">{user?.email || 'N/A'}</td>
+              </tr>
+              <tr className="user-info-row">
+                <td className="user-info-label"><strong>Số điện thoại</strong></td>
+                <td className="user-info-value">
+                  {user?.phoneNumber ? (
+                    user.phoneNumber
+                  ) : (
+                    <input
+                      type="number"
+                      placeholder="Nhập số điện thoại của bạn"
+                      value={phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                      className="user-info-input"
+                    />
+                  )}
+                </td>
+              </tr>
+              <tr className="user-info-row">
+                <td className="user-info-label"><strong>Địa chỉ</strong></td>
+                <td className="user-info-value">
+                  {user?.address ? (
+                    user.address
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="Nhập địa chỉ giao hàng"
+                      value={address}
+                      onChange={handleAddressChange}
+                      className="user-info-input"
+                    />
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
-
       <div className="payment-method">
         <h3>Phương Thức Thanh Toán</h3>
         <div className="payment-options">
@@ -255,7 +266,7 @@ const Checkout = () => {
       {isConfirmModalVisible && (
         <div className="confirm-modal-overlay">
           <div className="confirm-modal">
-            <p>Bạn có chắc chắn muốn mua hàng?</p>
+            <p>Bạn có chắc chắn muốn mua hàng</p>
             <p style={{ color: "red" }}>[Sau khi đã đặt hàng, bạn sẽ không được hủy đơn hàng này]</p>
             <div className="confirm-modal-buttons">
               <button onClick={handleConfirmCheckout} className="confirm-btn">Có</button>
