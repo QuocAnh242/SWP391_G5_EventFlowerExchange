@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.controller;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackDTO;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackRequest;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.service.FeedbackService;
@@ -37,10 +38,10 @@ public class FeedbackController {
 
 
 
-    // Retrieve all feedback
+    // Lấy tất cả feedback
     @GetMapping("/all")
-    public ResponseEntity<List<Feedback>> getAllFeedback() {
-        List<Feedback> feedbackList = feedbackService.getAllFeedback();
+    public ResponseEntity<List<FeedbackDTO>> getAllFeedback() {
+        List<FeedbackDTO> feedbackList = feedbackService.getAllFeedback();
         return ResponseEntity.ok(feedbackList);
     }
 

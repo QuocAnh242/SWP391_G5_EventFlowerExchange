@@ -1,5 +1,6 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.dto.request.FeedbackDTO;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.FeedbackRepository;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -59,8 +62,13 @@ public class FeedbackService {
     }
 
     // Retrieve all feedback
-    public List<Feedback> getAllFeedback() {
-        return feedbackRepository.findAll();
+    public List<FeedbackDTO> getAllFeedback() {
+        List<Feedback> feedbackList = feedbackRepository.findAll();
+
+        // Chuyển các đối tượng Feedback thành FeedbackDTO
+        return feedbackList.stream()
+                .map(feedback -> new FeedbackDTO(feedback.getUser().getUsername(), feedback.getComment()))
+                .collect(Collectors.toList());
     }
 
     // Update feedback by ID

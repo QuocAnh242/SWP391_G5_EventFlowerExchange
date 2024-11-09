@@ -45,11 +45,14 @@
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    /* margin: 0px 70px; */
+    
   }
   
   .go-home-btn:hover {
     background-color: #218838;
+    transform: scale(1.05); 
   }
   .green-icon {
     fill: #28a745; /* Green color */
@@ -59,17 +62,19 @@
     margin-top: 20px;
     padding: 12px 30px;
     font-size: 16px;
-    background-color: #da6b11;
+    background-color: #9F484C;
     color: #fff;
     border: none;
     border-radius: 30px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease;
   }
-
+  
   .track-order-btn:hover {
-    background-color: #3d1c01;
+    background-color: #872E32; 
+    transform: scale(1.05); 
   }
+  
 
   .footer {
     position: relative;  

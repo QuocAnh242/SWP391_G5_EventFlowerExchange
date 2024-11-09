@@ -45,10 +45,10 @@ const SuccessPage = () => {
         <h1>{isCod ? 'Đặt hàng thành công' : 'Thanh toán thành công'}</h1>
         <p>
           {isCod
-            ? 'Đơn hàng của bạn đã được đặt thành công và sẽ được giao trong vòng 3 ngày.'
-            : 'Bạn đã thanh toán thành công và sẽ nhận được sản phẩm trong vòng 3 ngày.'}
+            ? 'Đơn hàng của bạn đã được đặt thành công , đơn hàng của bạn sẽ được giao trong thời gian sớm nhất !'
+            : 'Bạn đã thanh toán thành công, đơn hàng của bạn sẽ được giao trong thời gian sớm nhất !'}
         </p>
-        <div className="success-icon">
+        <div className="success-icon">  
           <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" className="bi bi-check-circle-fill green-icon" viewBox="0 0 16 16">
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.97 10.97L4.47 8.47a.75.75 0 1 0-1.06 1.06l2.5 2.5a.75.75 0 0 0 1.06 0l5-5a.75.75 0 0 0-1.06-1.06L6.97 10.97z" />
           </svg>
