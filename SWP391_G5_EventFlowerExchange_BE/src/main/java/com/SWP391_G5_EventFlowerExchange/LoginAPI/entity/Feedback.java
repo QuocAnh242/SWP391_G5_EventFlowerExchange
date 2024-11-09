@@ -29,16 +29,12 @@ public class Feedback {
     @JoinColumn(name = "userID", nullable = false)
     User user; // The user who created the feedback
 
-    @ManyToOne
-    @JoinColumn(name = "postID", nullable = false)
-    EventFlowerPosting eventFlowerPosting; // The post related to the feedback
-
     @Column(nullable = false)
     LocalDateTime createdAt;
 
     @Column(nullable = true)
     LocalDateTime responseAt; // When the response was given
-    String response; // Response from seller/administrator
+    String response; // Response from admin
 
     @Column(nullable = false)
     boolean anonymous = false; // If feedback is anonymous

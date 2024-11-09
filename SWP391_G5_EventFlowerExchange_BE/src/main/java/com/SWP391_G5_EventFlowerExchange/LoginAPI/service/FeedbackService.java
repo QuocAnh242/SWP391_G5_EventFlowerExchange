@@ -1,73 +1,87 @@
 package com.SWP391_G5_EventFlowerExchange.LoginAPI.service;
 
 import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.Feedback;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.exception.ResourceNotFoundException;
-import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IFeedbackRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.entity.User;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.FeedbackRepository;
+import com.SWP391_G5_EventFlowerExchange.LoginAPI.repository.IUserRepository;
+
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+import java.util.Optional;
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FeedbackService {
 
-    @Autowired
-    private IFeedbackRepository feedbackRepository;
 
-    public Feedback createFeedback(Feedback feedback) {
-        validateFeedback(feedback);
-        return feedbackRepository.save(feedback);
-    }
+    FeedbackRepository feedbackRepository;
 
-    public List<Feedback> getFeedbacksByPostId(int postID) {
-        return feedbackRepository.findByEventFlowerPosting_PostID(postID);
-    }
+    IUserRepository userRepository;
 
-    public void likeFeedback(int feedbackID) {
-        Feedback feedback = feedbackRepository.findById(feedbackID)
-                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        feedback.setLikeCount(feedback.getLikeCount() + 1);
-        feedbackRepository.save(feedback);
-    }
+    // Create or save new feedback
+    public Feedback saveFeedback(String name, String email, String comment, int rating, boolean anonymous) {
+        // Kiểm tra xem email có tồn tại trong hệ thống hay không
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
-    private void validateFeedback(Feedback feedback) {
-        if (feedback.getRating() < 1 || feedback.getRating() > 5) {
-            throw new ValidationException("Rating must be between 1 and 5");
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();  // Lấy đối tượng User từ Optional
+
+            // Tạo feedback với các thông tin
+            Feedback feedback = Feedback.builder()
+                    .user(user)  // Liên kết feedback với user
+                    .comment(comment)
+                    .rating(rating)
+                    .anonymous(anonymous)
+                    .build();
+
+            // Lưu feedback vào database và trả về
+            return feedbackRepository.save(feedback);
+        } else {
+            // Nếu không tìm thấy người dùng với email đó, bạn có thể xử lý tùy theo yêu cầu
+            throw new RuntimeException("User not found");
         }
-        if (feedback.getComment() == null || feedback.getComment().trim().isEmpty()) {
-            throw new ValidationException("Comment cannot be empty");
-        }
-    }
-
-    @Transactional
-    public Feedback updateFeedback(int feedbackID, Feedback feedbackDetails) {
-        Feedback existingFeedback = feedbackRepository.findById(feedbackID)
-                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-
-        existingFeedback.setComment(feedbackDetails.getComment());
-        existingFeedback.setRating(feedbackDetails.getRating());
-        existingFeedback.setAnonymous(feedbackDetails.isAnonymous());
-
-        // Optionally update the response and responseAt if you want
-        existingFeedback.setResponse(feedbackDetails.getResponse());
-        existingFeedback.setResponseAt(feedbackDetails.getResponseAt());
-
-        return feedbackRepository.save(existingFeedback);
-    }
-
-    @Transactional
-    public void deleteFeedback(int feedbackID) {
-        Feedback feedback = feedbackRepository.findById(feedbackID)
-                .orElseThrow(() -> new ResourceNotFoundException("Feedback not found"));
-        feedbackRepository.delete(feedback);
     }
 
 
+    // Retrieve feedback by user ID
+    public List<Feedback> getFeedbackByUserID(int userID) {
+        return feedbackRepository.findByUser_UserID(userID);
+    }
+
+    // Retrieve feedback by feedback ID
+    public Optional<Feedback> getFeedbackByID(int feedbackID) {
+        return feedbackRepository.findById(feedbackID);
+    }
+
+    // Retrieve all feedback
     public List<Feedback> getAllFeedback() {
         return feedbackRepository.findAll();
     }
 
+    // Update feedback by ID
+    public Feedback updateFeedback(int feedbackID, String comment, int rating, boolean anonymous) {
+        Optional<Feedback> optionalFeedback = feedbackRepository.findById(feedbackID);
+        if (optionalFeedback.isPresent()) {
+            Feedback feedback = optionalFeedback.get();
+            feedback.setComment(comment);
+            feedback.setRating(rating);
+            feedback.setAnonymous(anonymous);
+            return feedbackRepository.save(feedback);
+        }
+        throw new RuntimeException("Feedback not found");
+    }
 
+    // Delete feedback by ID
+    public void deleteFeedback(int feedbackID) {
+        if (feedbackRepository.existsById(feedbackID)) {
+            feedbackRepository.deleteById(feedbackID);
+        } else {
+            throw new RuntimeException("Feedback not found");
+        }
+    }
 }
