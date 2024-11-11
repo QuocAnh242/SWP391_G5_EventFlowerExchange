@@ -66,11 +66,16 @@ public class FeedbackService {
     public List<FeedbackDTO> getAllFeedback() {
         List<Feedback> feedbackList = feedbackRepository.findAll();
 
-        // Chuyển các đối tượng Feedback thành FeedbackDTO
         return feedbackList.stream()
-                .map(feedback -> new FeedbackDTO(feedback.getUser().getUsername(), feedback.getComment()))
+                .map(feedback -> FeedbackDTO.builder()
+                        .feedbackID(feedback.getFeedbackID())
+                        .comment(feedback.getComment())
+                        .rating(feedback.getRating())
+                        .user(feedback.getUser())
+                        .build())
                 .collect(Collectors.toList());
     }
+
 
     // Update feedback by ID
     public Feedback updateFeedback(int feedbackID, String comment, int rating, boolean anonymous) {
