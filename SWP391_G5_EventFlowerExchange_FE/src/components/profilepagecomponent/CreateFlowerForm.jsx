@@ -60,11 +60,10 @@ const CreateFlowerForm = ({ postID }) => {
     const newFlowers = [...flowers];
 
     if (name === 'flowerType') {
-      // Reset eventType and eventName only when flowerType changes
       newFlowers[index] = {
         ...newFlowers[index],
         flowerType: value,
-        eventType: 'Không', // Default to 'Không', but allow changing it in the form
+        eventType: 'Không', 
         eventName: 'Không',
       };
     } else if (name === 'categoryID') {
@@ -130,7 +129,8 @@ const CreateFlowerForm = ({ postID }) => {
       const response = await axios.post('http://localhost:8080/identity/flower/', flowers);
       const createdFlowerIDs = response.data.map(flower => flower.flowerID);
       setFlowerIDs(createdFlowerIDs);
-      setSuccessMessage('Đã thêm loại hoa thành công!');
+      setPopupMessage("Bạn đã tạo hoa thành công. Vui lòng thêm ảnh !");
+      setShowPopup(true); 
       setError('');
     } catch (error) {
       console.error('Error creating flowers:', error);
@@ -153,9 +153,8 @@ const CreateFlowerForm = ({ postID }) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      // alert('Image uploaded successfully!');
       setPopupMessage("Bạn đã thêm ảnh vào hoa thành công!");
-      setShowPopup(true); // Hiển thị pop-up
+      setShowPopup(true);
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Failed to upload image. Please try again.');

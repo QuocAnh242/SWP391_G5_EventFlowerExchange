@@ -43,10 +43,10 @@ function FlowerBatchDetail() {
     try {
       const response = await axios.get(`http://localhost:8080/identity/posts/${id}`);
       const postData = response.data;
-      
+
       setPost(postData);
       setCurrentBatchIndex(0); // Reset to the first batch
-    
+
       // Save the post data to localStorage
       localStorage.setItem("postDetails", JSON.stringify(postData));
       console.log("Fetched post data:", postData);
@@ -86,58 +86,75 @@ function FlowerBatchDetail() {
       post.flowerBatches && prevIndex < post.flowerBatches.length - 1 ? prevIndex + 1 : prevIndex
     );
   };
+//Hàm thêm hoa vào cart
+const handleAddToCart = (currentBatch) => {
+  if (!currentBatch) return;
 
-  const handleAddToCart = (currentBatch) => {
-    if (!currentBatch) return;
-
-    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const existingItem = cartItems.find(item => item.flowerID === currentBatch.flowerID);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cartItems.push({
-        flowerID: currentBatch.flowerID,
-        flowerName: currentBatch.flowerName,
-        price: currentBatch.price,
-        quantity: 1,
-        imageUrl: currentBatch.imageUrl
-      });
-    }
-
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-
-    setPopupMessage("Sản phẩm đã được thêm vào giỏ hàng!");
+  if (currentBatch.quantity <= 0) {
+    setPopupMessage("Hoa loại này hiện đã hết hàng.");
     setShowPopup(true);
-  };
+    return;
+  }
 
-  const handleAddAllEventFlowersToCart = () => {
-    if (!post || !post.flowerBatches) return;
+  let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+  const existingItem = cartItems.find(item => item.flowerID === currentBatch.flowerID);
 
-    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-
-    post.flowerBatches.forEach((batch) => {
-      if (batch.category?.eventName) {
-        const existingItem = cartItems.find(item => item.flowerID === batch.flowerID);
-
-        if (existingItem) {
-          existingItem.quantity += batch.quantity;
-        } else {
-          cartItems.push({
-            flowerID: batch.flowerID,
-            flowerName: batch.flowerName,
-            price: batch.price,
-            quantity: batch.quantity
-          });
-        }
-      }
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cartItems.push({
+      flowerID: currentBatch.flowerID,
+      flowerName: currentBatch.flowerName,
+      price: currentBatch.price,
+      quantity: 1,
+      imageUrl: currentBatch.imageUrl
     });
+  }
 
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  localStorage.setItem("cartItems", JSON.stringify(cartItems));
 
-    setPopupMessage("Tất cả các hoa trong sự kiện và số lượng tối đa của chúng đã được thêm vào giỏ hàng!");
+  setPopupMessage("Sản phẩm đã được thêm vào giỏ hàng!");
+  setShowPopup(true);
+};
+
+const handleAddAllEventFlowersToCart = () => {
+  if (!post || !post.flowerBatches) return;
+
+  let allOutOfStock = true;
+  let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+ 
+  post.flowerBatches.forEach((batch) => {
+    if (batch.quantity <= 0) return;
+
+    allOutOfStock = false;
+    if (batch.category?.eventName) {
+      const existingItem = cartItems.find(item => item.flowerID === batch.flowerID);
+
+      if (existingItem) {
+        existingItem.quantity += batch.quantity;
+      } else {
+        cartItems.push({
+          flowerID: batch.flowerID,
+          flowerName: batch.flowerName,
+          price: batch.price,
+          quantity: batch.quantity
+        });
+      }
+    }
+  });
+
+  if (allOutOfStock) {
+    setPopupMessage("Tất cả các hoa loại này hiện đã hết hàng.");
     setShowPopup(true);
-  };
+    return;
+  }
+
+  localStorage.setItem("cartItems", JSON.stringify(cartItems));
+
+  setPopupMessage("Tất cả các hoa trong sự kiện và số lượng tối đa của chúng đã được thêm vào giỏ hàng!");
+  setShowPopup(true);
+};
+
 
   if (error) {
     return <div className="error-message">{error}</div>;
@@ -148,10 +165,10 @@ function FlowerBatchDetail() {
   }
 
   const currentBatch = post.flowerBatches?.[currentBatchIndex];
-  
+
 
   if (loading) {
-    return (  
+    return (
       <div className="loading-container">
         <div className="spinner"></div>
         {/* <FlowerLoader />  */}
@@ -162,16 +179,14 @@ function FlowerBatchDetail() {
   const handleClosePopup = () => {
     setLoading(true); // Bắt đầu hiển thị loading
     setTimeout(() => {
-    setLoading(false); // Dừng loading sau 1 giây
-    setShowPopup(false);
-    window.location.replace(window.location.href);
+      setLoading(false); // Dừng loading sau 1 giây
+      setShowPopup(false);
+      window.location.replace(window.location.href);
     }, 1000); // Thời gian loading, có thể điều chỉnh
   };
-
-
   return (
     <div>
-    {/* <Navbar/> */}
+      {/* <Navbar/> */}
       <div className="breadcrumb-flower-detail">
         <Link to="/" className="home-link-breadcrumb-flower">Trang chủ</Link>
         <span> / </span>
@@ -190,21 +205,17 @@ function FlowerBatchDetail() {
               <h2>{currentBatch.flowerName}</h2>
               <p><strong>Giá:</strong> <span className="price">{currentBatch.price.toLocaleString()} VNĐ</span></p>
               <p>
-                <strong>Số lượng còn lại:</strong>
-                <span className="quantity">
-                  {currentBatch.quantity > 0 ? `${currentBatch.quantity} bó` : 'Hết hàng'}
-                </span>
-              </p>
-              <p>
                 <strong>Sự kiện : </strong>
                 <span className="event-name">
                   {currentBatch.category?.eventName === "Không" ? "Hoa bán theo bó" : currentBatch.category?.eventName || "Không có sự kiện"}
                 </span>
               </p>
-
-              <div className="stock-availability">
-                <p><strong>Tình trạng : </strong> <span className="in-stock">{currentBatch.status}</span></p>
-              </div>
+              <p>
+                <strong>Số lượng còn lại: </strong>
+                <span className="quantity in-stock">
+                  {currentBatch.quantity > 0 ? `${currentBatch.quantity} bó` : 'Hết hàng'}
+                </span>
+              </p>
               <p><strong>Mô tả hoa : </strong><span className="flower-description">{currentBatch.description}</span></p>
             </div>
           ) : (
@@ -229,17 +240,17 @@ function FlowerBatchDetail() {
           </div>
         </div>
       </div>
-
+   {/*Phần Feedback của khách hàng mua hoa*/}
       <div className="feedback-section">
-  {currentBatch && <FeedbackList flowerID={currentBatch.flowerID} />}
-</div>
-
-
-
+        {currentBatch && <FeedbackList flowerID={currentBatch.flowerID} />}
+      </div>
+    {/* Các bài viết có liên quan */}
       <div className="related-posts-section">
         <RelatedPosts currentProductId={id} />
       </div>
       <Footer />
+      {// Hiển thị thông báo popup
+      }
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-container">

@@ -5,6 +5,7 @@ import '../styles/Checkout.css';
 import Footer from '../components/Footer';
 
 const Checkout = () => {
+  //Khai báo biến
   const location = useLocation();
   const navigate = useNavigate();
   const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => { }, totalPrice: 0 };
@@ -13,9 +14,11 @@ const Checkout = () => {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(true);
   const [imageUrls, setImageUrls] = useState({});
-  const [address, setAddress] = useState(user?.address || ''); // New state for address
+  const [address, setAddress] = useState(user?.address || ''); 
   const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
-
+  const [showPopup, setShowPopup] = useState(false); 
+  const [popupMessage, setPopupMessage] = useState(''); 
+//Hàm
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
@@ -32,15 +35,20 @@ const Checkout = () => {
     setConfirmModalVisible(false);
     await handleCheckout();
   };
-
+//Hàm xác nhận 
   const handleShowConfirmModal = () => {
-    if (!address) {
-      alert('Vui lòng nhập địa chỉ giao hàng.');
+    if (!phoneNumber) {
+      setPopupMessage("Vui lòng nhập số điện thoại !");
+      setShowPopup(true);
       return;
+    } else if (!address) {
+      setPopupMessage("Vui lòng địa chỉ giao hàng !");
+      setShowPopup(true); 
+      return    
     }
     setConfirmModalVisible(true);
   };
-
+//hàm lấy hình ảnh từ server
   const fetchImage = async (flowerID) => {
     try {
       const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
@@ -52,7 +60,7 @@ const Checkout = () => {
       console.error("Error fetching image:", error);
     }
   };
-
+//Lấy hoa ảnh hoa từ bên cart theo flowerID
   useEffect(() => {
     cartItems.forEach(item => fetchImage(item.flowerID));
   }, [cartItems]);
@@ -64,24 +72,16 @@ const Checkout = () => {
       return;
     }
 
-    if (!address) {
-      setLoading(false);
-      alert('Vui lòng nhập địa chỉ giao hàng');
-      return;
-    }
-
     const orderDetails = cartItems.map(item => ({
       flowerID: item.flowerID,
       quantity: item.quantity,
       price: item.price,
     }));
-
+//Chọn phương thức thanh toán
     const orderDate = new Date();
     const vnTimeOffset = 7 * 60;
     const vnDate = new Date(orderDate.getTime() + vnTimeOffset * 60 * 1000);
-
     const paymentMethodName = paymentMethod === 'vnpay' ? 'VNPay' : paymentMethod === 'momo' ? 'MoMo' : 'COD';
-
     const order = {
       orderDate: vnDate.toISOString(),
       totalPrice: totalPrice,
@@ -98,7 +98,7 @@ const Checkout = () => {
       },
       orderDetails: orderDetails,
     };
-
+//tạo order
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
       setLoading(false);
@@ -110,7 +110,7 @@ const Checkout = () => {
           localStorage.setItem('order', JSON.stringify(orderWithID));
           console.log(orderWithID);
         }
-
+// chọn phương thức thanh toán
         if (paymentMethod === 'vnpay') {
           const vnpUrl = createdOrder.message.split('Payment URL: ')[1];
           window.location.href = vnpUrl;
@@ -131,7 +131,6 @@ const Checkout = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -148,13 +147,12 @@ const Checkout = () => {
       </div>
     );
   }
-
   return (
+    //Phần thông tin nội dung checkout
     <div className="checkout">
       <div className="checkout-header">
         <h2>Xác Nhận Đơn Hàng</h2>
       </div>
-
       <div className="checkout-content">
         <div className="order-summary">
           <h3>Tóm Tắt Đơn Hàng</h3>
@@ -177,18 +175,18 @@ const Checkout = () => {
             <strong>Tổng cộng: {totalPrice.toLocaleString()} VNĐ</strong>
           </div>
         </div>
-
+   {/*Phần hiển thị xác nhận thông tin người dùng*/}
         <div className="user-info">
           <h3>Thông Tin Người Dùng</h3>
           <table className="user-info-table">
             <tbody className="user-info-tbody">
               <tr className="user-info-row">
                 <td className="user-info-label"><strong>Họ và tên</strong></td>
-                <td className="user-info-value">{user?.username || 'N/A'}</td>
+                <td className="user-info-value">{user?.username}</td>
               </tr>
               <tr className="user-info-row">
                 <td className="user-info-label"><strong>Email</strong></td>
-                <td className="user-info-value">{user?.email || 'N/A'}</td>
+                <td className="user-info-value">{user?.email}</td>
               </tr>
               <tr className="user-info-row">
                 <td className="user-info-label"><strong>Số điện thoại</strong></td>
@@ -263,6 +261,25 @@ const Checkout = () => {
       </div>
 
       <Footer />
+ {/* hiển thị thông báo pop-up */}
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-container">
+            <div className="popup-icon">❌</div>
+            <h2>Thông báo</h2>
+            <p className="popup-message">{popupMessage}</p>
+            <button
+              className="close-button-popup"
+              onClick={() => {
+                setShowPopup(false); 
+              }}>
+              Đóng
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/*bảng thông báo xác nhận có mua hàng hay không */}
       {isConfirmModalVisible && (
         <div className="confirm-modal-overlay">
           <div className="confirm-modal">

@@ -66,7 +66,6 @@ function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a pro
   };
 
   useEffect(() => {
-    // Fetch and display the latest feedback from your API
     fetchFeedbacks();
   }, []);
 
@@ -86,7 +85,7 @@ function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a pro
       <Slider {...settings}>
         {testimonials.map((testimonial, index) => (
           <div className="testimonial-slide" key={index}>
-            <p>"{testimonial.comment}"</p>  {/* Sử dụng comment thay vì feedback */}
+            <p>"{testimonial.comment}"</p>  
             <h3>{testimonial.name}</h3>
           </div>
         ))}

@@ -66,7 +66,7 @@ function App() {
         </Routes>
 
         {/* Add Testimonials here */}
-        <Testimonials setTestimonials={setTestimonials} />  {/* Pass setTestimonials if you want to update the state */}
+        {/* <Testimonials setTestimonials={setTestimonials} />  Pass setTestimonials if you want to update the state */}
       </Router>
     </div>
   );

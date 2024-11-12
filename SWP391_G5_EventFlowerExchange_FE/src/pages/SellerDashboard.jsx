@@ -70,7 +70,7 @@ const SellerDashboard = () => {
             </button>
             <ul className="sidebar-menu">
               <li className={`menu-item ${activeTab === 'create-post' ? 'active' : ''}`}>
-                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo bài post</a>
+                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo bài post và hoa để bán</a>
               </li>
               <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
                 <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lý bài post</a>
