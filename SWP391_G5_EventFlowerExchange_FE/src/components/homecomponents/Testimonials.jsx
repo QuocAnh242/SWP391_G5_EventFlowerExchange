@@ -2,55 +2,7 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "./Testimonials.css";
 
-function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a prop
-//  const testimonials = [
-//     {
-//       feedback:
-//         "Hoa rất tươi, hương thơm dễ chịu, giao hàng nhanh, giá cả hợp lý.",
-//        name: "Trần Linh",
-//     },
-//     {
-//       feedback:
-//         "Hoa được gói rất đẹp và cẩn thận, nhân viên chu đáo và nhiệt tình.",
-//       name: "Nguyên An",
-//     },
-//     {
-//       feedback:
-//         "Giao hàng rất nhanh, hoa vẫn tươi khi nhận, rất hài lòng.",
-//       name: "Tuấn Trần",
-//     },
-//     {
-//       feedback:
-//         "Dịch vụ tuyệt vời, hoa đúng mẫu, người nhận rất thích.",
-//       name: "Lê Minh",
-//     },
-//     {
-//       feedback:
-//         "Hoa đẹp và tươi, giao hàng đúng giờ, sẽ ủng hộ lần sau.",
-//       name: "Mai Hương",
-//     },
-//     {
-//       feedback:
-//         "Mình rất hài lòng với chất lượng hoa, sẽ giới thiệu cho bạn bè.",
-//       name: "Thảo Nguyễn",
-//     },
-//     {
-//       feedback:
-//         "Hoa thơm và tươi lâu, giao hàng nhanh chóng và đúng hẹn.",
-//       name: "Phương Anh",
-//     },
-//     {
-//       feedback:
-//         "Đóng gói cẩn thận, hoa tươi đẹp, chất lượng dịch vụ tốt.",
-//       name: "Hồng Nhung",
-//     },
-//     {
-//       feedback:
-//         "Rất thích cách gói hoa tinh tế, giá cả phải chăng.",
-//       name: "Duy Khang",
-//     },
-    
-//   ];
+function Testimonials() {  
   const [testimonials, setTestimonialsState] = useState([]);
 
   // Fetch all feedbacks
@@ -58,7 +10,7 @@ function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a pro
     try {
       const response = await fetch("http://localhost:8080/identity/api/feedback/all");
       const data = await response.json();
-      setTestimonialsState(data);  // Save fetched testimonials in state
+      setTestimonialsState(data); 
     } catch (error) {
       console.error("Lỗi khi tải phản hồi:", error);
       setTestimonialsState([]);
@@ -78,6 +30,10 @@ function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a pro
     autoplay: true,
     autoplaySpeed: 3000,
   };
+//hàm tính theo số đánh giá sẽ hiện ra số số
+  const renderStars = (rating) => {
+    return "⭐".repeat(rating);
+  };
 
   return (
     <div className="about-testimonials">
@@ -86,10 +42,10 @@ function Testimonials({ setTestimonials }) {  // Accept setTestimonials as a pro
         {testimonials.map((testimonial, index) => (
           <div className="testimonial-slide" key={index}>
             <p>"{testimonial.comment}"</p>  
-            <h3>{testimonial.name}</h3>
+            <h3>{testimonial.user?.username || "Ẩn danh"}</h3> 
+            <h3>{renderStars(testimonial.rating)}</h3>
           </div>
         ))}
-
       </Slider>
     </div>
   );

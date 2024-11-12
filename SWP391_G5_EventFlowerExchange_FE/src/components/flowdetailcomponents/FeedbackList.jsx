@@ -27,6 +27,10 @@ function FeedbackList({ flowerID }) { // Receive flowerID as a prop
   const handleToggleShowAll = () => {
     setShowAll((prevShowAll) => !prevShowAll);
   };
+  //hàm hiển thị số rating tương ứng với số sao
+  const renderStars = (rating) => {
+    return "⭐".repeat(rating);
+  };
 
   return (
     <div className="feedback-section">
@@ -36,7 +40,7 @@ function FeedbackList({ flowerID }) { // Receive flowerID as a prop
           {(showAll ? reviews : reviews.slice(0, 1)).map((review, index) => (
             <li key={index} className="feedback-item">
               <p><strong>{review.user?.username || "Khách hàng"}</strong> - {review.flowerBatch?.flowerName || "Sản phẩm"}</p>
-              <p>Đánh giá: {review.rating}⭐</p>
+              <p>Đánh giá: {renderStars(review.rating)}</p>
               <p>{review.comment}</p>
               <p><em>{new Date(review.createdAt).toLocaleDateString()}</em></p>
             </li>

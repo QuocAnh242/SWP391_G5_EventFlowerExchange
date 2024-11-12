@@ -24,13 +24,13 @@ import BlogSlider from '../components/homecomponents/BlogSlider';
 function Home() {
   // Cấu hình cho slider
   const settings = {
-    dots: false, // Hiển thị các chấm dưới banner để chuyển đổi giữa các ảnh
-    infinite: true, // Vòng lặp các ảnh
-    speed: 500, // Tốc độ chuyển ảnh (500ms)
-    slidesToShow: 1, // Số ảnh hiện trên màn hình cùng lúc
-    slidesToScroll: 1, // Số ảnh chuyển qua mỗi lần cuộn
-    autoplay: true, // Tự động chuyển ảnh
-    autoplaySpeed: 2000, // Thời gian giữa mỗi lần chuyển ảnh
+    dots: false, 
+    infinite: true, 
+    speed: 500, 
+    slidesToShow: 1,
+    slidesToScroll: 1, 
+    autoplay: true, 
+    autoplaySpeed: 2000, 
   };
 
   const [loading, setLoading] = useState(true); // Thêm trạng thái loading

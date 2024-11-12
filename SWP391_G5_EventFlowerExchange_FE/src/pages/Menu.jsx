@@ -33,7 +33,7 @@ function Menu() {
   // Lấy dữ liệu từ API Spring Boot
   const fetchFlowerList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/identity/posts/");
+      const response = await axios.get("http://localhost:8080/identity/posts/visible-postings");
       const flowersWithImages = response.data.map(flower => ({
         ...flower,
         imageURL: `http://localhost:8080/identity/img/${flower.postID}` // Tạo URL ảnh từ postID
