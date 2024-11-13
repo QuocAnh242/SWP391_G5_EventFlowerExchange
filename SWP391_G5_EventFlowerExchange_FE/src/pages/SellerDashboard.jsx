@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import CreatePost from "../components/profilepagecomponent/CreatePost.jsx";
 import ManagePosts from "../components/profilepagecomponent/ManagePosts.jsx";
-import ManageSellerOrders from "../components/profilepagecomponent/MangeSellerOrders.jsx"; // Import the new component
+import ManageOrders from "../components/profilepagecomponent/ManageOrders.jsx"; // Import the new component
 import "../styles/SellerDashboard.css";
 import { useNavigate } from 'react-router-dom';
-import Navbar from "../components/Navbar.jsx";
 
 const SellerDashboard = () => {
   const [userID, setUserID] = useState(null);
@@ -35,8 +34,8 @@ const SellerDashboard = () => {
         return <CreatePost userID={userID} />;
       case 'manage-posts':
         return <ManagePosts userID={userID} />;
-      case 'manage-seller-orders':
-        return <ManageSellerOrders userID={userID} />; // Add the Manage Orders tab content
+      case 'manage-orders':
+        return <ManageOrders userID={userID} />; // Add the Manage Orders tab content
       default:
         return null;
     }
@@ -53,7 +52,6 @@ const SellerDashboard = () => {
 
   return (
     <div className="seller-dashboard">
-    {/* <Navbar/> */}
       {loading ? (
         <div className="loading-spinner">
           <p>Đang tải dữ liệu...</p>
@@ -70,13 +68,13 @@ const SellerDashboard = () => {
             </button>
             <ul className="sidebar-menu">
               <li className={`menu-item ${activeTab === 'create-post' ? 'active' : ''}`}>
-                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo bài post và hoa để bán</a>
+                <a href="#create-post" onClick={() => setActiveTab('create-post')}>Tạo bài post</a>
               </li>
               <li className={`menu-item ${activeTab === 'manage-posts' ? 'active' : ''}`}>
                 <a href="#manage-posts" onClick={() => setActiveTab('manage-posts')}>Quản lý bài post</a>
               </li>
-              <li className={`menu-item ${activeTab === 'manage-seller-orders' ? 'active' : ''}`}>
-                <a href="#manage-seller-orders" onClick={() => setActiveTab('manage-seller-orders')}>Quản lý đơn hàng</a>
+              <li className={`menu-item ${activeTab === 'manage-orders' ? 'active' : ''}`}>
+                <a href="#manage-orders" onClick={() => setActiveTab('manage-orders')}>Quản lý đơn hàng</a>
               </li>
             </ul>
           </aside>

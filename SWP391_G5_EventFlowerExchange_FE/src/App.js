@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
+import Footer from './components/Footer';
 import Navbar from "./components/Navbar";
 import ScrollToTop from "./components/ScrollToTop"; 
-import Testimonials from "./components/homecomponents/Testimonials"; // Import Testimonials component
 
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
@@ -18,25 +18,24 @@ import Cart from './pages/Cart';
 import AdminUserManagement from './pages/AdminUserManagement';
 import FlowerBatchDetail from "./pages/FlowerBatchDetail";
 import BlogPage from "./pages/Blog";
+import Payment from "./pages/Payment";
 import Checkout from './pages/Checkout';
 import SuccessPage from './pages/SuccessPage';
-import ForgotPassword from './pages/ForgotPassword';
-import ReviewPage from "./pages/ReviewPage.jsx";
 
 function App() {
   // State quản lý giỏ hàng toàn cục
   const [cartItems, setCartItems] = useState([]);
 
+  // Lấy dữ liệu giỏ hàng từ localStorage khi ứng dụng khởi động
   useEffect(() => {
     const savedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     setCartItems(savedCartItems);
   }, []);
 
+  // Cập nhật localStorage khi giỏ hàng thay đổi
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
-
-  const [testimonials, setTestimonials] = useState([]);  // Only use testimonials if needed
 
   return (
     <div className="App">
@@ -51,22 +50,21 @@ function App() {
           <Route path="/menu" element={<Menu />} />
           <Route path="/flower/:id" element={<FlowerBatchDetail />} />
           <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact setTestimonials={setTestimonials} />} />
+          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/profile-page" element={<ProfilePage />} />
-          <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} />
+          <Route path="/cart" element={<Cart cartItems={cartItems} setCartItems={setCartItems} />} /> {/* Truyền props cho giỏ hàng */}
           <Route path="/admin-user-management" element={<AdminUserManagement />} />
           <Route path="/blog-page" element={<BlogPage />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/checkout" element={<Checkout cartItems={cartItems} setCartItems={setCartItems} />} />
-          <Route path="/seller-dashboard" element={<SellerDashboard />} />
+          <Route path="/seller-dashboard" element={<SellerDashboard />} /> {/* Fix: Add this route */}
           <Route path="/success-page" element={<SuccessPage />} />
-          <Route path="/review/:orderID" element={<ReviewPage />} />
         </Routes>
 
-        {/* Add Testimonials here */}
-        {/* <Testimonials setTestimonials={setTestimonials} />  Pass setTestimonials if you want to update the state */}
+        {/* Footer hiển thị dưới cùng */}
+        {/* <Footer /> */}
       </Router>
     </div>
   );

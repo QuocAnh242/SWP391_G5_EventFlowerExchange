@@ -50,16 +50,14 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (password !== confirmPassword) {
       setErrorMessage('Mật khẩu không giống nhau !');
       return;
     } else {
       setErrorMessage('');
     }
-  
-    setLoading(true); // Start loading
-  
+
     try {
       // API request to send signup data to the server
       await api.post('http://localhost:8080/identity/users/create', {
@@ -68,18 +66,20 @@ const SignUp = () => {
         password,
         phoneNumber,
       });
-  
-      // Show success message and popup
-      setPopupMessage("Bạn đã tạo tài khoản thành công! Vui lòng vào email để xác thực tài khoản ");
-      setShowPopup(true); // Display the popup
+
+      // Hiển thị thông báo thành công và bật pop-up
+    setPopupMessage("Bạn đã tạo tài khoản thành công !");
+    setShowPopup(true); // Hiển thị pop-up
+
+      
+
+      // Optionally, redirect to login page or clear the form
     } catch (error) {
       // Handle error response
       setErrorMessage(
         error.response?.data?.message || 'Tạo tài khoản không thành công . Vui lòng thử lại .'
       );
       console.error('Signup error:', error);
-    } finally {
-      setLoading(false); // Stop loading regardless of outcome
     }
   };
 
@@ -92,7 +92,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="page-container-sign-up">
+    <div className="page-container">
       <div className="content-wrap">
         <div className="signup-container">
           <div className="signup-form">
@@ -175,7 +175,7 @@ const SignUp = () => {
               {successMessage && <p className="success-message">{successMessage}</p>}
 
               <button type="submit" className="signup-btn">
-                Đăng ký
+                Sign Up
               </button>
             </form>
             <div className="already-account">

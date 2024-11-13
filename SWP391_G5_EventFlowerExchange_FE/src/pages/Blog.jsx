@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios'; // Thêm axios để gọi API
 import '../styles/Blog.css';
-import Footer from '../components/Footer';
-// import Navbar from "../components/Navbar.jsx";
 
 const BlogPage = () => {
-  const [blogs, setBlogs] = useState([]); 
-  const [loading, setLoading] = useState(true); 
-  const [visibleBlogs, setVisibleBlogs] = useState(5); 
+  const [blogs, setBlogs] = useState([]); // Khởi tạo state cho danh sách blog
+  const [loading, setLoading] = useState(true); // Để hiển thị loading
+  const [visibleBlogs, setVisibleBlogs] = useState(5); // State cho số lượng bài viết hiển thị
 
   useEffect(() => {
     // Gọi API để lấy dữ liệu blog
     const fetchBlogs = async () => {
       try {
         const response = await axios.get('http://localhost:8080/identity/blog/');
-        setBlogs(response.data); 
-        setLoading(false);
+        setBlogs(response.data); // Cập nhật state với dữ liệu blog nhận được
+        setLoading(false); // Tắt loading sau khi dữ liệu được tải xong
       } catch (error) {
         console.error("Có lỗi xảy ra khi lấy dữ liệu blog:", error);
-        setLoading(false); 
+        setLoading(false); // Tắt loading ngay cả khi gặp lỗi
       }
     };
 
@@ -36,7 +34,6 @@ const BlogPage = () => {
 
   return (
     <div className="blog-page">
-    {/* <Navbar/> */}
       <h1 className='blog-header'>Các Bài Blog</h1>
       <div className="blog-list">
         {blogs.slice(0, visibleBlogs).map((blog) => ( // Chỉ hiển thị số lượng bài viết cần thiết
@@ -49,7 +46,6 @@ const BlogPage = () => {
       {visibleBlogs < blogs.length && ( // Hiển thị nút "Xem thêm" nếu còn bài viết để xem
         <button className="load-more" onClick={loadMoreBlogs}>Xem thêm</button>
       )}
-      <Footer />
     </div>
   );
 };

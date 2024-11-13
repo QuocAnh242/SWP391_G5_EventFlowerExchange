@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import CreateFlowerForm from './CreateFlowerForm';
-import './CreatePos.css';
+import CreateFlowerForm from './CreateFlowerForm'; // Import the CreateFlowerForm component
+import './CreatePos.css'; // Import file CSS
 
 const CreatePostComponent = () => {
   const user = JSON.parse(localStorage.getItem('user'));
@@ -9,7 +9,6 @@ const CreatePostComponent = () => {
     title: '',
     description: '',
     price: '',
-    expiryDate: '',
     user: {
       userID: user ? user.userID : '',
     },
@@ -19,47 +18,35 @@ const CreatePostComponent = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
 
-  // Handle input changes
+  // Xử lý khi có thay đổi trong form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
   };
 
-  // Handle file selection
+  // Xử lý khi chọn file ảnh
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
   };
 
-  // Open confirmation modal
-  const openConfirmationModal = () => {
-    setConfirmModalVisible(true);
-  };
-
-  // Handle form submission when the user confirms
-  const confirmSubmit = async () => {
-    setConfirmModalVisible(false);
+  // Xử lý khi submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      const date = new Date(post.expiryDate);
-      date.setUTCHours(0, 0, 0, 0);
-      const expiryDateMidnight = date.toISOString();
-
-      const formattedPost = {
-        ...post,
-        expiryDate: expiryDateMidnight,
-      };
-
-      const response = await axios.post('http://localhost:8080/identity/posts/', formattedPost);
+      // Tạo bài đăng
+      const response = await axios.post('http://localhost:8080/identity/posts/', post);
       const createdPostID = response.data.postID;
       setPostID(createdPostID);
 
+      // Nếu có file ảnh, upload file
       if (selectedFile) {
         const formData = new FormData();
-        formData.append('image', selectedFile);
+        formData.append('image', selectedFile);// Đảm bảo tên trường 'file' đúng với yêu cầu API
 
+        // Upload file ảnh
         await axios.post(`http://localhost:8080/identity/img/${createdPostID}`, formData);
-        setSuccessMessage('Đã tạo bài đăng thành công');
+        setSuccessMessage('Đã tạo bài đăng và upload ảnh thành công!');
       } else {
         setSuccessMessage('Đã tạo bài đăng thành công!');
       }
@@ -70,12 +57,6 @@ const CreatePostComponent = () => {
       setError('Không thể tạo bài đăng hoặc upload ảnh. Vui lòng thử lại.');
       setSuccessMessage('');
     }
-  };
-
-  // Handle submit button click to open the confirmation modal
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    openConfirmationModal();
   };
 
   return (
@@ -116,17 +97,6 @@ const CreatePostComponent = () => {
         </label>
 
         <label>
-          Ngày hết hạn:
-          <input
-            type="date"
-            name="expiryDate"
-            value={post.expiryDate}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label>
           Chọn ảnh:
           <input
             type="file"
@@ -143,19 +113,6 @@ const CreatePostComponent = () => {
 
       {/* Show form to add flowers if the post is successfully created */}
       {postID && <CreateFlowerForm postID={postID} />}
-
-      {/* Confirmation Modal */}
-      {isConfirmModalVisible && (
-        <div className="confirm-modal-overlay">
-          <div className="confirm-modal">
-            <p>Bạn có chắc chắn muốn tạo bài viết này không?</p>
-            <div className="confirm-modal-buttons">
-              <button onClick={confirmSubmit} className="confirm-btn">Có</button>
-              <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

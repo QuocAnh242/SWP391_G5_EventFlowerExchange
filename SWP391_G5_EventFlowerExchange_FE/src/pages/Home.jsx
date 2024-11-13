@@ -4,7 +4,7 @@ import Slider from 'react-slick';
 import Footer from '../components/Footer';
 import Services from '../components/homecomponents/Services';
 import NewProducts from '../components/homecomponents/NewProducts';
-import Navbar from "../components/Navbar.jsx";
+
 // Import hình ảnh banner
 import BannerImage1 from '../assets/banner/banner1.jpg';
 import BannerImage2 from '../assets/banner/banner2.jpg';
@@ -12,7 +12,7 @@ import BannerImage3 from '../assets/banner/banner3.jpg';
 
 // Import hình ảnh cho các phần khác
 import FeaturedImage from '../assets/about-img/a1.jpg';
-import FlowerLoader from '../components/FlowerLoader'; // Import FlowerLoader
+import BlogImage1 from '../assets/about-img/a2.jpg';
 
 import '../styles/Home.css';
 import "slick-carousel/slick/slick.css";
@@ -24,13 +24,13 @@ import BlogSlider from '../components/homecomponents/BlogSlider';
 function Home() {
   // Cấu hình cho slider
   const settings = {
-    dots: false, 
-    infinite: true, 
-    speed: 500, 
-    slidesToShow: 1,
-    slidesToScroll: 1, 
-    autoplay: true, 
-    autoplaySpeed: 2000, 
+    dots: false, // Hiển thị các chấm dưới banner để chuyển đổi giữa các ảnh
+    infinite: true, // Vòng lặp các ảnh
+    speed: 500, // Tốc độ chuyển ảnh (500ms)
+    slidesToShow: 1, // Số ảnh hiện trên màn hình cùng lúc
+    slidesToScroll: 1, // Số ảnh chuyển qua mỗi lần cuộn
+    autoplay: true, // Tự động chuyển ảnh
+    autoplaySpeed: 2000, // Thời gian giữa mỗi lần chuyển ảnh
   };
 
   const [loading, setLoading] = useState(true); // Thêm trạng thái loading
@@ -45,10 +45,9 @@ function Home() {
   }, []);
 
   if (loading) {
-    return (  
+    return (
       <div className="loading-container">
         <div className="spinner"></div>
-        {/* <FlowerLoader />  */}
         <p className="loading-text">Đang tải dữ liệu...</p>
       </div>
     );
@@ -56,7 +55,6 @@ function Home() {
 
   return (
     <div className="home">
-    {/* <Navbar/> */}
       <div className="headerContainer">
         {/* Carousel */}
         <Slider {...settings}>

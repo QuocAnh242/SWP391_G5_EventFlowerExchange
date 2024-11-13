@@ -4,9 +4,8 @@ import { useNavigate } from "react-router-dom";
 import "../styles/Menu.css";
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
+import a2 from '../assets/about-img/a5.jpg'; // Hình ảnh mẫu
 import b1 from '../assets/banner-post.png';
-import dayjs from 'dayjs'; // if using dayjs to manage various formats
-// import Navbar from "../components/Navbar.jsx";
 
 function Menu() {
   const [flowerList, setFlowerList] = useState([]); // Danh sách hoa từ API
@@ -20,9 +19,6 @@ function Menu() {
   const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
   const [flowersPerPage] = useState(16); // Số lượng hoa mỗi trang
   const postCardRef = useRef([]); // Để lưu refs cho mỗi thẻ bài viết
-  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
-  const [popupMessage, setPopupMessage] = useState('');
-
 
   // Lấy danh sách hoa khi component được tải
   useEffect(() => {
@@ -33,7 +29,7 @@ function Menu() {
   // Lấy dữ liệu từ API Spring Boot
   const fetchFlowerList = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/identity/posts/visible-postings");
+      const response = await axios.get("http://localhost:8080/identity/posts/");
       const flowersWithImages = response.data.map(flower => ({
         ...flower,
         imageURL: `http://localhost:8080/identity/img/${flower.postID}` // Tạo URL ảnh từ postID
@@ -44,6 +40,7 @@ function Menu() {
       console.error("Lỗi khi lấy dữ liệu: ", error);
     }
   };
+  
 
   const fetchCategoryList = async () => {
     try {
@@ -76,17 +73,13 @@ function Menu() {
     setFilteredFlowers(filtered);  // Hiển thị các bài post chứa hoa được chọn
   };
 
-  // Xử lý khi nhấn vào bài viết khi bài viết hết hạn
-  const handlePostClick = (flower) => {
-    if (dayjs(flower.expiryDate).isValid() && dayjs(flower.expiryDate).isBefore(dayjs())) {
-      // alert("Bài sự kiện đã hết hạn"); 
-      setPopupMessage("Bài sự kiện đã hết hạn !");
-      setShowPopup(true); // Hiển thị pop-up
-    } else {
-      navigate(`/flower/${flower.postID}`);
-    }
-  };
 
+
+
+  // Xử lý khi nhấn vào bài viết
+  const handlePostClick = (id) => {
+    navigate(`/flower/${id}`);
+  };
 
 
   useEffect(() => {
@@ -200,9 +193,7 @@ function Menu() {
   }
 
   return (
-    // <div><Navbar/>
     <div className="shop-container">
-
       <div className="sidebar-post-exchange">
         <h3 className="sidebar-title">Danh mục hoa</h3>
         <hr className="sidebar-divider" />
@@ -213,13 +204,12 @@ function Menu() {
           </li>
 
           {categoryList
-            .filter((category) => category.eventName && category.eventName !== "Không") // Lọc các danh mục có eventName và không phải "Không"
+            .filter((category) => category.eventName) // Lọc các danh mục có eventName
             .map((category, index) => (
               <li key={index} onClick={() => filterByCategory(category.eventName)}>
                 <span>{category.eventName}</span>
               </li>
             ))}
-
 
           {/* Hiển thị danh sách tên các loài hoa duy nhất */}
           <h3 className="sidebar-title">Tên hoa</h3>
@@ -234,6 +224,17 @@ function Menu() {
                 </li>
               ))}
           </ul>
+
+
+
+
+          {/* {categoryList
+            .filter((category) => category.eventName) 
+            .map((category, index) => (
+              <li key={index} onClick={() => filterByCategory(category.eventName)}>
+                <span>{category.eventName}</span>
+              </li>
+            ))} */}
         </ul>
       </div>
 
@@ -273,29 +274,24 @@ function Menu() {
         <div className="post-grid">
           {currentFlowers.map((flower, index) => (
             <div
-              className="post-card scroll-appear"
-              key={index}
-              ref={(el) => (postCardRef.current[index] = el)}
-              onClick={() => handlePostClick(flower)} // Pass the flower object
-            >
-              <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
-              <h3>{flower.title}</h3>
-              <p className="discount-price">Giá dự kiến: {flower.price.toLocaleString()} VNĐ</p>
-              <p>
-                {flower.flowerBatches[0]?.category?.eventName === "Không"
-                  ? "Bán hoa theo lô"
-                  : flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}
-              </p>
+  className="post-card scroll-appear"
+  key={index}
+  ref={(el) => postCardRef.current[index] = el}
+  onClick={() => handlePostClick(flower.postID)}
+>
+  <img src={flower.imageURL} alt={flower.title} className="post-card-image" />
+  <h3>{flower.title}</h3>
+  <p className="discount-price">Giá dự kiến: {flower.price}VNĐ</p>
+  <p>{flower.flowerBatches[0]?.category?.eventName || "Bán theo lô"}</p>
+  <p className="feature-content">{flower.description}</p>
+  <button className="feature-detail-button">Xem chi tiết</button>
+</div>
 
-              <p className="feature-content">{flower.description}</p>
-              <p className="e-date">
-                Ngày sự kiện kết thúc : {dayjs(flower.expiryDate).isValid() ? dayjs(flower.expiryDate).format('DD/MM/YYYY') : 'Không xác định'}
-              </p>
-
-              <button className="feature-detail-button">Xem chi tiết</button>
-            </div>
           ))}
+
         </div>
+
+
         {/* Phân trang */}
         <div className="pagination">
           <button
@@ -305,6 +301,7 @@ function Menu() {
           >
             &laquo;
           </button>
+
           {pageNumbers.map((number) => (
             <button
               key={number}
@@ -314,6 +311,7 @@ function Menu() {
               {number}
             </button>
           ))}
+
           <button
             onClick={handleNextPage}
             disabled={currentPage === Math.ceil(filteredFlowers.length / flowersPerPage)}
@@ -323,25 +321,8 @@ function Menu() {
           </button>
         </div>
       </div>
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-icon">❌</div>
-            <h2>Thông báo</h2>
-            <p className="popup-message">{popupMessage}</p>
-            <button
-              className="close-button-popup"
-              onClick={() => {
-                setShowPopup(false); // Close the popup
-              }}>
-              Đóng
-            </button>
-          </div>
-        </div>
-      )}
       <Footer />
     </div>
-    // </div>
   );
 }
 

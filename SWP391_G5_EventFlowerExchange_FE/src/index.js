@@ -9,7 +9,6 @@ import 'leaflet/dist/leaflet.css';
 
 
 
-
 ReactDOM.render(
   <React.StrictMode>
     <App />

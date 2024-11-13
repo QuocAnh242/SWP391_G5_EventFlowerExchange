@@ -1,16 +1,17 @@
-
+/* Full page background with gradient */
 .login-container {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  /* height: 125vh; */
+  height: 125vh;
   background-image: url('../assets/backgroundlogin.jpg');
   background-size: cover;
   background-position: center;
+  padding-top: 10px;
 }
 
-
+/* Centered card with white background */
 .login-card {
   background-color: #fff;
   padding: 30px;
@@ -18,13 +19,11 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 350px;
-  height: 700px;
-  backdrop-filter: blur(5px); 
-  margin-bottom: 30px;
-  margin-top: 20px;
-  
-
-  
+  height: 100%;
+  backdrop-filter: blur(5px); /* Slight blur effect */
+  margin: 50px;
+  /* margin-bottom: 30px; */
+  ;
 }
 
 h2 {
@@ -35,13 +34,13 @@ h2 {
   
 }
 
-
+/* Form input */
 .form-input{
   border: 1px solid #666 ;
   border-radius: 5px;
   width: 100%;
   height: 50px;
-  padding-top: 6px;
+  padding-top: 7px;
   padding-left: 15px;
   transition: 0.25s ease;
   margin-bottom: 15px;
@@ -56,11 +55,11 @@ h2 {
 } 
 .form-label {
  position: absolute;
- top: 38%;
+ top: 30%;
  transform: translateY(-100%);
  left: 21px;
  user-select: none;
- color: black;
+ color: #999;
  pointer-events: none;
  transition: 0.25s ease ;
 }
@@ -71,31 +70,27 @@ h2 {
   left: 11px;
   display: inline-block;
   background-color: #fff;
-  color: black;
+  color: #999;
 }
+/*playhoder-shown*/
 
-.forgot-password-button {
+
+
+/* "Forgot password" link */
+.forgot-password {
   text-align: right;
   font-size: 14px;
-  color: black;
+  color: #666;
   cursor: pointer;
   margin-bottom: 20px;
 }
-
-.forgot-password-button a {
-  color: inherit;
-  text-decoration: none; 
-  transition: color 0.3s ease; 
-}
-
-.forgot-password-button:hover a {
-  color: #FFC0CB; 
+.forgot-password:hover {
   opacity: 0.9;
+  color: #FFC0CB;
 }
-
-
+/* Gradient button with smooth transition */
 .login-btn {
-  background: #FFC0CB; 
+  background: #FFC0CB; /* Pink background */
   color: white;
   padding: 12px;
   width: 100%;
@@ -110,7 +105,7 @@ h2 {
   opacity: 0.9;
 }
 
-
+/* Social media icons styling */
 .social-login {
   margin: 20px 0;
   color: #777;
@@ -143,27 +138,16 @@ h2 {
   color: white;
 }
 
+/* Signup link styling */
 .signup-link {
-  margin-top: 20%;
-  font-size: 15px;
-  color: black;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #777;
 }
 
 .signup-link a {
   color: #FFC0CB;
   text-decoration: none;
-}
-
-.google-login-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* Center horizontally */
-  justify-content: center; /* Center vertically if needed */
-  margin-top: 20px; /* Space above the button */
-}
-
-.alternate-login-text {
-  margin-bottom: 10px; /* Space between the text and the button */
 }
 
 .password-field {
@@ -177,27 +161,14 @@ h2 {
   margin-right: 10px;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #888;
+  color: #888; /* Adjust color as needed */
   
 }
 
 .password-toggle-icon:hover {
-  color: #555; 
+  color: #555; /* Darken the color on hover */
 }
-.recaptcha-container {
-  display: flex;
-  justify-content: center;
-  margin-left: 43px;
-  transform: scale(0.76); 
-  transform-origin: left; 
-}
-.alternate-login-text {
-  text-align: center;
-  margin: 10px 0;
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 20px;
-}
+
 
 .loading-container {
   display: flex;

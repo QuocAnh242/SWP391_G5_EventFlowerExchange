@@ -6,9 +6,8 @@
   background-color: #f8fafc;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  font-family: 'Montserrat', sans-serif;
 }
-/* Tiêu đề mỗi trang*/
+/*Tiêu đề mỗi trang*/
 /* h2 {
   text-align: center;
   margin-bottom: 25px;
@@ -67,25 +66,22 @@
 /* Dashboard tổng quan */
 .dashboard {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping to create multiple rows */
-  justify-content: center; /* Center-align the items */
-  gap: 20px;
+  justify-content: space-between;
   margin-top: 25px;
   margin-left: 15%;
-  height: fit-content;
+  gap: 20px;
+  height:fit-content;
 }
 
 .dashboard .stat {
   background-color: #fff;
   padding: 20px;
-  flex: 1 1 calc(50% - 20px); /* Each item takes up 50% of the container width, minus the gap */
+  flex: 1;
   text-align: center;
   border: 1px solid #e0e0e0;
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  max-width: 600px;
 }
 
 .dashboard .stat:hover {
@@ -132,14 +128,13 @@
 }
 
 /* Bảng người dùng */
-.admin-user-table {
-  width: 80%; 
-  margin-left: 15%; 
+table {
+  width: 80%; /* Giảm chiều rộng bảng để không tràn ra ngoài */
+  margin-left: 15%; /* Căn giữa bảng, cách đều hai bên */
   border-collapse: collapse;
   background-color: #fff;
   border-radius: 30px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  font-family: 'Roboto', sans-serif;
 }
 
 thead {
@@ -151,7 +146,7 @@ thead {
 
 thead th {
   padding: 15px;
-  font-size: 20px;
+  font-size: 14px;
   text-align: left;
   font-weight: 500;
 }
@@ -243,25 +238,6 @@ button {
  
 }
 
-.button-set-seller {
-  margin-left: 8px;
-  padding: 5px 10px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.3s ease; /* Chuyển động mượt */
-  transform: scale(1);
-}
-
-.button-set-seller:hover {
-  background-color: #45a049;
-}
-.button-set-seller:focus {
-  outline: none;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.8); /* Đường viền sáng khi focus */
-}
 /* Loading */
 .loading-container {
   display: flex;
@@ -269,6 +245,7 @@ button {
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-color: #f0f2f5;
   text-align: center;
 }
 
@@ -418,77 +395,3 @@ button {
     width: 100%;
   }
 }
-/* Chart container styling for equal-sized charts */
-.charts-container {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px 10px;
-}
-
-.chart{
-  margin-left: 250px;
-  
-  
-}
-.chart-colum {
-  flex: 1;
-  min-width: 300px;
-  max-width: 900px;
-  height: 100%;
-  max-height: 490px;
-  /* margin-left: 10px; */
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Apply hover effect to both chart types */
-.chart:hover,
-.chart-colum:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-/* Center-align chart titles */
-.chart h3,
-.chart-colum h3 {
-  text-align: center;
-  font-size: 18px;
-  font-weight: bold;
-  color: #2d3e50;
-  margin-bottom: 15px;
-}
-
-/* Responsive styling for smaller screens */
-@media (max-width: 768px) {
-  .charts-container {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .chart,
-  .chart-colum {
-    width: 90%; /* Full width on smaller screens */
-    max-width: 100%;
-    margin: 10px auto;
-  }
-}
-
-
-/* Responsive for smaller screens */
-@media (max-width: 768px) {
-  .charts-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .chart {
-    width: 100%;
-    max-width: 500px;
-  }
-}
-

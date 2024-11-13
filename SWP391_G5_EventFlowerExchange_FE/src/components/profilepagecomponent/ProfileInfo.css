@@ -1,10 +1,10 @@
 /* Reset some default margins and paddings */
-/* * {
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
-  } */
+  }
 
  
   
@@ -23,9 +23,9 @@
   }
   
   label {
-    font-size: 18px;
+    font-size: 15px;
     color: #555;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     font-weight: 500;
   }
   
@@ -37,7 +37,6 @@
     border: 1px solid #ddd;
     background-color: #fff;
     transition: border-color 0.3s ease;
-    font-size: 15px;
   }
   
   .name:focus,
@@ -61,5 +60,73 @@
     }
   }
   
+
+
+  
+
+/* .profile-card {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 450px;
+  text-align: center;
+  animation: fadeIn 1s ease-in-out;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+.profile-field {
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #333;
+}
+
+.profile-field strong {
+  font-weight: bold;
+  color: #555;
+}
+
+
+.profile-card h2 {
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+
+.spinner {
+  border: 6px solid rgba(255, 255, 255, 0.3);
+  border-top: 6px solid #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.2s linear infinite;
+}
+
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.loading-text {
+  margin-top: 15px;
+  font-size: 18px;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+} */
 
   

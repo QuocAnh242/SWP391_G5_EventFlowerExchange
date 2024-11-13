@@ -1,10 +1,10 @@
-
+/* Navbar container */
 .navbar {
-  position: fixed; 
+  position: fixed; /* Giữ navbar cố định */
   top: 0;
   width: 100%;
-  z-index: 9999; 
-  background-color: #ffffff; 
+  z-index: 9999; /* Đảm bảo navbar luôn trên cùng */
+  background-color: #fff; 
   display: flex;
   padding-bottom: 5px;
   justify-content: space-between;
@@ -15,11 +15,12 @@
   font-family: Arial, sans-serif;
 }
 
-
+/* Đảm bảo có khoảng trống dưới navbar để nội dung không bị che */
 body {
   padding-top: 80px; 
 }
 
+/* Left section with logo and brand name */
 .navbar-left {
   display: flex;
   align-items: center;
@@ -85,59 +86,12 @@ body {
   visibility: visible;
 }
 
-
+/* Right section with icons */
 .navbar-right {
   display: flex;
   align-items: center;
   gap: 20px;
-
-}
-
-.navbar-infor {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background-color: #9F484C;
-  padding: 7px 12px;
-  border-radius: 8px;
-  color: #fff;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Hover Effect: Slight Color Change and Scale Up */
-.navbar-infor:hover {
-  background-color: #b35055;
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
-
-/* User Greeting Text */
-.navbar-infor .navbar-user {
-  font-size: 20px;
-  font-weight: 500;
-  color: #fff;
-  margin-right: 5px;
-}
-
-
-.navbar-infor .navbar-user {
-  font-size: 14px;
-  font-weight: 500;
-  color: #fff;
-  /* margin-right: 3px; */
-}
-
-
-.navbar-infor .navbar-icon {
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.navbar-infor .navbar-icon:hover {
-  color: white;
+  /* margin-right: 5px; */
 }
 
 .navbar-icon {
@@ -181,6 +135,8 @@ body {
   font-weight: bold;
 }
 
+/*Search bar*/
+
 .search-container {
   position: relative;
   width: 100%;
@@ -199,8 +155,8 @@ body {
 }
 
 .search-bar-nav:focus {
-  border-color: #9F484C; 
-  box-shadow: 0 0 5px #9F484C; 
+  border-color: #FFC0CB; /* Đổi màu viền khi focus */
+  box-shadow: 0 0 5px #FFC0CB; /* Ánh sáng khi focus */
 }
 
 .search-results {
@@ -214,7 +170,7 @@ body {
   max-height: 300px;
   overflow-y: auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  z-index: 999; 
+  z-index: 999; /* Đảm bảo kết quả hiển thị lên trên */
 }
 
 .search-result-item {
@@ -243,158 +199,10 @@ body {
   color: #666;
   margin-top: 5px;
 }
-.notification-icon-wrapper {
-  position: relative;
-  cursor: pointer;
-}
 
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
-@keyframes slideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.notification-panel {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  width: 200px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 100;
-  animation: fadeIn 0.5s ease forwards; 
-}
-
-.notification-panel h4 {
-  margin: 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #ddd;
-}
-
-.notification-panel ul {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 0;
-}
-
-
-.notification-panel ul li {
-  margin-bottom: 8px;
-  font-size: 14px;
-  opacity: 0;
-  animation: slideIn 0.3s ease forwards;
-}
-
-
-.notification-panel ul li:nth-child(1) {
-  animation-delay: 0.2s;
-}
-
-.notification-panel ul li:nth-child(2) {
-  animation-delay: 0.4s;
-}
-
-.notification-panel ul li:nth-child(3) {
-  animation-delay: 0.6s;
-}
-.notification-icon-wrapper {
-  position: relative;
-}
-
-.notification-dot {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 8px;
-  height: 8px;
-  background-color: red;
-  border-radius: 50%;
-}
-
-/* Dropdown Menu Styling */
-.dropdown-menu {
-  position: absolute;
-  top: 60px;
-  right: 20px;
-  width: 160px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 10px 0;
-  z-index: 1000;
-  color: black;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-/* Dropdown Item Styling */
-.dropdown-item {
-  padding: 10px 15px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: black;
-  transition: background-color 0.2s ease;
-  text-decoration: none;
-}
-
-
-.dropdown-item:hover,
-.account-link-nav:hover,
-.navbar-icon-dropdown:hover {
-  background-color: #b35055;
-  color: white;
-}
-
-.dropdown-icon {
-  font-size: 18px;
-}
-
-.account-link-nav {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: black;
-}
-
-.no-underline {
-  text-decoration: none;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @media only screen and (max-width: 480px) {
-
+  /* Further adjustments for smaller mobile screens */
   .navbar {
     height: 50px;
   }
@@ -421,36 +229,36 @@ body {
   }
 }
 @media only screen and (max-width: 768px) {
-
+  /* Navbar */
   .navbar {
-    padding: 0 10px;
+    padding: 0 10px; /* Reduced padding for smaller screens */
     height: 60px;
     flex-direction: row;
   }
 
   .navbar-center {
-    display: none; 
+    display: none; /* Hide center links on mobile */
   }
 
-
+  /* Left section logo */
   .navbar-left .navbar-logo {
     width: 80px;
   }
 
- 
+  /* Right section icons */
   .navbar-right {
     gap: 10px;
     margin-right: 10px;
   }
 
- 
+  /* Collapsible menu for mobile */
   .navbar-collapse {
-    display: none; 
+    display: none; /* Hidden by default */
     flex-direction: column;
     align-items: flex-start;
     background-color: #fff;
     position: fixed;
-    top: 60px; 
+    top: 60px; /* Below the navbar */
     left: 0;
     width: 100%;
     padding: 20px;
@@ -458,51 +266,52 @@ body {
   }
 
   .navbar-collapse.show {
-    display: flex; 
+    display: flex; /* Show when activated */
   }
 
   .navbar-collapse .nav-link {
-    font-size: 18px; 
+    font-size: 18px; /* Slightly smaller font */
     padding: 10px 0;
     width: 100%;
     text-align: left;
   }
 
-
+  /* Hamburger icon */
   .navbar-hamburger {
     display: block;
     font-size: 30px;
     cursor: pointer;
   }
 
+  /* Hide search results until activated */
   .search-container {
     top: 60px;
     right: 10px;
-    width: calc(100% - 20px); 
+    width: calc(100% - 20px); /* Full-width for mobile */
   }
 
   .search-bar {
-    width: 100%;
+    width: 100%; /* Take full width of screen */
   }
 
   .search-results {
-    width: 100%; 
+    width: 100%; /* Full width for search results */
   }
 }
 
-
+/* Mobile hamburger menu toggle */
 .navbar-hamburger {
-  display: none; 
+  display: none; /* Hidden on larger screens */
 }
 
-
+/* Show hamburger icon on mobile */
 @media only screen and (max-width: 768px) {
   .navbar-hamburger {
     display: block;
   }
 }
 
-
+/* Further adjustments for very small screens */
 @media only screen and (max-width: 480px) {
   .navbar {
     height: 50px;

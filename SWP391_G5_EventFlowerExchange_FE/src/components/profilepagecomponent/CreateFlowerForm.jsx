@@ -2,52 +2,36 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const CreateFlowerForm = ({ postID }) => {
+  // State cho danh sách các loại hoa
   const [flowers, setFlowers] = useState([
     {
-      flowerType: 'Hoa bán theo lô',
       flowerName: '',
       quantity: '',
       status: 'Còn hàng',
       description: '',
       price: '',
-      saleType: 'batch',
-      eventType: 'Không',
-      eventName: 'Không',
+      imageUrl: '',
+      saleType: 'batch', // Thêm state để lưu hình thức bán
+      eventName: '', // Thêm state để lưu tên sự kiện
       eventFlowerPosting: {
-        postID: postID,
+        postID: postID, // Gán postID từ bài đăng đã tạo
       },
       category: {
         categoryID: '',
       },
     },
   ]);
-  const [flowerIDs, setFlowerIDs] = useState([]);
+
   const [categories, setCategories] = useState([]);
-  const [eventOptions, setEventOptions] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
-  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
- 
 
+  // Lấy danh mục hoa từ API
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get('http://localhost:8080/identity/category/');
-
-        // Filter for unique "Hoa bán theo lô" and "Hoa sự kiện" types only
-        const uniqueCategories = response.data.filter((category, index, self) =>
-          ["Hoa bán theo lô", "Hoa Sự Kiện"].includes(category.flowerType) &&
-          index === self.findIndex(c => c.flowerType === category.flowerType)
-        );
-
-        // Set filtered categories and unique event names for selection
-        setCategories(uniqueCategories);
-        const events = response.data
-          .filter(category => category.eventType === "Có")
-          .map(category => category.eventName);
-        setEventOptions([...new Set(events)]);
+        setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
@@ -55,18 +39,13 @@ const CreateFlowerForm = ({ postID }) => {
     fetchCategories();
   }, []);
 
+  // Xử lý thay đổi form cho một loại hoa
   const handleFlowerChange = (index, e) => {
     const { name, value } = e.target;
     const newFlowers = [...flowers];
 
-    if (name === 'flowerType') {
-      newFlowers[index] = {
-        ...newFlowers[index],
-        flowerType: value,
-        eventType: 'Không', 
-        eventName: 'Không',
-      };
-    } else if (name === 'categoryID') {
+    if (name === 'categoryID') {
+      // Cập nhật categoryID
       newFlowers[index] = {
         ...newFlowers[index],
         category: {
@@ -74,90 +53,66 @@ const CreateFlowerForm = ({ postID }) => {
           categoryID: value,
         },
       };
+    } else if (name === 'eventName') {
+      // Cập nhật eventName nếu tồn tại
+      newFlowers[index] = { 
+        ...newFlowers[index], 
+        eventName: value 
+      };
     } else {
-      newFlowers[index] = {
-        ...newFlowers[index],
-        [name]: value,
+      // Cập nhật các trường khác
+      newFlowers[index] = { 
+        ...newFlowers[index], 
+        [name]: value 
       };
     }
 
     setFlowers(newFlowers);
-  };
+};
 
 
+  // Xử lý thêm loại hoa mới
   const addFlower = () => {
     setFlowers([
       ...flowers,
       {
-        flowerType: 'Hoa bán theo lô',
         flowerName: '',
         quantity: '',
         status: 'Còn hàng',
         description: '',
         price: '',
-        saleType: 'batch',
-        eventType: 'Không',
-        eventName: 'Không',
+        imageUrl: '',
+        saleType: 'batch', // Mặc định là "batch"
+        eventName: '',
         eventFlowerPosting: {
           postID: postID,
         },
         category: {
           categoryID: '',
+          
         },
       },
     ]);
   };
 
+  // Xử lý xóa loại hoa
   const removeFlower = (index) => {
     const newFlowers = flowers.filter((_, i) => i !== index);
     setFlowers(newFlowers);
-    setFlowerIDs(flowerIDs.filter((_, i) => i !== index));
   };
 
-  const openConfirmationModal = () => {
-    setConfirmModalVisible(true);
-  };
-
+  // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
-    openConfirmationModal();
-  };
-
-  const confirmSubmit = async () => {
-    setConfirmModalVisible(false);
     try {
-      const response = await axios.post('http://localhost:8080/identity/flower/', flowers);
-      const createdFlowerIDs = response.data.map(flower => flower.flowerID);
-      setFlowerIDs(createdFlowerIDs);
-      setPopupMessage("Bạn đã tạo hoa thành công. Vui lòng thêm ảnh !");
-      setShowPopup(true); 
+      // Gửi request POST để tạo nhiều loại hoa
+      await axios.post('http://localhost:8080/identity/flower/', flowers);
+      setSuccessMessage('Đã thêm loại hoa thành công!');
       setError('');
     } catch (error) {
       console.error('Error creating flowers:', error);
       setError('Không thể tạo loại hoa. Vui lòng thử lại.');
       setSuccessMessage('');
-    }
-  };
-
-  const cancelSubmit = () => {
-    setConfirmModalVisible(false);
-  };
-
-  const handleImageUpload = async (flowerID, file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      await axios.post(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setPopupMessage("Bạn đã thêm ảnh vào hoa thành công!");
-      setShowPopup(true);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('Failed to upload image. Please try again.');
     }
   };
 
@@ -211,6 +166,16 @@ const CreateFlowerForm = ({ postID }) => {
             </label>
 
             <label>
+              URL hình ảnh:
+              <input
+                type="text"
+                name="imageUrl"
+                value={flower.imageUrl}
+                onChange={(e) => handleFlowerChange(index, e)}
+              />
+            </label>
+
+            <label>
               Chọn loại hoa:
               <select
                 name="categoryID"
@@ -221,52 +186,38 @@ const CreateFlowerForm = ({ postID }) => {
                 <option value="">Chọn loại hoa</option>
                 {categories.map((category) => (
                   <option key={category.categoryID} value={category.categoryID}>
-                    {category.flowerType}
+                    {category.categoryName}
                   </option>
                 ))}
               </select>
             </label>
 
+            {/* Thêm trường chọn hình thức bán */}
             <label>
-              Có sự kiện hay không:
+              Bán theo:
               <select
-                name="eventType"
-                value={flower.eventType}
+                name="saleType"
+                value={flower.saleType}
                 onChange={(e) => handleFlowerChange(index, e)}
+                required
               >
-                <option value="Không">Không</option>
-                <option value="Có">Có</option>
+                <option value="batch">Theo batch</option>
+                <option value="event">Theo sự kiện</option>
               </select>
             </label>
 
-            {flower.eventType === 'Có' && (
+            {/* Hiển thị phần nhập tên sự kiện nếu chọn theo sự kiện */}
+            {flower.saleType === 'event' && (
               <label>
-                Tên sự kiện:
-                <select
+                Nhập tên sự kiện:
+                <input
+                  type="text"
                   name="eventName"
-                  value={flower.eventName}
+                  value={flower.eventName || ''}
                   onChange={(e) => handleFlowerChange(index, e)}
                   required
-                >
-                  <option value="">Chọn sự kiện</option>
-                  {eventOptions.map((eventName, i) => (
-                    <option key={i} value={eventName}>
-                      {eventName}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
-
-
-            {flowerIDs[index] && (
-              <div>
-                <label>Thêm ảnh cho hoa :</label>
-                <input
-                  type="file"
-                  onChange={(e) => handleImageUpload(flowerIDs[index], e.target.files[0])}
                 />
-              </div>
+              </label>
             )}
 
             {flowers.length > 1 && (
@@ -281,40 +232,10 @@ const CreateFlowerForm = ({ postID }) => {
           Thêm Loại Hoa Khác
         </button>
 
-        <button type="submit">Tạo hoa</button>
+        <button type="submit">Xác Nhận</button>
         {error && <p className="error-message-post">{error}</p>}
         {successMessage && <p className="success-message-post">{successMessage}</p>}
       </form>
-
-      {isConfirmModalVisible && (
-        <div className="confirm-modal-overlay">
-          <div className="confirm-modal">
-            <p>Bạn có chắc chắn muốn tạo loại hoa này không?</p>
-            <div className="confirm-modal-buttons">
-              <button onClick={confirmSubmit} className="confirm-btn">Xác nhận</button>
-              <button onClick={cancelSubmit} className="cancel-btn">Hủy</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-icon">✅</div>
-            <h2>Thông báo</h2>
-            <p className="popup-message">{popupMessage}</p>
-            <button
-              className="close-button-popup"
-              onClick={() => {
-                setShowPopup(false); // Close the popup
-              }}>
-              Đóng
-            </button>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 };

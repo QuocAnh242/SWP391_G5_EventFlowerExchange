@@ -1,139 +1,83 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import '../styles/Checkout.css';
+import { useLocation } from 'react-router-dom';
+import axios from 'axios'; // Import Axios để gọi API
+import '../styles/Checkout.css'; // Importing CSS styles
 import Footer from '../components/Footer';
 
 const Checkout = () => {
-  //Khai báo biến
   const location = useLocation();
-  const navigate = useNavigate();
-  const { cartItems, setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems: () => { }, totalPrice: 0 };
-  const user = JSON.parse(localStorage.getItem('user'));
-  const [isConfirmModalVisible, setConfirmModalVisible] = useState(false);
+  const { cartItems,setCartItems, totalPrice } = location.state || { cartItems: [], setCartItems:[], totalPrice: 0 };
+  const user = JSON.parse(localStorage.getItem('user')); // Lấy thông tin người dùng từ localStorage
+  
+  // State để lưu phương thức thanh toán đã chọn
   const [paymentMethod, setPaymentMethod] = useState('cod');
-  const [loading, setLoading] = useState(true);
-  const [imageUrls, setImageUrls] = useState({});
-  const [address, setAddress] = useState(user?.address || ''); 
-  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber || '');
-  const [showPopup, setShowPopup] = useState(false); 
-  const [popupMessage, setPopupMessage] = useState(''); 
-//Hàm
+
+  // Xử lý khi chọn phương thức thanh toán
   const handlePaymentChange = (e) => {
     setPaymentMethod(e.target.value);
   };
 
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-  const handlePhoneNumberChange = (e) => {
-    setPhoneNumber(e.target.value);
-  };
-
-  const handleConfirmCheckout = async () => {
-    setLoading(true);
-    setConfirmModalVisible(false);
-    await handleCheckout();
-  };
-//Hàm xác nhận 
-  const handleShowConfirmModal = () => {
-    if (!phoneNumber) {
-      setPopupMessage("Vui lòng nhập số điện thoại !");
-      setShowPopup(true);
-      return;
-    } else if (!address) {
-      setPopupMessage("Vui lòng địa chỉ giao hàng !");
-      setShowPopup(true); 
-      return    
-    }
-    setConfirmModalVisible(true);
-  };
-//hàm lấy hình ảnh từ server
-  const fetchImage = async (flowerID) => {
-    try {
-      const response = await axios.get(`http://localhost:8080/identity/flowerImg/batch/${flowerID}/image`, {
-        responseType: 'blob',
-      });
-      const imageUrl = URL.createObjectURL(response.data);
-      setImageUrls((prev) => ({ ...prev, [flowerID]: imageUrl }));
-    } catch (error) {
-      console.error("Error fetching image:", error);
-    }
-  };
-//Lấy hoa ảnh hoa từ bên cart theo flowerID
-  useEffect(() => {
-    cartItems.forEach(item => fetchImage(item.flowerID));
-  }, [cartItems]);
-
+  // Xử lý khi nhấn nút thanh toán
   const handleCheckout = async () => {
     if (!paymentMethod) {
-      setLoading(false);
       alert('Vui lòng chọn phương thức thanh toán');
       return;
     }
+  // Tạo orderDetails từ cartItems
+  const orderDetails = cartItems.map(item => ({
+    flowerID: item.flowerID,  // Flower ID
+    quantity: item.quantity,
+    price: item.price,
+  }));
+  const order = {
+    orderDate: new Date().toISOString(),
+    totalPrice: totalPrice,
+    shippingAddress: user?.address || 'Địa chỉ mặc định',
+    user: {
+      userID: user?.userID,
+    },
+    delivery: {
+      deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(), // 6 ngày sau
+      rating: 4, // Có thể thay đổi theo logic của bạn
+      availableStatus: 'available',
+    },
+    payment: {
+      paymentID: paymentMethod === 'vnpay' ? 1 : 2,
+    },
+    orderDetails: orderDetails,
+  };
 
-    const orderDetails = cartItems.map(item => ({
-      flowerID: item.flowerID,
-      quantity: item.quantity,
-      price: item.price,
-    }));
-//Chọn phương thức thanh toán
-    const orderDate = new Date();
-    const vnTimeOffset = 7 * 60;
-    const vnDate = new Date(orderDate.getTime() + vnTimeOffset * 60 * 1000);
-    const paymentMethodName = paymentMethod === 'vnpay' ? 'VNPay' : paymentMethod === 'momo' ? 'MoMo' : 'COD';
-    const order = {
-      orderDate: vnDate.toISOString(),
-      totalPrice: totalPrice,
-      shippingAddress: address,
-      user: { userID: user?.userID },
-      delivery: {
-        deliveryDate: new Date(new Date().getTime() + 6 * 24 * 60 * 60 * 1000).toISOString(),
-        rating: 4,
-        availableStatus: 'Đơn hàng đã nhận, người bán hàng sẽ giao cho bạn trong thời gian sớm nhất',
-      },
-      payment: {
-        paymentID: paymentMethod === 'vnpay' ? 1 : paymentMethod === 'momo' ? 2 : 3,
-        paymentMethodName: paymentMethodName,
-      },
-      orderDetails: orderDetails,
-    };
-//tạo order
+  console.log(order); // Log order để kiểm tra cấu trúc
+
     try {
       const response = await axios.post('http://localhost:8080/identity/orders/create', order);
-      setLoading(false);
-      const createdOrder = response.data;
-      console.log(createdOrder);
+      console.log(response.data); // Log toàn bộ phản hồi từ backend
       if (response.status === 200 || response.status === 201) {
-        if (createdOrder.orderID) {
-          const orderWithID = { ...order, orderID: createdOrder.orderID };
-          localStorage.setItem('order', JSON.stringify(orderWithID));
-          console.log(orderWithID);
-        }
-// chọn phương thức thanh toán
+        const { code, message, result } = response.data; // Lấy mã và thông báo từ phản hồi
+  
         if (paymentMethod === 'vnpay') {
-          const vnpUrl = createdOrder.message.split('Payment URL: ')[1];
-          window.location.href = vnpUrl;
-        } else if (paymentMethod === 'momo') {
-          const momoUrl = createdOrder.message.split('Payment URL: ')[2];
-          window.location.href = momoUrl;
+          const vnpUrl = message.split('VNPay URL: ')[1]; // Lấy URL VNPay từ message
+          window.location.href = vnpUrl; // Chuyển hướng đến VNPay URL
         } else {
-          localStorage.removeItem('cartItems');
-          if (typeof setCartItems === 'function') {
-            setCartItems([]);
-          }
-          navigate('/success-page');
+          alert('Đơn hàng đã được tạo thành công. Phương thức thanh toán: ' + paymentMethod);
+          
+          // Xóa giỏ hàng sau khi thanh toán thành công
+          localStorage.removeItem('cartItems'); // Xóa giỏ hàng khỏi localStorage
+          setCartItems([]); // Cập nhật state để làm trống giỏ hàng trong UI
         }
       }
     } catch (error) {
       console.error('Lỗi khi tạo đơn hàng:', error);
       alert('Có lỗi xảy ra khi tạo đơn hàng. Vui lòng thử lại sau.');
-      setLoading(false);
     }
   };
+  
+  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  // Loading trang
   useEffect(() => {
+    // Giả lập trạng thái tải dữ liệu
     const timer = setTimeout(() => {
-      setLoading(false);
+      setLoading(false); // Sau 2 giây, sẽ dừng hiển thị loading
     }, 2000);
 
     return () => clearTimeout(timer);
@@ -147,83 +91,45 @@ const Checkout = () => {
       </div>
     );
   }
+
   return (
-    //Phần thông tin nội dung checkout
     <div className="checkout">
       <div className="checkout-header">
         <h2>Xác Nhận Đơn Hàng</h2>
       </div>
+
       <div className="checkout-content">
+        {/* Cột bên trái - Tóm tắt đơn hàng */}
         <div className="order-summary">
           <h3>Tóm Tắt Đơn Hàng</h3>
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
               <div className="order-item" key={item.flowerID}>
-                <img
-                  src={imageUrls[item.flowerID] || 'default-image-url'}
-                  alt="Flower"
-                  className="order-image"
-                />
                 <span>{item.flowerName}</span>
-                <span>{item.quantity} x {item.price.toLocaleString()} VNĐ</span>
+                <span>{item.quantity} x {item.price}₫</span>
               </div>
             ))
           ) : (
             <p>Không có sản phẩm trong giỏ hàng</p>
           )}
           <div className="total-price">
-            <strong>Tổng cộng: {totalPrice.toLocaleString()} VNĐ</strong>
+            <strong>Tổng cộng: {totalPrice}₫</strong>
           </div>
         </div>
-   {/*Phần hiển thị xác nhận thông tin người dùng*/}
+
+        {/* Cột bên phải - Thông tin người dùng */}
         <div className="user-info">
           <h3>Thông Tin Người Dùng</h3>
-          <table className="user-info-table">
-            <tbody className="user-info-tbody">
-              <tr className="user-info-row">
-                <td className="user-info-label"><strong>Họ và tên</strong></td>
-                <td className="user-info-value">{user?.username}</td>
-              </tr>
-              <tr className="user-info-row">
-                <td className="user-info-label"><strong>Email</strong></td>
-                <td className="user-info-value">{user?.email}</td>
-              </tr>
-              <tr className="user-info-row">
-                <td className="user-info-label"><strong>Số điện thoại</strong></td>
-                <td className="user-info-value">
-                  {user?.phoneNumber ? (
-                    user.phoneNumber
-                  ) : (
-                    <input
-                      type="number"
-                      placeholder="Nhập số điện thoại của bạn"
-                      value={phoneNumber}
-                      onChange={handlePhoneNumberChange}
-                      className="user-info-input"
-                    />
-                  )}
-                </td>
-              </tr>
-              <tr className="user-info-row">
-                <td className="user-info-label"><strong>Địa chỉ</strong></td>
-                <td className="user-info-value">
-                  {user?.address ? (
-                    user.address
-                  ) : (
-                    <input
-                      type="text"
-                      placeholder="Nhập địa chỉ giao hàng"
-                      value={address}
-                      onChange={handleAddressChange}
-                      className="user-info-input"
-                    />
-                  )}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="user-details">
+            <p><strong>Họ và tên:</strong> {user?.username || 'N/A'}</p>
+            <p><strong>Email:</strong> {user?.email || 'N/A'}</p>
+            <p><strong>Số điện thoại:</strong> {user?.phoneNumber || 'N/A'}</p>
+            <p><strong>Địa chỉ:</strong> {user?.address || 'N/A'}</p>
+          </div>
         </div>
       </div>
+
+      {/* Phần chọn phương thức thanh toán */}
       <div className="payment-method">
         <h3>Phương Thức Thanh Toán</h3>
         <div className="payment-options">
@@ -255,43 +161,12 @@ const Checkout = () => {
             Thanh toán khi nhận hàng (COD)
           </label>
         </div>
-        <button className="checkout-btn" onClick={handleShowConfirmModal}>
+        <button className="checkout-btn" onClick={handleCheckout}>
           Xác Nhận Thanh Toán
         </button>
       </div>
 
       <Footer />
- {/* hiển thị thông báo pop-up */}
-      {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-container">
-            <div className="popup-icon">❌</div>
-            <h2>Thông báo</h2>
-            <p className="popup-message">{popupMessage}</p>
-            <button
-              className="close-button-popup"
-              onClick={() => {
-                setShowPopup(false); 
-              }}>
-              Đóng
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/*bảng thông báo xác nhận có mua hàng hay không */}
-      {isConfirmModalVisible && (
-        <div className="confirm-modal-overlay">
-          <div className="confirm-modal">
-            <p>Bạn có chắc chắn muốn mua hàng</p>
-            <p style={{ color: "red" }}>[Sau khi đã đặt hàng, bạn sẽ không được hủy đơn hàng này]</p>
-            <div className="confirm-modal-buttons">
-              <button onClick={handleConfirmCheckout} className="confirm-btn">Có</button>
-              <button onClick={() => setConfirmModalVisible(false)} className="cancel-btn">Không</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

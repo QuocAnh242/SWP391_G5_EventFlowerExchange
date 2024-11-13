@@ -1,3 +1,18 @@
+/* Container Styles */
+/* .change-info-container {
+    max-width: 500px;
+    margin: 60px auto;
+    padding: 30px;
+    background: linear-gradient(135deg, #f0f4f8, #e9ecef);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    font-family: 'Helvetica Neue', sans-serif;
+    transition: transform 0.3s ease;
+} */
+
+/* .change-info-container:hover {
+    transform: translateY(-10px);
+} */
 
 /* Form Title */
 .change-info-container h2 {

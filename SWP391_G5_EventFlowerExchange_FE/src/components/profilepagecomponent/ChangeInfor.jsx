@@ -10,24 +10,37 @@ const ChangeInfoPage = () => {
     phoneNumber: ''
   });
 
+  const [userID, setUserID] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [showPopup, setShowPopup] = useState(false); 
-  const [popupMessage, setPopupMessage] = useState(''); 
+  const [showPopup, setShowPopup] = useState(false); // Điều khiển hiển thị pop-up
+  const [popupMessage, setPopupMessage] = useState(''); // Thông điệp hiển thị trong pop-up
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       const parsedUser = JSON.parse(storedUser);
-      setFormData({
-        username: parsedUser.username,
-        address: parsedUser.address,
-        phoneNumber: parsedUser.phoneNumber
-      });
+      setUserID(parsedUser.userID);
     } else {
-      setErrorMessage('User data not found');
+      setErrorMessage('User ID not found');
     }
   }, []);
+
+  useEffect(() => {
+    if (userID) {
+      axios.get(`http://localhost:8080/identity/users/${userID}`)
+        .then(response => {
+          setFormData({
+            username: response.data.username,
+            address: response.data.address,
+            phoneNumber: response.data.phoneNumber
+          });
+        })
+        .catch(error => {
+          setErrorMessage('Error fetching user data');
+        });
+    }
+  }, [userID]);
 
   const handleChange = (e) => {
     setFormData({
@@ -38,15 +51,15 @@ const ChangeInfoPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const userID = JSON.parse(localStorage.getItem('user')).userID;
-    
     if (userID) {
       axios.put(`http://localhost:8080/identity/users/${userID}`, formData)
         .then(response => {
+          // setSuccessMessage('Cập nhật thông tin thành công');
           setPopupMessage("Cập nhật thông tin thành công!");
-          setShowPopup(true); 
+          setShowPopup(true); // Hiển thị pop-up
 
-          // Update localStorage with new user information
+
+          // Cập nhật localStorage sau khi thay đổi thông tin thành công
           const updatedUser = {
             ...JSON.parse(localStorage.getItem('user')),
             username: formData.username,
@@ -58,7 +71,11 @@ const ChangeInfoPage = () => {
           setErrorMessage('');
         })
         .catch(error => {
-          setErrorMessage(error.response?.data?.message || 'Failed to update user');
+          if (error.response) {
+            setErrorMessage(error.response.data.message || 'Failed to update user');
+          } else {
+            setErrorMessage('Failed to update user');
+          }
         });
     } else {
       setErrorMessage('User ID is missing');
@@ -85,10 +102,11 @@ const ChangeInfoPage = () => {
         <div>
           <label>Mật khẩu: </label>
           <input
-            type="password" // Change to password input type for security
+            type="text"
             name="password"
             value={formData.password}
             onChange={handleChange}
+            required
           />
         </div>
         <div>
@@ -114,6 +132,7 @@ const ChangeInfoPage = () => {
         <button type="submit">Cập nhật</button>
       </form>
 
+
       {showPopup && (
         <div className="popup-overlay">
           <div className="popup-container">
@@ -122,13 +141,15 @@ const ChangeInfoPage = () => {
             <p className="popup-message">{popupMessage}</p>
             <button
               className="close-button-popup"
-              onClick={() => setShowPopup(false)}
-            >
+              onClick={() => {
+                setShowPopup(false); // Close the popup
+              }}>
               Đóng
             </button>
           </div>
         </div>
       )}
+
     </div>
   );
 };
